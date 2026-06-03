@@ -1,53 +1,60 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from '@/components/starwind/card';
-import { Button } from '@/components/starwind/button';
-import { Badge } from '@/components/starwind/badge';
+import ProductCard from '@/components/products/ProductCard.astro';
+import { SITE } from '@/consts';
 
 const products = (await getCollection('products')).sort(
   (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
 );
+
+// JSON-LD ItemList Schema for better SEO of category pages
+const itemListElement = products.map((product, index) => ({
+  '@type': 'ListItem',
+  position: index + 1,
+  url: new URL(`/products/${product.id}`, Astro.site).toString(),
+}));
+
+const listJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement,
+};
 ---
 
-<Layout title="สินค้าทั้งหมด" description="เลือกชมเสื้อยืดดีไซน์พิเศษทั้งหมดของเรา">
-  <main class="mx-auto max-w-5xl px-4 py-16">
-    <h1 class="mb-8 text-3xl font-bold">สินค้าทั้งหมด</h1>
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+<Layout 
+  title="Our Collections | สินค้าทั้งหมด" 
+  description="เลือกชมคอลเลกชันเสื้อยืดดีไซน์พิเศษทั้งหมดของเรา ผลิตด้วยมาตรฐานพรีเมียมจาก Thana Plus 153"
+  jsonLd={listJsonLd}
+>
+  <main class="mx-auto max-w-7xl px-4 py-16 md:py-24">
+    <div class="mb-16 text-center max-w-2xl mx-auto">
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">Our Collections</h1>
+      <p class="text-lg text-muted-foreground">
+        ค้นพบคุณภาพที่แตกต่าง ด้วยการผลิตที่ใส่ใจทุกขั้นตอนจาก {SITE.name}
+      </p>
+    </div>
+    
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {
         products.map((product) => (
-          <Card class="overflow-hidden">
-            <Image
-              src={product.data.image}
-              alt={product.data.imageAlt}
-              width={600}
-              height={600}
-              class="aspect-square w-full object-cover"
-            />
-            <CardHeader>
-              <CardTitle>{product.data.title}</CardTitle>
-            </CardHeader>
-            <CardContent class="flex items-center gap-2">
-              <span class="text-primary text-xl font-bold">
-                ฿{product.data.price.toLocaleString('th-TH')}
-              </span>
-              {!product.data.inStock && <Badge variant="error">สินค้าหมด</Badge>}
-            </CardContent>
-            <CardFooter>
-              <Button href={`/products/${product.id}`} class="w-full">
-                ดูรายละเอียด
-              </Button>
-            </CardFooter>
-          </Card>
+          <ProductCard 
+            id={product.id}
+            title={product.data.title}
+            price={product.data.price}
+            image={product.data.image}
+            imageAlt={product.data.imageAlt}
+            inStock={product.data.inStock}
+            colors={product.data.colors}
+          />
         ))
       }
     </div>
+    
+    {products.length === 0 && (
+      <div class="text-center py-20 text-muted-foreground">
+        <p class="text-xl">Coming soon...</p>
+      </div>
+    )}
   </main>
 </Layout>

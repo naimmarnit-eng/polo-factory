@@ -2,8 +2,10 @@
 import Layout from '@/layouts/Layout.astro';
 import { Image } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
-import { Badge } from '@/components/starwind/badge';
+
 import { Button } from '@/components/starwind/button';
+import ProductGallery from '@/components/products/ProductGallery.astro';
+import { SITE } from '@/consts';
 
 // SSG: สร้างหน้าทุกสินค้า ณ build time
 export async function getStaticPaths() {
@@ -25,67 +27,111 @@ const productJsonLd = {
   name: d.title,
   description: d.description,
   image: new URL(d.image.src, Astro.site).toString(),
+  brand: {
+    '@type': 'Brand',
+    name: SITE.name,
+  },
   offers: {
     '@type': 'Offer',
-    price: d.price,
+    url: new URL(Astro.url.pathname, Astro.site).toString(),
     priceCurrency: 'THB',
+    price: d.price,
     availability: d.inStock
       ? 'https://schema.org/InStock'
       : 'https://schema.org/OutOfStock',
+    itemCondition: 'https://schema.org/NewCondition',
   },
 };
 ---
 
 <Layout
-  title={d.title}
+  title={`${d.title} | ${SITE.name}`}
   description={d.description}
   type="product"
   image={d.image.src}
   jsonLd={productJsonLd}
 >
-  <main class="mx-auto max-w-4xl px-4 py-16">
-    <div class="grid gap-8 md:grid-cols-2">
-      <Image
-        src={d.image}
-        alt={d.imageAlt}
-        width={800}
-        height={800}
-        class="rounded-lg border border-border"
-      />
-      <div>
-        <h1 class="text-3xl font-bold">{d.title}</h1>
-        <p class="text-muted-foreground mt-2">{d.description}</p>
-        <p class="text-primary mt-4 text-2xl font-bold">
-          ฿{d.price.toLocaleString('th-TH')}
-        </p>
+  <main class="mx-auto max-w-7xl px-4 py-12 md:py-20">
+    <div class="grid gap-12 lg:grid-cols-2 lg:gap-16 items-start">
+      {/* Product Image - Sticky on Desktop */}
+      <div class="lg:sticky lg:top-24">
+        <div class="overflow-hidden rounded-xl bg-secondary/10">
+          <Image
+            src={d.image}
+            alt={d.imageAlt}
+            width={1000}
+            height={1200}
+            class="w-full h-auto object-cover"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+      </div>
 
-        {
-          d.colors.length > 0 && (
-            <div class="mt-4 flex flex-wrap gap-2">
-              {d.colors.map((c) => (
-                <Badge variant="secondary">{c}</Badge>
-              ))}
-            </div>
-          )
-        }
-        {
-          d.sizes.length > 0 && (
-            <div class="mt-2 flex flex-wrap gap-2">
-              {d.sizes.map((s) => (
-                <Badge variant="outline">{s}</Badge>
-              ))}
-            </div>
-          )
-        }
+      {/* Product Info */}
+      <div class="flex flex-col">
+        <div class="mb-8">
+          <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">{d.title}</h1>
+          <p class="text-3xl font-semibold text-primary mb-6">
+            ฿{d.price.toLocaleString('th-TH')}
+          </p>
+          <div class="prose prose-lg max-w-none text-muted-foreground">
+            <p>{d.description}</p>
+          </div>
+        </div>
 
-        <Button class="mt-6 w-full" disabled={!d.inStock}>
-          {d.inStock ? 'เพิ่มลงตะกร้า' : 'สินค้าหมด'}
-        </Button>
+        {/* Variants */}
+        <div class="space-y-6 border-y border-border py-8">
+          {d.colors.length > 0 && (
+            <div>
+              <h3 class="text-sm font-medium uppercase tracking-wider text-muted-foreground mb-3">Available Colors</h3>
+              <div class="flex flex-wrap gap-3">
+                {d.colors.map((c) => (
+                  <div class="flex items-center gap-2 border border-border rounded-full px-4 py-2 hover:bg-secondary transition-colors cursor-pointer">
+                     <div class="w-4 h-4 rounded-full border shadow-sm" style={`background-color: ${c.toLowerCase()};`} />
+                     <span class="text-sm font-medium">{c}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {d.sizes.length > 0 && (
+            <div>
+              <h3 class="text-sm font-medium uppercase tracking-wider text-muted-foreground mb-3">Select Size</h3>
+              <div class="flex flex-wrap gap-3">
+                {d.sizes.map((s) => (
+                  <button class="w-12 h-12 rounded-full border border-border flex items-center justify-center font-medium hover:border-primary hover:bg-primary hover:text-primary-foreground transition-all">
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div class="mt-8 flex gap-4">
+          <Button size="lg" class="flex-1 text-lg" disabled={!d.inStock}>
+            {d.inStock ? 'Add to Cart' : 'Out of Stock'}
+          </Button>
+          <Button size="lg" variant="outline" class="px-8">
+            Contact Sales
+          </Button>
+        </div>
+        
+        {/* Content Details */}
+        <article class="prose prose-neutral mt-16 max-w-none prose-headings:font-bold prose-a:text-primary">
+          <Content />
+        </article>
       </div>
     </div>
 
-    <article class="prose mt-12 max-w-none">
-      <Content />
-    </article>
+    {/* Gallery Section */}
+    {d.gallery && d.gallery.length > 0 && (
+       <div class="mt-24 border-t border-border pt-16">
+          <ProductGallery images={d.gallery} altPrefix={d.title} />
+       </div>
+    )}
   </main>
 </Layout>

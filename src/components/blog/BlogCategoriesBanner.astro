@@ -1,17 +1,30 @@
 ---
 import Icon from '@/components/Icon.astro';
+import { getCollection } from 'astro:content';
 
-const categories = [
-  { name: 'เนื้อผ้า', icon: 'shirt', href: '#' },
-  { name: 'งานสกรีน', icon: 'palette', href: '#' },
-  { name: 'เทรนด์แฟชั่น', icon: 'star', href: '#' },
-  { name: 'ธุรกิจ', icon: 'currency-dollar', href: '/category/ธุรกิจ' },
-] as const;
+// แมป category -> ไอคอน (Tabler) — ดึงจากไอคอนที่มีใน Icon.astro
+const ICON_BY_CATEGORY: Record<string, 'shirt' | 'palette' | 'star' | 'currency-dollar'> = {
+  'ความรู้เรื่องผ้า': 'shirt',
+  'งานสกรีน': 'palette',
+  'เลือกสีและสไตล์': 'star',
+  'ธุรกิจ': 'currency-dollar',
+};
+const FALLBACK_ICON = 'star' as const;
+
+// ดึง category จริงจากบทความ (ไม่นับ draft) เพื่อให้ลิงก์ฟิลเตอร์ใช้งานได้เสมอ
+const posts = await getCollection('blog', (p) => !p.data.draft);
+const categories = [...new Set(posts.map((p) => p.data.category).filter(Boolean))].map(
+  (name) => ({
+    name,
+    href: `/category/${name}`,
+    icon: ICON_BY_CATEGORY[name] ?? FALLBACK_ICON,
+  })
+);
 ---
 
 <div class="relative z-20 -mt-16 sm:-mt-20 mb-28 sm:mb-36 px-4">
   <div class="max-w-5xl mx-auto bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-[2.5rem] shadow-lg shadow-gray-100/50 border border-gray-100 p-8 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-8">
-    
+
     <div class="text-center sm:text-left shrink-0">
       <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-1">หมวดหมู่บทความ</h3>
       <p class="text-xs text-gray-500">เลือกอ่านเรื่องที่คุณสนใจ</p>
@@ -19,13 +32,11 @@ const categories = [
 
     <div class="flex flex-wrap justify-center sm:justify-end items-center gap-4 sm:gap-8 w-full">
       {categories.map((category) => (
-        <a 
+        <a
           href={category.href}
           class="flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium transition-colors group"
         >
           <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-gray-100 transition-colors text-gray-400 group-hover:text-gray-900">
-             {/* If we had specific icons, we could render them here. Using placeholder shapes for now if Icon doesn't support them all.
-                 Let's just use generic shapes or simple text if icons are missing, but I'll assume standard lucide icons might be available. */}
              <Icon name={category.icon} size={16} />
           </div>
           <span class="text-sm sm:text-base">{category.name}</span>
