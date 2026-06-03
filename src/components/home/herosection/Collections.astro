@@ -1,0 +1,28 @@
+---
+import CollectionCard from './CollectionCard.astro';
+
+const collections = [
+  { title: "Men's", image: "/images/home/men's%20collection.png", alt: "Men's Collection" },
+  { title: "Girl's", image: "/images/home/girl's%20collection.png", alt: "Girl's Collection" },
+  { title: "Kid's", image: "/images/home/kidl's%20collection.png", alt: "Kid's Collection" },
+];
+
+// การ์ดสุดท้ายวางคู่กับปุ่ม next จึงดึงออกมาแยก
+const featured = collections.slice(0, -1);
+const last = collections[collections.length - 1];
+---
+
+{/* Collections Cards - Bottom */}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-32 lg:mt-24 relative z-20">
+
+  {featured.map((c) => <CollectionCard {...c} />)}
+
+  {/* Card สุดท้าย + ปุ่ม Next */}
+  <div class="flex gap-4 items-center">
+    <CollectionCard {...last} flex />
+    <button class="w-16 h-16 rounded-full bg-black text-white flex items-center justify-center shrink-0 hover:bg-gray-800 transition-transform hover:scale-105 shadow-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+    </button>
+  </div>
+
+</div>

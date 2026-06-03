@@ -1,0 +1,70 @@
+---
+import { Button } from '@/components/starwind/button';
+---
+
+{/* Hero Section */}
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start relative">
+
+  {/* Left Column - Typography & CTAs */}
+  <div class="lg:col-span-7 flex flex-col z-10 pt-10">
+
+    <div class="flex flex-col sm:flex-row gap-6 sm:gap-12 mb-10 text-gray-800">
+      <div class="flex items-center gap-3">
+        <p class="text-sm md:text-base leading-tight max-w-[140px]">Hello Brooklyn!<br/>welcome to Stripo</p>
+        <div class="w-16 h-8 rounded-full overflow-hidden border border-gray-200">
+          <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=200" alt="Brooklyn" class="w-full h-full object-cover" />
+        </div>
+      </div>
+      <p class="text-sm md:text-base leading-tight max-w-[180px]">Beautifully efficient apparel for the modern world</p>
+    </div>
+
+    <h1 class="text-[5rem] sm:text-[7rem] lg:text-[8rem] leading-[0.9] font-bold tracking-tight text-gray-900 mb-6 flex flex-col">
+      <span>Fresh &</span>
+      <span class="flex items-center gap-4">
+        <span class="text-gray-400 font-light tracking-normal">Stylish</span>
+      </span>
+    </h1>
+
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-8 mt-12">
+      <p class="text-gray-600 max-w-[200px] leading-snug">Your Gateway to Chic and Contemporary Living</p>
+      <div class="flex items-center gap-3">
+        <Button class="rounded-full bg-black hover:bg-gray-800 text-white px-8 py-6 text-base shadow-lg transition-transform hover:scale-105">
+          Explore Our Store
+        </Button>
+        <Button class="rounded-full w-12 h-12 p-0 bg-black hover:bg-gray-800 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+        </Button>
+      </div>
+    </div>
+
+  </div>
+
+  {/* Right Column - Large Image */}
+  <div class="lg:col-span-5 relative mt-12 lg:mt-0 lg:absolute lg:right-0 lg:top-0 lg:w-[45%] lg:h-[120%] pointer-events-none">
+    {/* Background Circle */}
+    <div class="absolute inset-0 bg-[#F0F0F0] rounded-full aspect-square w-[80%] mx-auto lg:mx-0 lg:w-full lg:-right-[10%] lg:-top-[10%] -z-10 mix-blend-multiply"></div>
+
+    {/* Main Model Image */}
+    <img
+      src="/images/home/hero-img.png"
+      alt="Main Model"
+      class="w-full h-auto object-cover rounded-[3rem] lg:rounded-none lg:bg-transparent lg:object-contain relative z-0 pointer-events-auto transform scale-110 translate-y-12 lg:translate-y-0"
+      style="mask-image: linear-gradient(to bottom, black 80%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);"
+    />
+
+    {/* Floating Social Proof */}
+    <div class="absolute top-[10%] right-0 lg:-right-8 bg-white/80 backdrop-blur-md px-4 py-3 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-2 pointer-events-auto">
+      <div class="flex items-center gap-1 text-lg">
+        <span>🔥</span><span>👍</span><span>💙</span><span>✌️</span><span>🏖️</span>
+      </div>
+      <p class="text-xs font-semibold text-gray-800 underline decoration-gray-300 underline-offset-4">Loved From 500k Users</p>
+    </div>
+
+    {/* Scroll Down Indicator */}
+    <div class="hidden lg:flex absolute bottom-[20%] -right-12 items-center gap-2 transform rotate-90 text-sm font-medium tracking-wide text-gray-500 pointer-events-auto">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="-rotate-90"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+      Scroll Down
+    </div>
+  </div>
+
+</div>

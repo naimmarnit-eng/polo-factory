@@ -1,0 +1,41 @@
+---
+interface Props {
+  /** ชื่อหลัก เช่น "Men's" */
+  title: string;
+  /** บรรทัดที่สอง เช่น "Collection" */
+  subtitle?: string;
+  /** ข้อความอธิบายใต้หัวข้อ */
+  description?: string;
+  image: string;
+  alt: string;
+  /** ทำให้การ์ดยืดเต็มพื้นที่ (ใช้ตอนวางคู่กับปุ่ม next) */
+  flex?: boolean;
+}
+
+const {
+  title,
+  subtitle = 'Collection',
+  description = 'The Essence of Modern\nSophistication',
+  image,
+  alt,
+  flex = false,
+} = Astro.props;
+
+const [descLine1, descLine2] = description.split('\n');
+---
+
+<div
+  class:list={[
+    'bg-white rounded-3xl p-4 flex gap-4 items-center shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-gray-100 group cursor-pointer hover:shadow-md transition-shadow',
+    flex && 'flex-1',
+  ]}
+>
+  <div class="w-24 h-32 rounded-2xl overflow-hidden bg-gray-100 shrink-0">
+    <img src={image} alt={alt} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+  </div>
+  <div class="flex flex-col justify-center relative w-full h-full">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="absolute top-0 right-0 text-gray-400 group-hover:text-black transition-colors"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+    <h3 class="text-xl font-bold mb-1">{title}<br/><span class="text-gray-400 font-normal">{subtitle}</span></h3>
+    <p class="text-[10px] text-gray-500 mt-2 leading-tight">{descLine1}<br/>{descLine2}</p>
+  </div>
+</div>
