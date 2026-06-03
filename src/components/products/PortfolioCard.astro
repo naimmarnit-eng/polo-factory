@@ -1,0 +1,28 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  id: string;
+  title: string;
+  description?: string;
+  image: ImageMetadata;
+  imageAlt: string;
+}
+
+const { id, title, description, image, imageAlt } = Astro.props;
+---
+
+<a href={`/products/${id}`} class="group block mb-4 sm:mb-6 break-inside-avoid relative overflow-hidden rounded-2xl bg-secondary/10">
+  <Image
+    src={image}
+    alt={imageAlt}
+    class="w-full h-auto object-cover transition-transform duration-700 ease-in-out group-hover:scale-105 group-hover:blur-[2px]"
+  />
+  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5 md:p-6 text-white">
+    <h3 class="font-medium text-lg md:text-xl mb-1 translate-y-4 group-hover:translate-y-0 transition-transform duration-300 ease-out">{title}</h3>
+    {description && (
+      <p class="text-sm opacity-90 line-clamp-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75 ease-out">{description}</p>
+    )}
+  </div>
+</a>

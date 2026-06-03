@@ -52,86 +52,30 @@ const productJsonLd = {
   jsonLd={productJsonLd}
 >
   <main class="mx-auto max-w-7xl px-4 py-12 md:py-20">
-    <div class="grid gap-12 lg:grid-cols-2 lg:gap-16 items-start">
-      {/* Product Image - Sticky on Desktop */}
-      <div class="lg:sticky lg:top-24">
-        <div class="overflow-hidden rounded-xl bg-secondary/10">
-          <Image
-            src={d.image}
-            alt={d.imageAlt}
-            width={1000}
-            height={1200}
-            class="w-full h-auto object-cover"
-            loading="eager"
-            fetchpriority="high"
-          />
-        </div>
-      </div>
-
-      {/* Product Info */}
-      <div class="flex flex-col">
-        <div class="mb-8">
-          <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">{d.title}</h1>
-          <p class="text-3xl font-semibold text-primary mb-6">
-            ฿{d.price.toLocaleString('th-TH')}
-          </p>
-          <div class="prose prose-lg max-w-none text-muted-foreground">
-            <p>{d.description}</p>
-          </div>
-        </div>
-
-        {/* Variants */}
-        <div class="space-y-6 border-y border-border py-8">
-          {d.colors.length > 0 && (
-            <div>
-              <h3 class="text-sm font-medium uppercase tracking-wider text-muted-foreground mb-3">Available Colors</h3>
-              <div class="flex flex-wrap gap-3">
-                {d.colors.map((c) => (
-                  <div class="flex items-center gap-2 border border-border rounded-full px-4 py-2 hover:bg-secondary transition-colors cursor-pointer">
-                     <div class="w-4 h-4 rounded-full border shadow-sm" style={`background-color: ${c.toLowerCase()};`} />
-                     <span class="text-sm font-medium">{c}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {d.sizes.length > 0 && (
-            <div>
-              <h3 class="text-sm font-medium uppercase tracking-wider text-muted-foreground mb-3">Select Size</h3>
-              <div class="flex flex-wrap gap-3">
-                {d.sizes.map((s) => (
-                  <button class="w-12 h-12 rounded-full border border-border flex items-center justify-center font-medium hover:border-primary hover:bg-primary hover:text-primary-foreground transition-all">
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Actions */}
-        <div class="mt-8 flex gap-4">
-          <Button size="lg" class="flex-1 text-lg" disabled={!d.inStock}>
-            {d.inStock ? 'Add to Cart' : 'Out of Stock'}
-          </Button>
-          <Button size="lg" variant="outline" class="px-8">
-            Contact Sales
-          </Button>
-        </div>
-        
-        {/* Content Details */}
-        <article class="prose prose-neutral mt-16 max-w-none prose-headings:font-bold prose-a:text-primary">
-          <Content />
-        </article>
-      </div>
+    <div class="mb-12">
+      <a href="/products" class="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4"><path d="m15 18-6-6 6-6"/></svg>
+        กลับไปหน้ารวมสินค้า
+      </a>
     </div>
 
-    {/* Gallery Section */}
-    {d.gallery && d.gallery.length > 0 && (
-       <div class="mt-24 border-t border-border pt-16">
-          <ProductGallery images={d.gallery} altPrefix={d.title} />
-       </div>
-    )}
+    <div class="max-w-3xl mx-auto text-center mb-16">
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">{d.title}</h1>
+      {d.price > 0 && (
+        <p class="text-2xl font-semibold text-primary mb-6">
+          ฿{d.price.toLocaleString('th-TH')}
+        </p>
+      )}
+      <div class="prose prose-lg mx-auto text-muted-foreground">
+        <p>{d.description}</p>
+      </div>
+      
+      <article class="prose prose-neutral mx-auto mt-8 max-w-none prose-headings:font-bold prose-a:text-primary text-left">
+        <Content />
+      </article>
+    </div>
+
+    {/* Full Masonry Gallery */}
+    <ProductGallery images={[d.image, ...(d.gallery || [])]} altPrefix={d.title} />
   </main>
 </Layout>

@@ -14,20 +14,116 @@ if (images.length === 0) {
 }
 ---
 
-<div class="mt-12">
-  <h2 class="text-2xl font-bold mb-6">Gallery</h2>
-  <div class="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
+<div class="mt-16 w-full">
+  <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 sm:gap-6 space-y-4 sm:space-y-6">
     {images.map((img, index) => (
       <div class="break-inside-avoid">
-        <Image
-          src={img}
-          alt={`${altPrefix} - View ${index + 1}`}
-          width={800}
-          height={1000}
-          class="w-full h-auto rounded-lg bg-secondary/20 object-cover"
-          loading={index < 2 ? "eager" : "lazy"}
-        />
+        <div class="group relative overflow-hidden rounded-xl cursor-zoom-in bg-secondary/10 gallery-item shadow-sm hover:shadow-md transition-shadow">
+          <Image
+            src={img}
+            alt={`${altPrefix} - View ${index + 1}`}
+            width={1200}
+            height={1600}
+            class="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105"
+            loading={index < 2 ? "eager" : "lazy"}
+            fetchpriority={index === 0 ? "high" : "auto"}
+          />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 pointer-events-none" />
+        </div>
       </div>
     ))}
   </div>
 </div>
+
+{/* Lightbox Modal */}
+<dialog id="lightbox" class="backdrop:bg-black/90 bg-transparent p-0 m-auto max-w-[100vw] max-h-[100vh] w-full h-full rounded-none border-none outline-none overflow-hidden text-white flex-col items-center justify-center cursor-zoom-out">
+  <div class="relative w-full h-full flex items-center justify-center p-4 md:p-8">
+    <button id="lightbox-close" class="absolute top-4 right-4 md:top-8 md:right-8 z-50 p-2 bg-black/50 hover:bg-black/80 rounded-full transition-colors cursor-pointer text-white">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    <img id="lightbox-img" src="" alt="Fullscreen image" class="max-w-full max-h-full object-contain pointer-events-none" />
+  </div>
+</dialog>
+
+<script>
+  // Script runs on client side
+  function setupLightbox() {
+    const galleryItems = document.querySelectorAll('.gallery-item img');
+    const lightbox = document.getElementById('lightbox') as HTMLDialogElement;
+    const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+    const closeBtn = document.getElementById('lightbox-close');
+
+    if (lightbox && lightboxImg) {
+      // Fix for dialog flex display when open
+      lightbox.addEventListener('show', () => {
+        lightbox.style.display = 'flex';
+      });
+
+      // Open Lightbox
+      galleryItems.forEach(img => {
+        img.addEventListener('click', (e) => {
+          const target = e.target as HTMLImageElement;
+          lightboxImg.src = target.src;
+          lightboxImg.alt = target.alt;
+          
+          lightbox.showModal();
+          lightbox.style.display = 'flex'; // Ensure flex layout
+          document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        });
+      });
+
+      // Close Lightbox function
+      const closeLightbox = () => {
+        lightbox.close();
+        lightbox.style.display = 'none';
+        document.body.style.overflow = '';
+        setTimeout(() => { lightboxImg.src = ''; }, 300); // Clear after animation
+      };
+
+      // Close on click outside or on image wrapper
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox || (e.target as HTMLElement).closest('.relative')) {
+           // Allow closing when clicking the background area
+           if (e.target !== closeBtn && !(e.target as HTMLElement).closest('#lightbox-close')) {
+             closeLightbox();
+           }
+        }
+      });
+
+      // Close on button click explicitly
+      closeBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeLightbox();
+      });
+    }
+  }
+
+  // Run on first load and after Astro page transitions
+  document.addEventListener('astro:page-load', setupLightbox);
+  // Fallback for non-view-transitions
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupLightbox);
+  } else {
+    setupLightbox();
+  }
+</script>
+
+<style>
+  dialog::backdrop {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  dialog[open] {
+    animation: fadeZoom 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  @keyframes fadeZoom {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+</style>
