@@ -26,7 +26,7 @@ const {
   jsonLd,
 } = Astro.props;
 
-const pageTitle = title ? `${title} | ${SITE.name}` : SITE.title;
+const pageTitle = title ? `${title}  ${SITE.name}` : SITE.title;
 
 // canonical = URL ปัจจุบันเทียบกับ Astro.site
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
