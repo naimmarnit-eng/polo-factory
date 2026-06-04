@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import Icon from '@/components/Icon.astro';
+import whyChooseImg from '@/assets/home/why-choose-us.jpg';
 ---
 {/* Why Choose Us Section */}
 <section class="mt-32 relative z-20 bg-gray-900 text-white rounded-[3rem] p-10 md:p-16 lg:p-20 overflow-hidden shadow-2xl mx-2 md:mx-0">
@@ -43,7 +45,13 @@ import Icon from '@/components/Icon.astro';
 
     <div class="lg:col-span-6 relative h-[400px] lg:h-[600px] rounded-[2rem] overflow-hidden group">
       <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
-      <img src="https://images.unsplash.com/photo-1558024920-b41e1887dc32?auto=format&fit=crop&q=80&w=800" alt="โรงงานผลิตเสื้อ" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
+      <Image
+        src={whyChooseImg}
+        alt="โรงงานผลิตเสื้อ ธน พลัส 153 กำลังตัดเย็บและสกรีนเสื้อ"
+        widths={[400, 600, 800, 1000]}
+        sizes="(min-width: 1024px) 50vw, 100vw"
+        class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+      />
     </div>
 
   </div>

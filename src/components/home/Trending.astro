@@ -1,12 +1,18 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import { Button } from '@/components/starwind/button';
+import patternDesignImg from '@/assets/home/trending/pattern-design.jpg';
+import fabricCuttingImg from '@/assets/home/trending/fabric-cutting.jpg';
+import screenPrintingImg from '@/assets/home/trending/screen-printing.jpg';
+import sewingQcImg from '@/assets/home/trending/sewing-qc.jpg';
 
 interface ProcessItem {
   id: string;
   name: string;
   category: string;
   subtitle: string;
-  image: string;
+  image: ImageMetadata;
 }
 
 const trendingItems: ProcessItem[] = [
@@ -15,28 +21,28 @@ const trendingItems: ProcessItem[] = [
     name: 'Pattern Design',
     category: 'Step 01',
     subtitle: 'Precision fit',
-    image: 'https://images.unsplash.com/photo-1556909211-3698d532d7ea?auto=format&fit=crop&q=80&w=600'
+    image: patternDesignImg
   },
   {
     id: '2',
     name: 'Fabric Cutting',
     category: 'Step 02',
     subtitle: 'High accuracy',
-    image: 'https://images.unsplash.com/photo-1598020815255-081831d0ebbb?auto=format&fit=crop&q=80&w=600'
+    image: fabricCuttingImg
   },
   {
     id: '3',
     name: 'Screen Printing',
     category: 'Step 03',
     subtitle: 'Vibrant colors',
-    image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&q=80&w=600'
+    image: screenPrintingImg
   },
   {
     id: '4',
     name: 'Sewing & QC',
     category: 'Step 04',
     subtitle: 'Quality control',
-    image: 'https://images.unsplash.com/photo-1612423284934-2850a4ea6b0f?auto=format&fit=crop&q=80&w=600'
+    image: sewingQcImg
   }
 ];
 ---
@@ -75,7 +81,7 @@ const trendingItems: ProcessItem[] = [
             aria-hidden={i >= trendingItems.length ? 'true' : undefined}
           >
             <div class="w-full aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 mb-4 relative">
-              <img src={item.image} alt={item.name} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <Image src={item.image} alt={item.name} widths={[240, 280, 480, 560]} sizes="(min-width: 640px) 280px, 240px" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
 
               {/* Hover Icon */}
               <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-sm text-black">

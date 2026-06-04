@@ -1,12 +1,18 @@
 ---
+import { Image } from 'astro:assets';
+import blogHeroImg from '@/assets/blog/blog-hero.jpg';
 ---
 
 <section class="relative w-full h-[450px] sm:h-[550px] md:h-[650px] rounded-[2rem] sm:rounded-[3rem] overflow-hidden flex items-center justify-center">
-  {/* Background Image with Dark Overlay */}
+  {/* Background Image with Dark Overlay — LCP ของหน้า blog: eager + high priority */}
   <div class="absolute inset-0 z-0">
-    <img 
-      src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" 
-      alt="Garment Factory" 
+    <Image
+      src={blogHeroImg}
+      alt="โรงงานผลิตเสื้อผ้าครบวงจร งานตัดเย็บและสกรีนเสื้อ"
+      widths={[640, 1024, 1600, 2070]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
       class="w-full h-full object-cover"
     />
     <div class="absolute inset-0 bg-gray-900/70 mix-blend-multiply"></div>

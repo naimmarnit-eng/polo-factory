@@ -24,28 +24,35 @@ const { title, description, image, type, noindex, jsonLd } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/png" href={favicon.src} />
     <meta name="generator" content={Astro.generator} />
+    {/* Analytics: Ahrefs — async + preconnect (สคริปต์เบา โหลด early ได้, ช่วย LCP ~150ms) */}
+    <link rel="preconnect" href="https://analytics.ahrefs.com" crossorigin />
     <script src="https://analytics.ahrefs.com/analytics.js" data-key="qtnb/p0ltu4tTRRtzqv54g" async></script>
-    {/* Google tag (gtag.js) */}
-    <script
-      is:inline
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-LHS945KVZM"
-    ></script>
+    {/* Google tag (gtag.js) — เลื่อนโหลดจนผู้ใช้ interact ครั้งแรกหรือเมื่อ idle
+        เพื่อลด main-thread work / TBT ตอนโหลดหน้า */}
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
-      function gtag(...args) {
-        dataLayer.push(args);
+      function gtag() {
+        dataLayer.push(arguments);
       }
-      gtag('js', new Date());
-      gtag('config', 'G-LHS945KVZM');
+      function loadGtag() {
+        if (window.__gtagLoaded) return;
+        window.__gtagLoaded = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-LHS945KVZM';
+        document.head.appendChild(s);
+        gtag('js', new Date());
+        gtag('config', 'G-LHS945KVZM');
+      }
+      ['scroll', 'pointerdown', 'keydown', 'touchstart'].forEach(function (evt) {
+        addEventListener(evt, loadGtag, { once: true, passive: true });
+      });
+      if (window.requestIdleCallback) {
+        requestIdleCallback(loadGtag, { timeout: 5000 });
+      } else {
+        setTimeout(loadGtag, 5000);
+      }
     </script>
-    {/* Google Fonts — Prompt (พร้อม) รองรับภาษาไทย */}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
-    />
 
     {/* RSS feed discovery */}
     <link

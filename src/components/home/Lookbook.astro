@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import { Button } from '@/components/starwind/button';
+import lookbookImg from '@/assets/home/lookbook-showcase.jpg';
 
 interface Badge {
   label: string;
@@ -17,13 +19,11 @@ const badges: Badge[] = [
 <div class="mt-24 lg:mt-32 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
   {/* Left - Interactive Image */}
   <div class="relative w-full aspect-[4/5] sm:aspect-square lg:aspect-[4/5] rounded-[3rem] overflow-hidden group">
-    <img
-      src="https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?auto=format&fit=crop&q=80&w=1024"
-      alt="Premium T-Shirt Manufacturing"
-      width="1024"
-      height="1536"
-      loading="lazy"
-      decoding="async"
+    <Image
+      src={lookbookImg}
+      alt="โชว์เคสงานผลิตเสื้อยืดพรีเมียมคุณภาพสูง"
+      widths={[400, 600, 800]}
+      sizes="(min-width: 1024px) 50vw, 100vw"
       class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
     />
     

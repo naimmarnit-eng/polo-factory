@@ -14,10 +14,12 @@ import consultFreeImg from '@/assets/home/Privileges/ปรึกษาฟรี
       {/* Left Column - Main Image */}
       <div class="lg:col-span-4 flex justify-center lg:justify-end">
         <div class="w-full max-w-md lg:max-w-none rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 group">
-          <Image 
-            src={heroImg} 
-            alt="ผลิตเสื้อ ผลิตเสื้อยืด ครบวงจร" 
-            class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700" 
+          <Image
+            src={heroImg}
+            alt="ผลิตเสื้อ ผลิตเสื้อยืด ครบวงจร"
+            widths={[300, 448, 640]}
+            sizes="(min-width: 1024px) 33vw, 100vw"
+            class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700"
           />
         </div>
       </div>
@@ -42,9 +44,11 @@ import consultFreeImg from '@/assets/home/Privileges/ปรึกษาฟรี
           {/* Box 1 */}
           <div class="flex flex-col items-center text-center group cursor-pointer">
             <div class="w-[60%] lg:w-[70%] aspect-square mb-4 overflow-hidden rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:border-gray-200 transition-all duration-500 group-hover:-translate-y-1 bg-white">
-              <Image 
-                src={designFreeImg} 
-                alt="บริการออกแบบก่อน ผลิตเสื้อ" 
+              <Image
+                src={designFreeImg}
+                alt="บริการออกแบบก่อน ผลิตเสื้อ"
+                widths={[120, 200, 300]}
+                sizes="(min-width: 768px) 12vw, 30vw"
                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
             </div>
@@ -55,9 +59,11 @@ import consultFreeImg from '@/assets/home/Privileges/ปรึกษาฟรี
           {/* Box 2 */}
           <div class="flex flex-col items-center text-center group cursor-pointer">
             <div class="w-[60%] lg:w-[70%] aspect-square mb-4 overflow-hidden rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:border-gray-200 transition-all duration-500 group-hover:-translate-y-1 bg-white">
-              <Image 
-                src={screenFreeImg} 
-                alt="สกรีนฟรี 1 จุด" 
+              <Image
+                src={screenFreeImg}
+                alt="สกรีนฟรี 1 จุด"
+                widths={[120, 200, 300]}
+                sizes="(min-width: 768px) 12vw, 30vw"
                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
             </div>
@@ -68,9 +74,11 @@ import consultFreeImg from '@/assets/home/Privileges/ปรึกษาฟรี
           {/* Box 3 */}
           <div class="flex flex-col items-center text-center group cursor-pointer">
             <div class="w-[60%] lg:w-[70%] aspect-square mb-4 overflow-hidden rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:border-gray-200 transition-all duration-500 group-hover:-translate-y-1 bg-white">
-              <Image 
-                src={shippingFreeImg} 
-                alt="จัดส่งเสื้อยืดหลังจาก ผลิตเสื้อยืดเสร็จ" 
+              <Image
+                src={shippingFreeImg}
+                alt="จัดส่งเสื้อยืดหลังจาก ผลิตเสื้อยืดเสร็จ"
+                widths={[120, 200, 300]}
+                sizes="(min-width: 768px) 12vw, 30vw"
                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
             </div>
@@ -81,9 +89,11 @@ import consultFreeImg from '@/assets/home/Privileges/ปรึกษาฟรี
           {/* Box 4 */}
           <div class="flex flex-col items-center text-center group cursor-pointer">
             <div class="w-[60%] lg:w-[70%] aspect-square mb-4 overflow-hidden rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:border-gray-200 transition-all duration-500 group-hover:-translate-y-1 bg-white">
-              <Image 
-                src={consultFreeImg} 
-                alt="ให้คำปรึกษาฟรี" 
+              <Image
+                src={consultFreeImg}
+                alt="ให้คำปรึกษาฟรี"
+                widths={[120, 200, 300]}
+                sizes="(min-width: 768px) 12vw, 30vw"
                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
             </div>

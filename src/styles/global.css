@@ -2,9 +2,26 @@
  * starwind.css = Tailwind v4 + Starwind theme tokens (light/dark) + base layer
  * เพิ่ม custom global styles ของโปรเจคต่อท้ายได้ที่ไฟล์นี้ */
 @import "./starwind.css";
+
+/* ฟอนต์ Prompt — self-host ผ่าน Fontsource แทน Google Fonts
+ * โหลดเฉพาะ subset thai + latin และน้ำหนัก 300–800 ที่ใช้จริงในโค้ด
+ * (ตัด render-blocking external CSS + cross-origin woff2 chain; font-display: swap มาในไฟล์แล้ว) */
+@import "@fontsource/prompt/latin-300.css";
+@import "@fontsource/prompt/latin-400.css";
+@import "@fontsource/prompt/latin-500.css";
+@import "@fontsource/prompt/latin-600.css";
+@import "@fontsource/prompt/latin-700.css";
+@import "@fontsource/prompt/latin-800.css";
+@import "@fontsource/prompt/thai-300.css";
+@import "@fontsource/prompt/thai-400.css";
+@import "@fontsource/prompt/thai-500.css";
+@import "@fontsource/prompt/thai-600.css";
+@import "@fontsource/prompt/thai-700.css";
+@import "@fontsource/prompt/thai-800.css";
+
 @plugin "@tailwindcss/typography";
 
-/* ฟอนต์หลักของไซต์ = Prompt (โหลดจาก Google Fonts ใน Layout.astro) */
+/* ฟอนต์หลักของไซต์ = Prompt */
 @theme {
   --font-sans: "Prompt", ui-sans-serif, system-ui, sans-serif;
 }
