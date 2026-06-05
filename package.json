@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "gen-cover": "node scripts/gen-cover.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^6.0.1",
@@ -29,6 +30,7 @@
     "express": "^5.2.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "replicate": "^1.4.0",
     "tailwind-merge": "^3.6.0",
     "tailwind-variants": "^3.2.2",
     "tailwindcss": "^4.3.0",

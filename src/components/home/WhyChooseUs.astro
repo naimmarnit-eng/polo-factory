@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import Icon from '@/components/Icon.astro';
 import whyChooseImg from '@/assets/home/why-choose-us.jpg';
+import whyChooseOverlay from '@/assets/home/WhyChooseUs.png';
 ---
 {/* Why Choose Us Section */}
 <section class="mt-32 relative z-20 bg-gray-900 text-white rounded-[3rem] p-10 md:p-16 lg:p-20 overflow-hidden shadow-2xl mx-2 md:mx-0">
@@ -44,7 +45,14 @@ import whyChooseImg from '@/assets/home/why-choose-us.jpg';
     </div>
 
     <div class="lg:col-span-6 relative h-[400px] lg:h-[600px] rounded-[2rem] overflow-hidden group">
-      <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
+      <Image
+        src={whyChooseOverlay}
+        alt=""
+        aria-hidden="true"
+        widths={[400, 600, 800, 1000]}
+        sizes="(min-width: 1024px) 50vw, 100vw"
+        class="absolute inset-0 w-full h-full object-cover pointer-events-none z-10 transition-opacity duration-500 group-hover:opacity-0"
+      />
       <Image
         src={whyChooseImg}
         alt="โรงงานผลิตเสื้อ ธน พลัส 153 กำลังตัดเย็บและสกรีนเสื้อ"
