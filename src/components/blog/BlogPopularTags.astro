@@ -1,0 +1,46 @@
+---
+// การ์ดลอย "หัวข้อยอดนิยม" — ทับ hero (แทน BlogCategoriesBanner เดิม)
+// ชิปแท็กที่ใช้บ่อยสุด ลิงก์ไปหน้า /tag/<tag> (gen อัตโนมัติ) ช่วย internal link/SEO
+// หมายเหตุ: การกรองบทความทำที่ BlogExplorer แล้ว การ์ดนี้เน้น "นำทาง" ไม่ใช่ filter
+import { getCollection } from 'astro:content';
+
+// จำนวนชิปสูงสุดที่แสดง
+const MAX_TAGS = 12;
+
+// นับความถี่ของแต่ละแท็กจากบทความที่เผยแพร่จริง → เรียงมาก→น้อย (เสมอกันเรียงตามชื่อ)
+const posts = await getCollection('blog', (p) => !p.data.draft);
+const counts = new Map<string, number>();
+for (const post of posts) {
+  for (const tag of post.data.tags) {
+    counts.set(tag, (counts.get(tag) ?? 0) + 1);
+  }
+}
+const popularTags = [...counts.entries()]
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'th'))
+  .slice(0, MAX_TAGS)
+  .map(([name]) => name);
+---
+
+{popularTags.length > 0 && (
+  <div class="relative z-20 -mt-16 sm:-mt-20 mb-28 sm:mb-36 px-4">
+    <div class="max-w-5xl mx-auto bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-[2.5rem] shadow-lg shadow-gray-100/50 border border-gray-100 p-8 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-8">
+
+      <div class="text-center sm:text-left shrink-0">
+        <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-1">หัวข้อยอดนิยม</h3>
+        <p class="text-xs text-gray-500">เลือกอ่านตามเรื่องที่สนใจ</p>
+      </div>
+
+      <div class="flex flex-wrap justify-center md:justify-end items-center gap-2.5 w-full">
+        {popularTags.map((tag) => (
+          <a
+            href={`/tag/${tag}`}
+            class="inline-flex items-center bg-gray-50 border border-gray-100 text-gray-600 text-sm font-bold px-4 py-2 rounded-full hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-colors"
+          >
+            <span class="opacity-40 mr-0.5">#</span>{tag}
+          </a>
+        ))}
+      </div>
+
+    </div>
+  </div>
+)}

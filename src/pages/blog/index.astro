@@ -1,9 +1,10 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
 import BlogHero from '@/components/blog/BlogHero.astro';
-import BlogCategoriesBanner from '@/components/blog/BlogCategoriesBanner.astro';
+import BlogPopularTags from '@/components/blog/BlogPopularTags.astro';
 import BlogFeatured from '@/components/blog/BlogFeatured.astro';
 import BlogGrid from '@/components/blog/BlogGrid.astro';
+import BlogExplorerSection from '@/components/blog/BlogExplorerSection.astro';
 ---
 
 <PageLayout
@@ -11,7 +12,10 @@ import BlogGrid from '@/components/blog/BlogGrid.astro';
   description="รวมบทความน่ารู้ เทรนด์แฟชั่น เทคนิคงานสกรีน และเคล็ดลับการทำแบรนด์เสื้อผ้า จากโรงงานผลิตเสื้อผ้าครบวงจร ธน พลัส 153"
 >
   <BlogHero />
-  <BlogCategoriesBanner />
+  <BlogPopularTags />
   <BlogFeatured />
-  <BlogGrid />
+  {/* id="latest-posts" = เป้าหมายของปุ่ม "อ่านบทความล่าสุด" ใน BlogHero */}
+  <div id="latest-posts" class="scroll-mt-24"><BlogGrid /></div>
+  {/* บทความทั้งหมด + ค้นหา/กรอง */}
+  <BlogExplorerSection />
 </PageLayout>

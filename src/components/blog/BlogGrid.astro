@@ -17,9 +17,18 @@ interface Props {
   showViewAll?: boolean;
   /** ข้อมูลบทความที่ถูกกรองมาแล้ว (ถ้ามี) */
   posts?: CollectionEntry<'blog'>[];
+  /** override คลาสคอลัมน์ของกริด (เช่นคอลัมน์แคบที่มี sidebar ใช้ 2 คอลัมน์) */
+  gridClass?: string;
 }
 
-const { title = 'บทความล่าสุด', excludeId, limit = 4, showViewAll = true, posts: propPosts } = Astro.props;
+const {
+  title = 'บทความล่าสุด',
+  excludeId,
+  limit = 4,
+  showViewAll = true,
+  posts: propPosts,
+  gridClass = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
+} = Astro.props;
 
 const posts = propPosts || (await getCollection('blog'))
   .filter((p) => !p.data.draft && p.id !== excludeId)
@@ -29,17 +38,19 @@ const posts = propPosts || (await getCollection('blog'))
 
 {posts.length > 0 && (
   <section class="mb-32">
-    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14">
-      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">{title}</h2>
-      {showViewAll && (
-        <a href="/blog" class="text-gray-600 font-medium hover:text-gray-900 transition-colors inline-flex items-center gap-1">
-          ดูทั้งหมด
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        </a>
-      )}
-    </div>
+    {(title || showViewAll) && (
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">{title}</h2>
+        {showViewAll && (
+          <a href="/blog" class="text-gray-600 font-medium hover:text-gray-900 transition-colors inline-flex items-center gap-1">
+            ดูทั้งหมด
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        )}
+      </div>
+    )}
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+    <div class:list={["grid gap-8 lg:gap-10", gridClass]}>
       {posts.map((post) => {
         const d = post.data;
         return (

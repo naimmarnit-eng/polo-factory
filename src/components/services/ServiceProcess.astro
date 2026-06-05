@@ -1,0 +1,53 @@
+---
+// ServiceProcess — ขั้นตอนการสั่งผลิต (ไทม์ไลน์ตัวเลข 01–06, zero-JS)
+const steps = [
+  {
+    title: 'ปรึกษา & ขอใบเสนอราคา',
+    desc: 'แจ้งแบบเสื้อ จำนวน และลายที่ต้องการ ทีมงานประเมินราคาให้ฟรี',
+  },
+  {
+    title: 'ออกแบบ & ขึ้นแบบ',
+    desc: 'ทีมดีไซน์ช่วยจัดวางลายและขึ้นแบบให้ดูก่อนเริ่มผลิตจริง',
+  },
+  {
+    title: 'เลือกเนื้อผ้า & ยืนยันตัวอย่าง',
+    desc: 'เลือกชนิดผ้า สี ทรง และยืนยันตัวอย่างงานก่อนเดินสายการผลิต',
+  },
+  {
+    title: 'ผลิต & สกรีน',
+    desc: 'ตัดเย็บและสกรีน/พิมพ์ด้วยเครื่องจักรและทีมช่างมืออาชีพ',
+  },
+  {
+    title: 'ตรวจสอบคุณภาพ (QC)',
+    desc: 'ตรวจงานทุกตัวตามมาตรฐาน QPC ก่อนส่งมอบให้ลูกค้า',
+  },
+  {
+    title: 'แพ็ค & จัดส่ง',
+    desc: 'แพ็คอย่างดีและจัดส่งถึงมือคุณ (ส่งฟรีในกรุงเทพฯ ตามเงื่อนไข)',
+  },
+] as const;
+---
+
+<section class="mt-24 lg:mt-32 container mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="max-w-2xl mb-12 lg:mb-16">
+    <div class="flex items-center gap-2.5 text-xs font-medium tracking-[0.16em] uppercase text-gray-500 mb-4">
+      <span class="inline-block h-1.5 w-1.5 rounded-full bg-gray-900"></span>
+      <span>ขั้นตอนการทำงาน · Process</span>
+    </div>
+    <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900 leading-tight">
+      สั่งผลิตง่าย ใน 6 ขั้นตอน
+    </h2>
+  </div>
+
+  <ol class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
+    {steps.map((step, i) => (
+      <li class="relative flex flex-col">
+        <span class="text-5xl font-extrabold text-gray-200 mb-3 leading-none tabular-nums">
+          {String(i + 1).padStart(2, '0')}
+        </span>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">{step.title}</h3>
+        <p class="text-gray-600 text-sm leading-relaxed">{step.desc}</p>
+      </li>
+    ))}
+  </ol>
+</section>

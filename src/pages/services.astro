@@ -1,0 +1,91 @@
+---
+// หน้าบริการ /services — ปลายทางของลิงก์ Services บน Navbar
+// ประกอบ section ใหม่ (services/*) + reuse section จากหน้าแรก (home/*)
+import PageLayout from '@/layouts/PageLayout.astro';
+import { getCollection } from 'astro:content';
+import ServicesHero from '@/components/services/ServicesHero.astro';
+import ServiceGrid from '@/components/services/ServiceGrid.astro';
+import ScreenServices from '@/components/home/ScreenServices.astro';
+import ServiceProcess from '@/components/services/ServiceProcess.astro';
+import Privileges from '@/components/home/Privileges.astro';
+import WhyChooseUs from '@/components/home/WhyChooseUs.astro';
+import ServiceCta from '@/components/services/ServiceCta.astro';
+import Faq from '@/components/Faq.astro';
+import { buildFaqJsonLd, type FaqItem } from '@/lib/faq';
+import { SITE } from '@/consts';
+
+// จำนวนผลงานจริงสำหรับโชว์เป็นสถิติใน hero
+const works = (await getCollection('products')).length;
+
+// FAQ เฉพาะหน้าบริการ — แหล่งข้อมูลชุดเดียว ป้อนทั้ง accordion + FAQPage JSON-LD
+const faqItems: FaqItem[] = [
+  {
+    question: 'รับผลิตเสื้อขั้นต่ำกี่ตัว?',
+    answer:
+      'ยอดสั่งผลิตขั้นต่ำยืดหยุ่นตามชนิดงานและเทคนิคที่เลือก งานพิมพ์ดิจิทัล (DTG/DTF) เริ่มผลิตจำนวนน้อยได้ ส่วนงานซิลค์สกรีนจะคุ้มค่าเมื่อสั่งจำนวนมาก ทักมาปรึกษาเพื่อให้ทีมงานแนะนำทางที่เหมาะกับงบและจำนวนของคุณได้เลย',
+  },
+  {
+    question: 'ใช้เวลาผลิตนานแค่ไหน?',
+    answer:
+      'ระยะเวลาขึ้นอยู่กับจำนวน เทคนิคงานพิมพ์ และความซับซ้อนของแบบ โดยทั่วไปเราจะแจ้งกำหนดส่งที่ชัดเจนพร้อมใบเสนอราคา และควบคุมการผลิตให้ตรงเวลาตามมาตรฐาน QPC (Quality, Price, Control)',
+  },
+  {
+    question: 'ควรเลือกซิลค์สกรีนหรือ DTG/DTF ดี?',
+    answer:
+      'ถ้าลายมีไม่กี่สีและสั่งจำนวนมาก ซิลค์สกรีนจะให้สีสดทนทานและต้นทุนต่อตัวต่ำกว่า แต่ถ้าลายมีหลายสี เป็นภาพถ่าย หรือสั่งจำนวนน้อย งานพิมพ์ดิจิทัล DTG/DTF จะเก็บรายละเอียดได้ดีกว่าโดยไม่ต้องทำบล็อกสกรีน ทีมงานช่วยแนะนำให้ตามลายและจำนวนที่ต้องการ',
+  },
+  {
+    question: 'มีบริการออกแบบให้ไหม คิดเงินเพิ่มหรือเปล่า?',
+    answer:
+      'มีบริการออกแบบฟรี (Design Free) ทีมดีไซน์ช่วยขึ้นแบบ จัดวางลาย และปรับแก้ให้จนพอใจก่อนเริ่มผลิตจริง พร้อมให้คำปรึกษาทุกขั้นตอนโดยไม่มีค่าใช้จ่ายเพิ่ม',
+  },
+  {
+    question: 'รับผลิตเสื้อประเภทไหนบ้าง?',
+    answer:
+      'รับผลิตเสื้อยืด เสื้อโปโล แจ็คเก็ต เสื้อช็อป รวมถึงกระเป๋าผ้า ครบวงจรตั้งแต่เลือกเนื้อผ้า ตัดเย็บ ไปจนถึงงานสกรีนและงานพิมพ์ทุกเทคนิค',
+  },
+  {
+    question: 'ขอใบเสนอราคาได้อย่างไร?',
+    answer:
+      'เพียงทักเข้ามาแจ้งแบบเสื้อ จำนวน และลวดลายที่ต้องการ ทีมงานจะช่วยประเมินราคา แนะนำเนื้อผ้าและเทคนิคสกรีน พร้อมส่งใบเสนอราคาและออกแบบให้ดูก่อนตัดสินใจ',
+  },
+];
+
+const faqJsonLd = buildFaqJsonLd(faqItems);
+
+// Service JSON-LD — อธิบายบริการของโรงงานสำหรับ search/LLM crawler
+const serviceJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  serviceType: 'รับผลิตเสื้อ สกรีน และงานพิมพ์ผ้าครบวงจร',
+  name: 'บริการรับผลิตเสื้อครบวงจร',
+  provider: {
+    '@type': 'Organization',
+    name: SITE.name,
+    url: Astro.site?.toString(),
+  },
+  areaServed: { '@type': 'Country', name: 'Thailand' },
+};
+
+// รวม JSON-LD ทั้งหมด (กรอง null ของ FAQ ออก)
+const jsonLd = [serviceJsonLd, ...(faqJsonLd ? [faqJsonLd] : [])];
+---
+
+<PageLayout
+  title="บริการของเรา — รับผลิตเสื้อ สกรีน ออกแบบฟรี"
+  description="บริการรับผลิตเสื้อครบวงจรจาก เสื้อแท้ ตั้งแต่เลือกผ้า ตัดเย็บ ออกแบบฟรี งานซิลค์สกรีน DTG/DTF และ Sublimation ควบคุมคุณภาพทุกตัว พร้อมขอใบเสนอราคาฟรี"
+  jsonLd={jsonLd}
+>
+  <ServicesHero works={works} />
+  <ServiceGrid />
+  <ScreenServices />
+  <ServiceProcess />
+  <Privileges />
+  <WhyChooseUs />
+  <ServiceCta />
+  <Faq
+    items={faqItems}
+    title="คำถามที่พบบ่อยเกี่ยวกับบริการ"
+    class="mt-24 lg:mt-32 max-w-4xl mx-auto"
+  />
+</PageLayout>

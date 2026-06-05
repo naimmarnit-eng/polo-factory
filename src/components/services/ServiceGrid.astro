@@ -1,0 +1,75 @@
+---
+// ServiceGrid — การ์ดบริการหลักของโรงงาน (data-driven: เพิ่ม/แก้ที่ array เดียว)
+import Icon from '@/components/Icon.astro';
+
+const services = [
+  {
+    icon: 'building-factory-2',
+    title: 'รับผลิตเสื้อครบวงจร',
+    description: 'OEM/ODM ครบจบในที่เดียว ตั้งแต่เลือกผ้า ตัดเย็บ สกรีน QC ไปจนถึงแพ็คและจัดส่ง',
+    points: ['ยอดสั่งผลิตยืดหยุ่น', 'ควบคุมคุณภาพทุกขั้นตอน', 'รองรับงานจำนวนมาก'],
+  },
+  {
+    icon: 'scissors',
+    title: 'ตัดเย็บตามแบบ',
+    description: 'ขึ้นแพทเทิร์นและตัดเย็บตามดีไซน์ เลือกทรง คอ แขน และเนื้อผ้าได้อย่างอิสระ',
+    points: ['เลือกเนื้อผ้าได้หลากหลาย', 'มีงานปักตามแบบ', 'ทำตัวอย่างก่อนผลิตจริง'],
+  },
+  {
+    icon: 'palette',
+    title: 'งานสกรีน ซิลค์สกรีน',
+    description: 'สกรีนบล็อกสีสด ทนทาน คุ้มค่าเมื่อผลิตจำนวนมาก เหมาะกับลายไม่กี่สี',
+    points: ['สีสดคงทน', 'ต้นทุนต่อตัวต่ำเมื่อสั่งเยอะ', 'สกรีนฟรี 1 จุด เมื่อครบ 100 ตัว'],
+  },
+  {
+    icon: 'printer',
+    title: 'งานพิมพ์ดิจิทัล DTG / DTF',
+    description: 'พิมพ์ลายได้ไม่จำกัดสี เก็บรายละเอียดคมชัด ไม่ต้องเสียค่าทำบล็อกสกรีน',
+    points: ['เหมาะกับลายซับซ้อน/ภาพถ่าย', 'สั่งจำนวนน้อยก็ผลิตได้', 'ไล่เฉดสีได้เนียน'],
+  },
+  {
+    icon: 'droplet',
+    title: 'งานพิมพ์ Sublimation',
+    description: 'สีซึมเข้าเนื้อผ้า ระบายอากาศดี ไม่ลอกไม่แตก เหมาะกับเสื้อกีฬาและยูนิฟอร์ม',
+    points: ['พิมพ์เต็มตัวแบบ all-over ได้', 'น้ำหนักเบา ใส่สบาย', 'สีไม่ตกแม้ซักบ่อย'],
+  },
+  {
+    icon: 'pencil',
+    title: 'ออกแบบฟรี (Design Free)',
+    description: 'ทีมดีไซน์ช่วยขึ้นแบบและจัดวางลายให้ฟรี พร้อมให้คำปรึกษาในทุกขั้นตอน',
+    points: ['ปรับแก้แบบจนพอใจ', 'แนะนำเทคนิคที่เหมาะกับงาน', 'ดูตัวอย่างก่อนตัดสินใจ'],
+  },
+] as const;
+---
+
+<section class="mt-24 lg:mt-32 container mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="max-w-2xl mb-12 lg:mb-16">
+    <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900 mb-4 leading-tight">
+      บริการที่เราดูแลให้คุณ
+    </h2>
+    <p class="text-gray-600 text-lg leading-relaxed">
+      ครอบคลุมทุกความต้องการของการผลิตเสื้อ ตั้งแต่ต้นน้ำถึงปลายน้ำ
+      เลือกเฉพาะบริการที่ต้องการ หรือให้เราดูแลแบบครบวงจร
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+    {services.map((s) => (
+      <article class="group flex flex-col h-full bg-white rounded-[2rem] border border-gray-100 p-7 lg:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-gray-200 transition-all duration-300">
+        <div class="flex-shrink-0 w-14 h-14 flex items-center justify-center bg-gray-900 text-white rounded-2xl mb-5 group-hover:scale-110 transition-transform duration-300">
+          <Icon name={s.icon} size={26} />
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">{s.title}</h3>
+        <p class="text-gray-600 leading-relaxed mb-5">{s.description}</p>
+        <ul class="mt-auto flex flex-col gap-2.5">
+          {s.points.map((p) => (
+            <li class="flex items-start gap-2.5 text-sm text-gray-700">
+              <Icon name="circle-check" size={18} class="text-gray-900 mt-0.5 flex-shrink-0" />
+              <span>{p}</span>
+            </li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </div>
+</section>

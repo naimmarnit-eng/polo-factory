@@ -1,0 +1,53 @@
+---
+// Section "บทความทั้งหมด" — ค้นหา + กรอง (หมวดหมู่/แท็ก) บทความบล็อกทุกตัว
+// ทำงานฝั่ง build: ดึง collection จริง, optimize รูปปกด้วย getImage(), แล้วส่ง
+// plain data เข้า React island (BlogExplorer) เพราะ astro:content/Image ใช้ใน
+// runtime ของ React ไม่ได้ — island แค่ค้นหา/กรองในหน่วยความจำ
+import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import BlogExplorer, { type BlogCardData } from './BlogExplorer.tsx';
+
+// บทความที่เผยแพร่จริง เรียงใหม่ -> เก่า
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+
+// เตรียม card data + optimize รูปปก (WebP responsive ตรงกับ sizes ใน island)
+const cards: BlogCardData[] = await Promise.all(
+  posts.map(async (post) => {
+    const d = post.data;
+    let cover: BlogCardData['cover'] = null;
+    if (d.cover) {
+      const img = await getImage({
+        src: d.cover,
+        widths: [400, 600, 800],
+        format: 'webp',
+      });
+      cover = { src: img.src, srcSet: img.srcSet.attribute };
+    }
+    return {
+      slug: post.id,
+      title: d.title,
+      description: d.description,
+      category: d.category,
+      tags: d.tags,
+      date: d.publishedAt.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' }),
+      cover,
+    };
+  })
+);
+
+// ตัวเลือกตัวกรอง — สะกดตรงตามที่ใช้ในบทความ (เหมือนหน้า /category, /tag)
+const categories = [...new Set(posts.map((p) => p.data.category).filter(Boolean))];
+const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
+---
+
+<section id="all-posts" class="mb-32 scroll-mt-24">
+  <div class="mb-10">
+    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">บทความทั้งหมด</h2>
+    <p class="text-gray-500 mt-3 text-base sm:text-lg">ค้นหาและกรองบทความตามหมวดหมู่หรือแท็กที่คุณสนใจ</p>
+  </div>
+
+  {/* client:visible — hydrate เมื่อเลื่อนถึง (อยู่ใต้ fold) ประหยัด JS; HTML แรกมีบทความครบเพื่อ SEO */}
+  <BlogExplorer client:visible posts={cards} categories={categories} tags={tags} />
+</section>
