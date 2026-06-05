@@ -34,6 +34,8 @@ export default defineConfig({
       changefreq: "weekly",
       priority: 0.7,
       lastmod: new Date(),
+      // กันไฟล์ข้อมูลพรีวิว (endpoint .json) ไม่ให้หลุดลง sitemap
+      filter: (page) => !page.endsWith("/blog-previews.json"),
       // ปรับ priority รายหน้า: หน้าแรกสำคัญสุด, หน้า list รองลงมา
       serialize(item) {
         if (item.url === `${SITE_URL}/`) {

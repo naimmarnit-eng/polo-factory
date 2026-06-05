@@ -5,6 +5,7 @@ import ArticleHeader from '@/components/blog/ArticleHeader.astro';
 import ArticleCover from '@/components/blog/ArticleCover.astro';
 import ArticleShare from '@/components/blog/ArticleShare.astro';
 import BlogSidebar from '@/components/blog/sidebar/BlogSidebar.astro';
+import BlogLinkPreview from '@/components/blog/BlogLinkPreview.astro';
 import Faq from '@/components/Faq.astro';
 import { buildFaqJsonLd } from '@/lib/faq';
 import { getCollection, render } from 'astro:content';
@@ -89,5 +90,8 @@ const faqJsonLd = buildFaqJsonLd(d.faq);
         <div class="mt-20">
           <BlogGrid title="บทความที่น่าสนใจเพิ่มเติม" excludeId={post.id} showViewAll={false} />
         </div>
+
+        {/* ลิงก์พรีวิวบทความ: เอาเมาส์ชี้/โฟกัสลิงก์ /blog/* ในเนื้อหา → การ์ดตัวอย่าง */}
+        <BlogLinkPreview />
 
 </PageLayout>

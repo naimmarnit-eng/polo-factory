@@ -32,12 +32,13 @@ const { title, description, image, type, noindex, jsonLd } = Astro.props;
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
+        // eslint-disable-next-line prefer-rest-params -- สคริปต์ gtag มาตรฐานของ Google ต้อง push `arguments` (เปลี่ยนเป็น rest params จะพัง GA)
         dataLayer.push(arguments);
       }
       function loadGtag() {
         if (window.__gtagLoaded) return;
         window.__gtagLoaded = true;
-        var s = document.createElement('script');
+        const s = document.createElement('script');
         s.async = true;
         s.src = 'https://www.googletagmanager.com/gtag/js?id=G-LHS945KVZM';
         document.head.appendChild(s);

@@ -1,0 +1,312 @@
+---
+// ลิงก์พรีวิวบทความ (hover / focus preview card)
+// Progressive enhancement: ถ้าไม่มี JS ลิงก์ภายในก็ยังเป็นลิงก์ปกติทำงานครบ
+// เฉพาะลิงก์ภายในเนื้อหา `.prose a[href^="/blog/"]` เท่านั้น (ไม่ยุ่งกับการ์ด/sidebar)
+// ข้อมูลพรีวิวโหลดแบบ lazy จาก /blog-previews.json ครั้งแรกที่ผู้ใช้ตั้งใจชี้/โฟกัส
+// → ไม่กระทบ LCP/INP, การ์ดเป็น overlay จึงไม่เกิด CLS
+//
+// วางคอมโพเนนต์นี้ครั้งเดียวในหน้าที่มีเนื้อหาบทความ (blog/[...slug].astro)
+---
+
+<script>
+  type Preview = {
+    title: string;
+    description: string;
+    cover?: string;
+    coverAlt?: string;
+    category?: string;
+    readingTime?: number;
+    dateLabel?: string;
+  };
+
+  const SELECTOR = '.prose a[href^="/blog/"]';
+  const CARD_ID = 'blp-card';
+  const SHOW_DELAY = 120; // ms — กันการ์ดกระพริบเวลาเมาส์แค่ผ่าน
+  const HIDE_DELAY = 160; // ms — เผื่อเวลาเลื่อนเมาส์จากลิงก์ไปบนการ์ด
+
+  // hover เฉพาะอุปกรณ์ที่ชี้ได้จริง (เมาส์); จอสัมผัสปล่อยให้แตะแล้วไปหน้าตามปกติ
+  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const currentPath = location.pathname.replace(/\/+$/, '');
+
+  let dataPromise: Promise<Record<string, Preview>> | null = null;
+  function loadData(): Promise<Record<string, Preview>> {
+    return (dataPromise ??= fetch('/blog-previews.json')
+      .then((r) => (r.ok ? r.json() : {}))
+      .then((json) => json as Record<string, Preview>)
+      .catch(() => ({}) as Record<string, Preview>));
+  }
+
+  // path เป้าหมายของลิงก์ (root-relative, ตัด trailing slash) ใช้เป็นคีย์ลุกอัป
+  function keyOf(a: HTMLAnchorElement) {
+    return a.pathname.replace(/\/+$/, '');
+  }
+
+  // สร้างการ์ดครั้งเดียวแล้ว reuse
+  let card: HTMLDivElement | null = null;
+  let elCover: HTMLImageElement;
+  let elCat: HTMLSpanElement;
+  let elTitle: HTMLSpanElement;
+  let elDesc: HTMLParagraphElement;
+  let elDate: HTMLSpanElement;
+  let elSep: HTMLSpanElement;
+  let elRead: HTMLSpanElement;
+
+  function ensureCard() {
+    if (card) return card;
+    card = document.createElement('div');
+    card.id = CARD_ID;
+    card.className = 'blp-card';
+    card.setAttribute('role', 'tooltip');
+
+    elCover = document.createElement('img');
+    elCover.className = 'blp-cover';
+    elCover.loading = 'lazy';
+    elCover.decoding = 'async';
+    elCover.width = 320;
+    elCover.height = 160;
+
+    const body = document.createElement('div');
+    body.className = 'blp-body';
+    elCat = document.createElement('span');
+    elCat.className = 'blp-cat';
+    elTitle = document.createElement('span');
+    elTitle.className = 'blp-title';
+    elDesc = document.createElement('p');
+    elDesc.className = 'blp-desc';
+
+    const meta = document.createElement('div');
+    meta.className = 'blp-meta';
+    elDate = document.createElement('span');
+    elSep = document.createElement('span');
+    elSep.className = 'blp-sep';
+    elSep.textContent = '·';
+    elRead = document.createElement('span');
+    meta.append(elDate, elSep, elRead);
+
+    body.append(elCat, elTitle, elDesc, meta);
+    card.append(elCover, body);
+
+    // เลื่อนเมาส์ขึ้นบนการ์ดเองให้คงค้างไว้ (ยกเลิกการซ่อน)
+    card.addEventListener('pointerenter', () => clearTimers());
+    card.addEventListener('pointerleave', scheduleHide);
+    document.body.appendChild(card);
+    return card;
+  }
+
+  let activeLink: HTMLAnchorElement | null = null;
+  let wantLink: HTMLAnchorElement | null = null;
+  let showTimer = 0;
+  let hideTimer = 0;
+  function clearTimers() {
+    clearTimeout(showTimer);
+    clearTimeout(hideTimer);
+  }
+
+  function fill(info: Preview) {
+    const c = ensureCard();
+    if (info.cover) {
+      elCover.src = info.cover;
+      elCover.alt = info.coverAlt || info.title;
+      elCover.style.display = '';
+    } else {
+      elCover.removeAttribute('src');
+      elCover.style.display = 'none';
+    }
+    elCat.textContent = info.category || '';
+    elCat.style.display = info.category ? '' : 'none';
+    elTitle.textContent = info.title;
+    elDesc.textContent = info.description;
+    elDate.textContent = info.dateLabel || '';
+    const hasRead = !!info.readingTime;
+    elRead.textContent = hasRead ? `อ่าน ${info.readingTime} นาที` : '';
+    const hasDate = !!info.dateLabel;
+    elSep.style.display = hasDate && hasRead ? '' : 'none';
+    elDate.style.display = hasDate ? '' : 'none';
+    elRead.style.display = hasRead ? '' : 'none';
+    return c;
+  }
+
+  function position(link: HTMLAnchorElement, c: HTMLDivElement) {
+    const r = link.getBoundingClientRect();
+    const gap = 8;
+    const cw = c.offsetWidth;
+    const ch = c.offsetHeight;
+    const vw = document.documentElement.clientWidth;
+    const vh = window.innerHeight;
+
+    // แนวตั้ง: วางใต้ลิงก์ก่อน ถ้าล้นล่างให้พลิกขึ้นบน
+    let top = r.bottom + gap;
+    if (top + ch > vh - gap && r.top - gap - ch > gap) top = r.top - gap - ch;
+
+    // แนวนอน: เริ่มชิดซ้ายลิงก์ แล้ว clamp ไม่ให้ล้นจอ
+    let left = r.left;
+    left = Math.min(Math.max(gap, left), Math.max(gap, vw - cw - gap));
+
+    c.style.top = `${Math.round(top)}px`;
+    c.style.left = `${Math.round(left)}px`;
+  }
+
+  function open(link: HTMLAnchorElement) {
+    const key = keyOf(link);
+    if (key === currentPath) return; // ไม่พรีวิวลิงก์ที่ชี้หน้าตัวเอง
+    wantLink = link;
+    loadData().then((map) => {
+      if (wantLink !== link) return; // ผู้ใช้เลื่อนออกไปก่อนข้อมูลมาถึง
+      const info = map[key];
+      if (!info) return; // ไม่มีในแผนที่ (เช่น /blog index หรือ draft) → ปล่อยผ่าน
+      const c = fill(info);
+      activeLink = link;
+      link.setAttribute('aria-describedby', CARD_ID);
+      // วาง 2 รอบ: ก่อนโชว์ (วัดขนาดจริง) แล้ว requestAnimationFrame ให้ transition ทำงาน
+      c.style.visibility = 'hidden';
+      c.classList.add('is-visible');
+      position(link, c);
+      c.style.visibility = '';
+      requestAnimationFrame(() => position(link, c));
+    });
+  }
+
+  function close() {
+    clearTimers();
+    wantLink = null;
+    if (card) card.classList.remove('is-visible');
+    if (activeLink) activeLink.removeAttribute('aria-describedby');
+    activeLink = null;
+  }
+
+  function scheduleShow(link: HTMLAnchorElement) {
+    clearTimeout(hideTimer);
+    if (link === activeLink) return;
+    clearTimeout(showTimer);
+    showTimer = window.setTimeout(() => open(link), SHOW_DELAY);
+  }
+  function scheduleHide() {
+    clearTimeout(showTimer);
+    clearTimeout(hideTimer);
+    hideTimer = window.setTimeout(close, HIDE_DELAY);
+  }
+
+  // ---- เมาส์ (ใช้ event delegation รองรับลิงก์ทุกตัวในเนื้อหา) ----
+  if (canHover.matches) {
+    document.addEventListener('pointerover', (e) => {
+      const t = e.target as Element;
+      const link = t.closest(SELECTOR) as HTMLAnchorElement | null;
+      if (link) {
+        scheduleShow(link);
+        return;
+      }
+      if (card && t.closest('#' + CARD_ID)) {
+        clearTimers();
+        return;
+      }
+      scheduleHide();
+    });
+  }
+
+  // ---- คีย์บอร์ด / โฟกัส (เปิดทันที ไม่หน่วง) ----
+  document.addEventListener('focusin', (e) => {
+    const link = (e.target as Element).closest(SELECTOR) as HTMLAnchorElement | null;
+    if (link) open(link);
+  });
+  document.addEventListener('focusout', (e) => {
+    const link = (e.target as Element).closest(SELECTOR) as HTMLAnchorElement | null;
+    if (link) scheduleHide();
+  });
+
+  // ปิดเมื่อกด Esc / เลื่อนจอ / เปลี่ยนขนาดจอ (ตำแหน่งอิง viewport)
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
+  });
+  window.addEventListener('scroll', () => activeLink && close(), { passive: true });
+  window.addEventListener('resize', () => activeLink && close());
+</script>
+
+<style is:global>
+  .blp-card {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 60;
+    width: 320px;
+    max-width: calc(100vw - 16px);
+    background: var(--popover, #fff);
+    color: var(--popover-foreground, #0a0a0a);
+    border: 1px solid var(--border, #e5e5e5);
+    border-radius: calc(var(--radius, 0.5rem) + 0.25rem);
+    box-shadow:
+      0 10px 30px -10px rgb(0 0 0 / 0.25),
+      0 4px 8px -4px rgb(0 0 0 / 0.1);
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 0.16s ease,
+      transform 0.16s ease;
+    pointer-events: none;
+    font-family: inherit;
+  }
+  .blp-card.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .blp-cover {
+    display: block;
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    background: var(--muted, #f5f5f5);
+  }
+  .blp-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.875rem 1rem 1rem;
+  }
+  .blp-cat {
+    align-self: flex-start;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--primary, #1d4ed8);
+  }
+  .blp-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--foreground, #0a0a0a);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .blp-desc {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--muted-foreground, #525252);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .blp-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.15rem;
+    font-size: 0.7rem;
+    color: var(--muted-foreground, #525252);
+  }
+  .blp-sep {
+    opacity: 0.5;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .blp-card {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>
