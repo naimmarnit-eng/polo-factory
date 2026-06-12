@@ -55,6 +55,24 @@ const { title, description, image, type, noindex, jsonLd } = Astro.props;
       }
     </script>
 
+    {/* Microsoft Clarity — heatmaps + session recordings (โหลด async เอง ไม่บล็อก render) */}
+    <link rel="preconnect" href="https://www.clarity.ms" crossorigin />
+    <script is:inline>
+      (function (c, l, a, r, i, t, y) {
+        c[a] =
+          c[a] ||
+          function () {
+            // eslint-disable-next-line prefer-rest-params -- โค้ด snippet มาตรฐานของ Microsoft Clarity ต้อง push `arguments` (เปลี่ยนเป็น rest params เสี่ยง queue event พัง)
+            (c[a].q = c[a].q || []).push(arguments);
+          };
+        t = l.createElement(r);
+        t.async = 1;
+        t.src = 'https://www.clarity.ms/tag/' + i;
+        y = l.getElementsByTagName(r)[0];
+        y.parentNode.insertBefore(t, y);
+      })(window, document, 'clarity', 'script', 'x5q5tvdd8n');
+    </script>
+
     {/* RSS feed discovery */}
     <link
       rel="alternate"
