@@ -7,7 +7,7 @@ import BlogGrid from '@/components/blog/BlogGrid.astro';
 import BlogExplorerSection from '@/components/blog/BlogExplorerSection.astro';
 
 // JSON-LD: Blog + Breadcrumb (หน้าแรก → บทความ) — บอกโครงสร้าง hub ของบล็อก
-const blogUrl = new URL('/blog', Astro.site).toString();
+const blogUrl = new URL('/blog/', Astro.site).toString();
 const orgId = new URL('/#organization', Astro.site).toString();
 const blogJsonLd = {
   '@context': 'https://schema.org',

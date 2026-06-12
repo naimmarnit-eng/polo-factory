@@ -7,7 +7,8 @@ category: "เลือกสีและสไตล์"
 tags: ["เลือกสีเสื้อ", "เสื้อยืด", "สร้างแบรนด์"]
 cover: "@/assets/blogs/เทรนด์สีเสื้อปี-2026.png"
 coverAlt: "เสื้อยืดสีขาวนวล Cloud Dancer พับวางบนโต๊ะโทนนิวทรัล ล้อมด้วยผ้าตัวอย่างสีกรมท่า เทา และครีม การ์ดพาเลตต์สีแห่งปี 2026 สมุดสเก็ตช์แบบเสื้อ และหลอดด้าย"
-draft: false
+# unpublished 2026-06-12: รวมเข้ากับ /blog/pantone-cloud-dancer-2026-white-tshirt เพื่อกัน keyword cannibalization (SEO-AUDIT P1-2) — อย่า republish ซ้ำหัวข้อ Pantone Cloud Dancer
+draft: true
 faq:
   - question: "Pantone สีแห่งปี 2026 คือสีอะไร"
     answer: "คือ PANTONE 11-4201 Cloud Dancer สีขาวนวลโทนอุ่น (เฉดประมาณ #F0EFEB) ประกาศเมื่อ 4 ธันวาคม 2025 ถือเป็นครั้งแรกที่ Pantone เลือกสีขาวเป็นสีแห่งปี โดยสื่อถึงความสงบ เรียบง่าย และพื้นที่ว่างให้ความคิดได้พัก"

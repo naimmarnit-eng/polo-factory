@@ -39,8 +39,20 @@ const articleJsonLd = {
   ...(d.updatedAt && { dateModified: d.updatedAt.toISOString() }),
   mainEntityOfPage: {
     '@type': 'WebPage',
-    '@id': new URL(`/blog/${post.id}`, Astro.site).toString(),
+    // trailing slash ให้ตรง canonical ของหน้าบทความ (/blog/<slug>/)
+    '@id': new URL(`/blog/${post.id}/`, Astro.site).toString(),
   },
+};
+
+// Breadcrumb JSON-LD — หน้าแรก → บทความ → บทความนี้ (เพิ่ม rich-result breadcrumb ใน SERP)
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'หน้าแรก', item: Astro.site?.toString() },
+    { '@type': 'ListItem', position: 2, name: 'บทความ', item: new URL('/blog/', Astro.site).toString() },
+    { '@type': 'ListItem', position: 3, name: d.title, item: new URL(`/blog/${post.id}/`, Astro.site).toString() },
+  ],
 };
 
 // FAQPage JSON-LD จาก frontmatter (null ถ้าไม่มี faq) — ต่อท้าย BlogPosting ในหน้าเดียวได้
@@ -52,7 +64,7 @@ const faqJsonLd = buildFaqJsonLd(d.faq);
   description={d.description}
   image={ogImage}
   type="article"
-  jsonLd={[articleJsonLd, ...(faqJsonLd ? [faqJsonLd] : [])]}
+  jsonLd={[articleJsonLd, breadcrumbJsonLd, ...(faqJsonLd ? [faqJsonLd] : [])]}
 >
 
         <ArticleHeader title={d.title} author={d.author} tags={d.tags} publishedAt={d.publishedAt} />

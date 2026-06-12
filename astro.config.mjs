@@ -34,8 +34,11 @@ export default defineConfig({
       changefreq: "weekly",
       priority: 0.7,
       lastmod: new Date(),
-      // กันไฟล์ข้อมูลพรีวิว (endpoint .json) ไม่ให้หลุดลง sitemap
-      filter: (page) => !page.endsWith("/blog-previews.json"),
+      // กันไฟล์ข้อมูลพรีวิว (endpoint .json) + หน้า /tag/* (ตั้ง noindex,nofollow)
+      // ไม่ให้หลุดลง sitemap — sitemap ควรมีเฉพาะหน้าที่ตั้งใจให้ index เท่านั้น
+      // (อย่าใช้ robots Disallow /tag/ แทน เพราะ Googlebot ต้องคลานเข้าหน้าได้จึงจะเห็น meta noindex)
+      filter: (page) =>
+        !page.endsWith("/blog-previews.json") && !page.includes("/tag/"),
       // ปรับ priority/changefreq รายหน้าให้สะท้อนความสำคัญจริง
       // เทียบด้วย pathname (กันปัญหา trailing slash จาก SITE_URL)
       serialize(item) {

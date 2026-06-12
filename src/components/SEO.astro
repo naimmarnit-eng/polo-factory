@@ -27,8 +27,8 @@ const {
   jsonLd,
 } = Astro.props;
 
-// separator " | " แยกหัวข้อหน้ากับชื่อแบรนด์ให้ชัดใน SERP
-const pageTitle = title ? `${title} ${SITE.name}` : SITE.title;
+// separator " – " (en dash) แยกหัวข้อหน้ากับชื่อแบรนด์ให้ชัดใน SERP
+const pageTitle = title ? `${title} – ${SITE.name}` : SITE.title;
 
 // canonical = URL ปัจจุบันเทียบกับ Astro.site
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
@@ -75,6 +75,8 @@ const defaultJsonLd = [
   {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    // @id คงที่ → ให้หน้าอื่น (เช่น CollectionPage.isPartOf) อ้าง WebSite เดียวกันได้
+    '@id': new URL('/#website', Astro.site).toString(),
     name: SITE.name,
     url: Astro.site?.toString(),
     inLanguage: 'th-TH',

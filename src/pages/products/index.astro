@@ -13,7 +13,7 @@ const itemListElement = products.map((product, index) => ({
   '@type': 'ListItem',
   position: index + 1,
   name: product.data.title,
-  url: new URL(`/products/${product.id}`, Astro.site).toString(),
+  url: new URL(`/products/${product.id}/`, Astro.site).toString(),
   image: new URL(product.data.image.src, Astro.site).toString(),
 }));
 
@@ -29,7 +29,7 @@ const breadcrumbJsonLd = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'หน้าแรก', item: Astro.site?.toString() },
-    { '@type': 'ListItem', position: 2, name: 'ผลงาน', item: new URL('/products', Astro.site).toString() },
+    { '@type': 'ListItem', position: 2, name: 'ผลงาน', item: new URL('/products/', Astro.site).toString() },
   ],
 };
 ---

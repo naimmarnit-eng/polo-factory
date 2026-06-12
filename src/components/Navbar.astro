@@ -6,10 +6,10 @@ import logo from '@/assets/logo.png';
 // เมนูย่อยใต้ปุ่ม Services — ลิงก์ลึกไปแต่ละ section ของหน้า /services
 // ทำให้ลูกศร chevron มีความหมาย + เพิ่ม internal link ที่ดีต่อ SEO
 const serviceMenu = [
-  { label: 'บริการทั้งหมด', desc: 'รับผลิตเสื้อครบวงจร', href: '/services#services' },
-  { label: 'งานสกรีน & งานพิมพ์', desc: 'ซิลค์สกรีน · DTG/DTF · Sublimation', href: '/services#screen' },
-  { label: 'ขั้นตอนการสั่งผลิต', desc: 'สั่งผลิตง่ายใน 6 ขั้นตอน', href: '/services#process' },
-  { label: 'คำถามที่พบบ่อย', desc: 'ราคา · ขั้นต่ำ · ระยะเวลา', href: '/services#faq-heading' },
+  { label: 'บริการทั้งหมด', desc: 'รับผลิตเสื้อครบวงจร', href: '/services/#services' },
+  { label: 'งานสกรีน & งานพิมพ์', desc: 'ซิลค์สกรีน · DTG/DTF · Sublimation', href: '/services/#screen' },
+  { label: 'ขั้นตอนการสั่งผลิต', desc: 'สั่งผลิตง่ายใน 6 ขั้นตอน', href: '/services/#process' },
+  { label: 'คำถามที่พบบ่อย', desc: 'ราคา · ขั้นต่ำ · ระยะเวลา', href: '/services/#faq-heading' },
 ] as const;
 ---
 
@@ -23,7 +23,7 @@ const serviceMenu = [
     {/* Services — dropdown แบบ zero-JS (แสดงเมื่อ hover หรือ keyboard focus เข้าในกลุ่ม) */}
     <div class="relative group">
       <a
-        href="/services"
+        href="/services/"
         class="flex items-center gap-1 hover:text-gray-600 transition-colors"
         aria-haspopup="true"
       >
@@ -45,8 +45,8 @@ const serviceMenu = [
       </div>
     </div>
 
-    <a href="/blog" class="hover:text-gray-600 transition-colors">Blog</a>
-    <a href="/products" class="hover:text-gray-600 transition-colors">Products</a>
-    <a href="/services#contact" class="hover:text-gray-600 transition-colors">Contact Us</a>
+    <a href="/blog/" class="hover:text-gray-600 transition-colors">Blog</a>
+    <a href="/products/" class="hover:text-gray-600 transition-colors">Products</a>
+    <a href="/services/#contact" class="hover:text-gray-600 transition-colors">Contact Us</a>
   </nav>
 </header>

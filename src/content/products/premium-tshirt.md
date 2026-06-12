@@ -3,7 +3,7 @@ title: "Premium Cotton T-Shirt"
 description: "เสื้อยืดผ้าคอตตอน 100% เกรดพรีเมียม สัมผัสนุ่ม สวมใส่สบาย ระบายอากาศได้ดีเยี่ยม เหมาะสำหรับทุกโอกาส"
 price: 490
 image: "../../assets/home/T-Shirts_Collection.png"
-imageAlt: "Premium Cotton T-Shirt Image"
+imageAlt: "เสื้อยืดคอตตอน 100% เกรดพรีเมียมหลากสี ตัวอย่างงานรับผลิตจากโรงงานเสื้อแท้"
 gallery: 
   - "../../assets/home/T-Shirts_Collection.png"
   - "../../assets/home/Polo-Shirts_Collection.png"
