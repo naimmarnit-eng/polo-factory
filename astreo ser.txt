@@ -1,0 +1,10 @@
+# คำสั่ง dev — astro-t_shirt (Astro static site, ไม่มี database)
+
+npm run dev        # เปิด dev server -> http://localhost:4321
+npm run build      # build โปรดักชันไปที่ dist/
+npm run preview    # เสิร์ฟไฟล์ใน dist/ ที่ build แล้ว -> http://localhost:4321
+npm run lint       # ตรวจ ESLint
+npx astro check    # type-check .astro/.ts
+
+# เปิดให้เข้าจากภายนอกด้วย Cloudflare Tunnel (ชี้ไปที่ dev server)
+cloudflared tunnel --url http://localhost:4321

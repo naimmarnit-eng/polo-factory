@@ -100,5 +100,11 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      // อนุญาตให้เข้า dev server ผ่าน Cloudflare Quick Tunnel (*.trycloudflare.com)
+      // ขึ้นต้นด้วยจุด = ครอบคลุมทุก subdomain ที่สุ่มใหม่ทุกครั้ง ไม่ต้องแก้ซ้ำ
+      // (มีผลเฉพาะ dev server; โปรดักชันเป็น static ไม่เกี่ยว)
+      allowedHosts: [".trycloudflare.com"],
+    },
   },
 });
