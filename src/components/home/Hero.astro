@@ -70,19 +70,19 @@ import heroImg from '@/assets/home/hero-img.png';
       
       {/* Stat 1 */}
       <div class="flex flex-col items-center md:items-start md:pl-4 text-center md:text-left">
-        <span class="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight">10+ ปี</span>
+        <span class="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight"><span class="counter-number" data-target="10">0</span>+ ปี</span>
         <span class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1.5">ประสบการณ์ผลิตทอและตัดเย็บ</span>
       </div>
 
       {/* Stat 2 */}
       <div class="flex flex-col items-center md:items-start md:pl-8 text-center md:text-left pt-6 md:pt-0">
-        <span class="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight">500+ แบรนด์</span>
+        <span class="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight"><span class="counter-number" data-target="500">0</span>+ แบรนด์</span>
         <span class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1.5">ที่ไว้วางใจผลิตเสื้อกับเรา</span>
       </div>
 
       {/* Stat 3 */}
       <div class="flex flex-col items-center md:items-start md:pl-8 text-center md:text-left pt-6 md:pt-0">
-        <span class="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight">100% QC</span>
+        <span class="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight"><span class="counter-number" data-target="100">0</span>% QC</span>
         <span class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1.5">ตรวจเช็คกระดุม ตะเข็บ ฝีเข็ม</span>
       </div>
 
@@ -90,3 +90,51 @@ import heroImg from '@/assets/home/hero-img.png';
   </div>
 
 </div>
+
+<script>
+  function initStatsCounters() {
+    const counters = document.querySelectorAll('.counter-number');
+    const speed = 1200; // speed duration in ms
+
+    const runCounter = (el: HTMLElement) => {
+      const target = parseInt(el.getAttribute('data-target') || '0', 10);
+      let count = 0;
+      const stepTime = Math.max(Math.floor(speed / target), 12);
+      
+      const timer = setInterval(() => {
+        if (target <= 20) {
+          count += 1;
+        } else {
+          count += Math.ceil(target / 80);
+        }
+        
+        if (count >= target) {
+          el.innerText = target.toString();
+          clearInterval(timer);
+        } else {
+          el.innerText = count.toString();
+        }
+      }, stepTime);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target as HTMLElement;
+          runCounter(el);
+          observer.unobserve(el);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    counters.forEach(c => observer.observe(c));
+  }
+
+  // Astro page loads
+  document.addEventListener('astro:page-load', initStatsCounters);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initStatsCounters);
+  } else {
+    initStatsCounters();
+  }
+</script>

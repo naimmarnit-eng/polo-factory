@@ -238,15 +238,15 @@ const printingServices = SERVICES.filter((s) => s.printing && s.key && s.key in 
       {/* Hero Stats Grid */}
       <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-10 border-t border-gray-150 w-full max-w-4xl">
         <div class="text-left">
-          <span class="block text-3xl sm:text-4xl font-black text-[#FF5A1F] leading-none mb-1.5">{works}+</span>
+          <span class="block text-3xl sm:text-4xl font-black text-[#FF5A1F] leading-none mb-1.5"><span class="counter-number" data-target={works}>0</span>+</span>
           <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Product Styles</span>
         </div>
         <div class="text-left">
-          <span class="block text-3xl sm:text-4xl font-black text-slate-900 leading-none mb-1.5">10+</span>
+          <span class="block text-3xl sm:text-4xl font-black text-slate-900 leading-none mb-1.5"><span class="counter-number" data-target="10">0</span>+</span>
           <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Years Experience</span>
         </div>
         <div class="text-left">
-          <span class="block text-3xl sm:text-4xl font-black text-slate-900 leading-none mb-1.5">100%</span>
+          <span class="block text-3xl sm:text-4xl font-black text-slate-900 leading-none mb-1.5"><span class="counter-number" data-target="100">0</span>%</span>
           <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Custom Tailored</span>
         </div>
         <div class="text-left">
@@ -271,7 +271,7 @@ const printingServices = SERVICES.filter((s) => s.printing && s.key && s.key in 
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {SERVICES.map((s, idx) => (
-          <article class="relative p-8 flex flex-col justify-between items-start min-h-[270px] transition-all duration-300 group border border-gray-200/80 bg-white hover:bg-slate-900 hover:text-white hover:border-slate-900 hover:shadow-xl rounded-none select-text">
+          <article class:list={["relative p-8 flex flex-col justify-between items-start min-h-[270px] hover-lift group border border-gray-200/80 bg-white hover:bg-slate-900 hover:text-white hover:border-slate-900 hover:shadow-xl rounded-none select-text reveal-scale", idx === 0 ? "delay-75" : idx === 1 ? "delay-150" : "delay-200"]}>
             
             <div class="flex items-center justify-between w-full mb-6">
               {/* Dashed Border Icon box */}
@@ -341,7 +341,7 @@ const printingServices = SERVICES.filter((s) => s.printing && s.key && s.key in 
           const imgData = IMAGE_MAP[s.key as keyof typeof IMAGE_MAP];
           const isEven = index % 2 === 1;
           return (
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center bg-white border border-gray-150/60 p-6 md:p-8 rounded-none shadow-sm">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center bg-white border border-gray-150/60 p-6 md:p-8 rounded-none shadow-sm hover-lift reveal-skew">
               {/* Image Block */}
               <div class={`lg:col-span-6 relative overflow-hidden aspect-[4/3] ${isEven ? 'lg:order-2' : ''}`}>
                 <Image
@@ -411,7 +411,7 @@ const printingServices = SERVICES.filter((s) => s.printing && s.key && s.key in 
           {steps.map((step, i) => {
             const isLeft = i % 2 === 0;
             return (
-              <div class="flex flex-col md:flex-row items-start md:justify-between w-full relative">
+              <div class="flex flex-col md:flex-row items-start md:justify-between w-full relative reveal-up">
                 {/* Timeline dot */}
                 <div class="absolute left-4 md:left-1/2 w-3.5 h-3.5 bg-white border-3 border-[#FF5A1F] rounded-full transform -translate-x-[6px] md:-translate-x-1/2 z-20 mt-2"></div>
                 
@@ -533,7 +533,7 @@ const printingServices = SERVICES.filter((s) => s.printing && s.key && s.key in 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 pt-6">
         {PRIVILEGES.map((item, index) => {
           return (
-            <article class="relative p-8 flex flex-col justify-between items-start min-h-[250px] transition-all duration-300 group border rounded-none shadow-sm bg-white text-gray-900 border-gray-200/80 hover:bg-slate-900 hover:text-white hover:border-slate-900 hover:shadow-xl">
+            <article class="relative p-8 flex flex-col justify-between items-start min-h-[250px] hover-lift group border rounded-none shadow-sm bg-white text-gray-900 border-gray-200/80 hover:bg-slate-900 hover:text-white hover:border-slate-900 hover:shadow-xl reveal-scale">
               
               {/* Top Row: Icon inside dashed box and Diagonal Arrow badge */}
               <div class="flex items-center justify-between w-full mb-8">
@@ -654,5 +654,53 @@ const printingServices = SERVICES.filter((s) => s.printing && s.key && s.key in 
       </div>
     </div>
   </section>
+
+  <script>
+    function initStatsCounters() {
+      const counters = document.querySelectorAll('.counter-number');
+      const speed = 1200; // speed duration in ms
+
+      const runCounter = (el: HTMLElement) => {
+        const target = parseInt(el.getAttribute('data-target') || '0', 10);
+        let count = 0;
+        const stepTime = Math.max(Math.floor(speed / target), 12);
+        
+        const timer = setInterval(() => {
+          if (target <= 20) {
+            count += 1;
+          } else {
+            count += Math.ceil(target / 80);
+          }
+          
+          if (count >= target) {
+            el.innerText = target.toString();
+            clearInterval(timer);
+          } else {
+            el.innerText = count.toString();
+          }
+        }, stepTime);
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const el = entry.target as HTMLElement;
+            runCounter(el);
+            observer.unobserve(el);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      counters.forEach(c => observer.observe(c));
+    }
+
+    // Astro page loads
+    document.addEventListener('astro:page-load', initStatsCounters);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initStatsCounters);
+    } else {
+      initStatsCounters();
+    }
+  </script>
 
 </PageLayout>

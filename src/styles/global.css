@@ -104,6 +104,23 @@
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+@utility reveal-fade {
+  opacity: 0;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility reveal-blur {
+  opacity: 0;
+  filter: blur(8px);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), filter 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility reveal-skew {
+  opacity: 0;
+  transform: translateY(40px) skewY(2deg);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* Transition Delays */
 .delay-75 { transition-delay: 75ms !important; }
 .delay-100 { transition-delay: 100ms !important; }
@@ -122,13 +139,20 @@
 .active.reveal-left,
 .active.reveal-right,
 .active.reveal-scale,
+.active.reveal-fade,
+.active.reveal-blur,
+.active.reveal-skew,
 .active .reveal,
 .active .reveal-up,
 .active .reveal-left,
 .active .reveal-right,
-.active .reveal-scale {
+.active .reveal-scale,
+.active .reveal-fade,
+.active .reveal-blur,
+.active .reveal-skew {
   opacity: 1 !important;
-  transform: translate(0) scale(1) !important;
+  transform: translate(0) scale(1) skew(0) !important;
+  filter: blur(0) !important;
 }
 
 /* Modern Pulsing Gradient for active CTA elements */
@@ -143,5 +167,43 @@
 
 .pulse-glow {
   animation: pulse-glow 2.5s infinite;
+}
+
+/* Hover lift and shadow grow transitions */
+.hover-lift {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.hover-lift:hover {
+  transform: translateY(-8px) scale(1.015) !important;
+  box-shadow: 0 22px 40px -12px rgba(255, 90, 31, 0.12) !important;
+  border-color: rgba(255, 90, 31, 0.3) !important;
+}
+
+/* Breathing Pulse for floating contacts */
+@keyframes pulse-breath {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+  }
+}
+.pulse-breath-green {
+  animation: pulse-breath 2.2s infinite ease-in-out;
+}
+
+/* Scroll progress indicator at top */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #FF5A1F 0%, #FF8A00 100%);
+  z-index: 100;
+  width: 0%;
+  transition: width 0.05s ease-out;
+  pointer-events: none;
 }
 

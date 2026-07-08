@@ -98,7 +98,7 @@ const tags = [...new Set(allPosts.flatMap((p) => p.data.tags))].sort();
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 border-b border-gray-200 pb-12">
       
       {/* 2/3 Column: Main Featured Article */}
-      <article class="lg:col-span-8 flex flex-col justify-between group text-left">
+      <article class="lg:col-span-8 flex flex-col justify-between group text-left reveal-scale">
         <a href={`/blog/${featuredPost.id}`} class="block w-full">
           <div class="rounded-none overflow-hidden aspect-[16/9] bg-gray-100 mb-5 relative">
             {featuredPost.data.cover && (
@@ -131,14 +131,14 @@ const tags = [...new Set(allPosts.flatMap((p) => p.data.tags))].sort();
       </article>
 
       {/* 1/3 Column: Vertical Sidebar (3 items, Text-only editorial layout) */}
-      <div class="lg:col-span-4 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-gray-200 pt-8 lg:pt-0 lg:pl-8 text-left">
+      <div class="lg:col-span-4 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-gray-200 pt-8 lg:pt-0 lg:pl-8 text-left reveal-left delay-100">
         <h3 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-6 font-mono">
           Latest Bulletins
         </h3>
         
         <div class="flex-grow flex flex-col justify-between gap-6">
           {sidebarPosts.map((post, idx) => (
-            <article class="group relative flex flex-col justify-between pb-6 border-b border-gray-150 last:border-0 last:pb-0">
+            <article class="group relative flex flex-col justify-between pb-6 border-b border-gray-150 last:border-0 last:pb-0 hover:translate-x-1.5 transition-transform duration-300">
               <a href={`/blog/${post.id}`} class="block">
                 <span class="text-xs font-black text-[#FF5A1F] uppercase tracking-wider mb-2 block">
                   0{idx + 1} . {post.data.category}
@@ -162,8 +162,8 @@ const tags = [...new Set(allPosts.flatMap((p) => p.data.tags))].sort();
   {subFeaturedPosts.length > 0 && (
     <section class="mb-16 select-text">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 border-b border-gray-200 pb-16">
-        {subFeaturedPosts.map((post) => (
-          <article class="group block text-left">
+        {subFeaturedPosts.map((post, idx) => (
+          <article class:list={["group block text-left hover-lift reveal-scale", idx === 0 ? "delay-75" : idx === 1 ? "delay-150" : "delay-200"]}>
             <a href={`/blog/${post.id}`} class="block">
               <div class="rounded-none overflow-hidden aspect-[16/10] bg-gray-100 mb-4">
                 {post.data.cover && (
@@ -205,9 +205,8 @@ const tags = [...new Set(allPosts.flatMap((p) => p.data.tags))].sort();
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left 2 Items: standard 1/4 layout */}
-        {fabricPosts.slice(0, 2).map((post) => (
-          <article class="lg:col-span-3 group block text-left">
+        {fabricPosts.slice(0, 2).map((post, idx) => (
+          <article class:list={["lg:col-span-3 group block text-left hover-lift reveal-scale", idx === 0 ? "delay-75" : "delay-150"]}>
             <a href={`/blog/${post.id}`}>
               <div class="rounded-none overflow-hidden aspect-[4/3] bg-gray-100 mb-4">
                 {post.data.cover && (
@@ -232,7 +231,7 @@ const tags = [...new Set(allPosts.flatMap((p) => p.data.tags))].sort();
 
         {/* Right 1 Item: double-width horizontal layout */}
         {fabricPosts[2] && (
-          <article class="lg:col-span-6 group block text-left bg-gray-50/50 p-4 border border-gray-150/40">
+          <article class="lg:col-span-6 group block text-left bg-gray-50/50 p-4 border border-gray-150/40 hover-lift reveal-scale delay-200">
             <a href={`/blog/${fabricPosts[2].id}`} class="grid grid-cols-1 sm:grid-cols-2 gap-5 h-full items-center">
               <div class="rounded-none overflow-hidden aspect-[4/3] bg-gray-100">
                 {fabricPosts[2].data.cover && (
@@ -279,8 +278,8 @@ const tags = [...new Set(allPosts.flatMap((p) => p.data.tags))].sort();
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {screenPosts.map((post) => (
-          <article class="group block text-left">
+        {screenPosts.map((post, idx) => (
+          <article class:list={["group block text-left hover-lift reveal-scale", idx === 0 ? "delay-75" : idx === 1 ? "delay-100" : idx === 2 ? "delay-150" : "delay-200"]}>
             <a href={`/blog/${post.id}`}>
               <div class="rounded-none overflow-hidden aspect-[4/3] bg-gray-100 mb-4">
                 {post.data.cover && (
@@ -317,8 +316,8 @@ const tags = [...new Set(allPosts.flatMap((p) => p.data.tags))].sort();
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {businessPosts.map((post) => (
-          <article class="group block text-left">
+        {businessPosts.map((post, idx) => (
+          <article class:list={["group block text-left hover-lift reveal-scale", idx === 0 ? "delay-75" : idx === 1 ? "delay-100" : idx === 2 ? "delay-150" : "delay-200"]}>
             <a href={`/blog/${post.id}`}>
               <div class="rounded-none overflow-hidden aspect-[16/10] bg-gray-100 mb-4">
                 {post.data.cover && (
@@ -345,7 +344,7 @@ const tags = [...new Set(allPosts.flatMap((p) => p.data.tags))].sort();
   )}
 
   {/* SECTION 6: Blog Explorer Section (All posts with Search & Filters) */}
-  <section id="latest-posts" class="mb-32 scroll-mt-24">
+  <section id="latest-posts" class="mb-32 scroll-mt-24 reveal-up">
     <div class="flex items-center gap-3 border-b border-gray-200 pb-4 mb-10 text-left">
       <span class="w-3.5 h-3.5 bg-slate-400 inline-block shrink-0"></span>
       <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight uppercase">

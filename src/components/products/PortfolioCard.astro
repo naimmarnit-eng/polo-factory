@@ -14,7 +14,7 @@ interface Props {
 const { id, title, description, image, imageAlt, tags = [] } = Astro.props;
 ---
 
-<a href={`/products/${id}`} data-tags={tags.join(' ')} class="portfolio-card group block mb-4 sm:mb-6 break-inside-avoid relative overflow-hidden rounded-2xl bg-secondary/10 reveal-scale hover:shadow-premium-hover transition-all duration-300">
+<a href={`/products/${id}`} data-tags={tags.join(' ')} class="portfolio-card group block mb-4 sm:mb-6 break-inside-avoid relative overflow-hidden rounded-2xl bg-secondary/10 reveal-scale hover-lift">
   <Image
     src={image}
     alt={imageAlt}

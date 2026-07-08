@@ -95,13 +95,15 @@ const { title, description, image, type, noindex, jsonLd } = Astro.props;
     <ClientRouter />
   </head>
   <body class="min-h-screen bg-background text-foreground antialiased">
+    {/* Scroll Progress Bar at the top of the page */}
+    <div id="scroll-progress" aria-hidden="true"></div>
     <slot />
 
     {/* Scroll Reveal Animation script */}
     <script>
       function initScrollReveal() {
         const revealElements = document.querySelectorAll(
-          '.reveal, .reveal-up, .reveal-left, .reveal-right, .reveal-scale'
+          '.reveal, .reveal-up, .reveal-left, .reveal-right, .reveal-scale, .reveal-fade, .reveal-blur, .reveal-skew'
         );
 
         if (revealElements.length === 0) return;
@@ -133,14 +135,34 @@ const { title, description, image, type, noindex, jsonLd } = Astro.props;
         });
       }
 
+      function initScrollProgress() {
+        const progressBar = document.getElementById('scroll-progress');
+        if (!progressBar) return;
+
+        function updateProgress() {
+          const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+          const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+          progressBar.style.width = scrolled + '%';
+        }
+
+        window.addEventListener('scroll', updateProgress, { passive: true });
+        updateProgress(); // run once on init
+      }
+
+      function initAll() {
+        initScrollReveal();
+        initScrollProgress();
+      }
+
       // Initialize on load and on page navigation (Astro transitions support)
-      document.addEventListener('astro:page-load', initScrollReveal);
+      document.addEventListener('astro:page-load', initAll);
       
       // Fallback
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initScrollReveal);
+        document.addEventListener('DOMContentLoaded', initAll);
       } else {
-        initScrollReveal();
+        initAll();
       }
     </script>
   </body>
