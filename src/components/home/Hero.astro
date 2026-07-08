@@ -1,55 +1,92 @@
 ---
 import { Image } from 'astro:assets';
-import Icon from '@/components/Icon.astro';
 import heroImg from '@/assets/home/hero-img.png';
 ---
 
-{/* Hero Section */}
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start relative lg:min-h-[600px]">
+{/* Hero Container */}
+<div class="relative w-full mb-16">
+  
+  {/* Cinematic Widescreen Banner Block */}
+  <div class="relative w-full overflow-hidden bg-slate-950 min-h-[650px] md:min-h-[800px] lg:min-h-[950px] flex items-center pt-24 pb-8 px-8 md:pt-32 md:pb-16 md:px-16 lg:pt-36 lg:pb-20 lg:px-20 shadow-2xl">
+    {/* Absolute background image with dark overlay filter */}
+    <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/60 to-transparent z-10 pointer-events-none"></div>
+    <Image
+      src={heroImg}
+      alt="โรงงานทอปกเสื้อและผลิตเสื้อโปโลครบวงจร ธน พลัส 153"
+      widths={[480, 768, 1200]}
+      sizes="(max-width: 768px) 100vw, 50vw"
+      loading="eager"
+      fetchpriority="high"
+      class="absolute right-0 top-0 bottom-0 w-full md:w-[60%] lg:w-[50%] h-full object-cover object-top opacity-70 md:opacity-90 z-0 select-none pointer-events-none"
+    />
 
-  {/* Left Column - Typography & CTAs */}
-  <div class="lg:col-span-7 flex flex-col z-10 pt-10">
+    {/* Left Content Column - White text over dark backdrop */}
+    <div class="relative z-20 max-w-2xl text-left flex flex-col items-start">
+      <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-4 block reveal-up">
+        Welcome to Thanaplus 153
+      </span>
+      
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white mb-6 leading-[1.1] uppercase reveal-up delay-100">
+        Innovative Polo <br/>
+        & Uniform Solutions
+      </h1>
 
-    <h1 class="text-4xl sm:text-5xl lg:text-6xl leading-[1.1] font-bold tracking-tight text-gray-900 mb-6 flex flex-col">
-      <span>โรงงานรับผลิตเสื้อครบวงจร</span>
-      <span class="text-gray-500 font-medium tracking-normal text-3xl sm:text-4xl mt-2">ครบจบในที่เดียว ตั้งแต่เลือกผ้าถึงงานสกรีน</span>
-    </h1>
+      <p class="text-gray-300 text-sm sm:text-base md:text-lg max-w-xl leading-relaxed mb-10 font-semibold reveal-up delay-200">
+        เราคือโรงงานผลิตเสื้อโปโลพนักงานและยูนิฟอร์มองค์กรแบบครบวงจร ทอปกเสื้อ ตัดเย็บ ปักคอมพิวเตอร์ และสกรีนลายเสื้อด้วยมาตรฐานคุณภาพสูงและราคาตรงจากโรงงาน
+      </p>
 
-    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-8 mt-12">
-      <p class="text-gray-600 max-w-[200px] leading-snug">บริการรับผลิตเสื้อผ้าครบวงจร ยกระดับแบรนด์ของคุณด้วยคุณภาพระดับมาตรฐาน</p>
+      {/* Primary Orange Button */}
+      <a
+        href="/services/#contact"
+        class="inline-flex items-center justify-center gap-2.5 bg-[#FF5A1F] hover:bg-[#E04E17] text-white font-black px-8 py-4 rounded-xl shadow-lg shadow-orange-600/10 hover:shadow-orange-600/25 hover:-translate-y-0.5 transition-all duration-300 text-base reveal-up delay-300 pulse-glow"
+      >
+        <span>Get Your Free Quote</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    {/* Bottom Right Floating Overlay Card - Mockup Style */}
+    <div class="absolute bottom-8 right-8 bg-white rounded-2xl p-6 shadow-2xl border border-white/20 max-w-[280px] hidden md:flex flex-col items-start text-left z-20 pointer-events-auto transform hover:-translate-y-0.5 transition-transform reveal-scale delay-500">
+      <div class="flex items-center justify-between w-full mb-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+        <span>1. Manufacturing</span>
+        <span class="text-gray-900">01 / 03</span>
+      </div>
+      <h3 class="text-sm font-black text-gray-900 leading-snug mb-4">
+        Customized uniform & embroidery solutions.
+      </h3>
+      <a href="/products/" class="flex items-center gap-1.5 text-xs font-bold text-gray-900 hover:text-[#FF5A1F] transition-colors">
+        <span>What We Need</span>
+        <div class="w-6 h-6 rounded-full bg-[#FF5A1F] text-white flex items-center justify-center text-[10px]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </div>
+      </a>
     </div>
 
   </div>
 
-  {/* Right Column - Large Image */}
-  <div class="lg:col-span-5 relative mt-12 lg:mt-0 lg:absolute lg:right-0 lg:top-0 lg:w-[45%] lg:h-[120%] pointer-events-none">
-    {/* Background Circle */}
-    <div class="absolute inset-0 bg-[#F0F0F0] rounded-full aspect-square w-[80%] mx-auto lg:mx-0 lg:w-full lg:-right-[10%] lg:-top-[10%] -z-10 mix-blend-multiply"></div>
-
-    {/* Main Factory Image — LCP element: eager + high priority, astro:assets แปลง WebP/AVIF + ใส่ขนาดกัน CLS */}
-    <Image
-      src={heroImg}
-      alt="โรงงานรับผลิตเสื้อผ้าครบวงจร งานตัดเย็บและสกรีนเสื้อ"
-      widths={[480, 768, 1019]}
-      sizes="(min-width: 1024px) 45vw, 80vw"
-      loading="eager"
-      fetchpriority="high"
-      class="w-full h-auto object-cover rounded-[3rem] lg:rounded-none lg:bg-transparent lg:object-cover relative z-0 pointer-events-auto transform lg:scale-110 lg:translate-y-12"
-      style="mask-image: linear-gradient(to bottom, black 80%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);"
-    />
-
-    {/* Floating Social Proof */}
-    <div class="absolute top-[10%] right-0 lg:-right-8 bg-white/80 backdrop-blur-md px-4 py-3 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-2 pointer-events-auto">
-      <div class="flex items-center gap-1.5 text-gray-700">
-        <Icon name="building-factory-2" size={20} />
-        <Icon name="star" size={20} />
-        <Icon name="trophy" size={20} />
-        <Icon name="heart-handshake" size={20} />
-        <Icon name="shirt" size={20} />
+  {/* 3-Column Stats Divider Panel below the banner - Mockup Style */}
+  <div class="w-full bg-white py-10 px-4 sm:px-8 border-b border-gray-150 relative z-10 reveal-up delay-400">
+    <div class="max-w-[1000px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+      
+      {/* Stat 1 */}
+      <div class="flex flex-col items-center md:items-start md:pl-4 text-center md:text-left">
+        <span class="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight">10+ ปี</span>
+        <span class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1.5">ประสบการณ์ผลิตทอและตัดเย็บ</span>
       </div>
-      <p class="text-xs font-semibold text-gray-800 underline decoration-gray-300 underline-offset-4">Trusted by 500+ Brands</p>
-    </div>
 
+      {/* Stat 2 */}
+      <div class="flex flex-col items-center md:items-start md:pl-8 text-center md:text-left pt-6 md:pt-0">
+        <span class="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight">500+ แบรนด์</span>
+        <span class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1.5">ที่ไว้วางใจผลิตเสื้อกับเรา</span>
+      </div>
+
+      {/* Stat 3 */}
+      <div class="flex flex-col items-center md:items-start md:pl-8 text-center md:text-left pt-6 md:pt-0">
+        <span class="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight">100% QC</span>
+        <span class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1.5">ตรวจเช็คกระดุม ตะเข็บ ฝีเข็ม</span>
+      </div>
+
+    </div>
   </div>
 
 </div>

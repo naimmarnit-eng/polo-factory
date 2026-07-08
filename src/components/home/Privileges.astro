@@ -1,108 +1,115 @@
 ---
-import { Image } from 'astro:assets';
-import heroImg from '@/assets/home/Privileges/hero.png';
-import designFreeImg from '@/assets/home/Privileges/บริการออกแบบก่อน-ผลิตเสื้อ.png';
-import screenFreeImg from '@/assets/home/Privileges/silk-screen.png';
-import shippingFreeImg from '@/assets/home/Privileges/จัดส่งเสื้อยืดหลังจาก-ผลิตเสื้อยืดเสร็จ.png';
-import consultFreeImg from '@/assets/home/Privileges/ปรึกษาฟรี.png';
+const items = [
+  {
+    num: "01",
+    iconName: "drafting",
+    title: 'Design Free',
+    desc: 'บริการช่วยออกแบบโครงร่างปกเสื้อ ขลิบปก และเลือกคู่สีก่อนการผลิตจริงเพื่อความถูกต้อง 100%'
+  },
+  {
+    num: "02",
+    iconName: "palette",
+    title: 'Screen & Embroidery Free',
+    desc: 'ปักหรือสกรีนตราสัญลักษณ์โลโก้ขนาดปกติ ฟรีจำนวน 1 จุด เมื่อมียอดสั่งผลิตตามเกณฑ์ของโรงงาน'
+  },
+  {
+    num: "03",
+    iconName: "truck",
+    title: 'Shipping Free',
+    desc: 'จัดส่งเสื้อยืดและเสื้อโปโลพนักงาน ฟรีในเขตกรุงเทพมหานครและปริมณฑลโดยรถขนส่งของโรงงาน'
+  },
+  {
+    num: "04",
+    iconName: "message",
+    title: 'Consult Free',
+    desc: 'พร้อมส่งผู้เชี่ยวชาญให้คำแนะนำเกี่ยวกับเกรดเนื้อผ้าทอ และนำตัวอย่างแบบเสื้อจริงเข้าพบเพื่อเสนอแนะ'
+  },
+  {
+    num: "05",
+    iconName: "box",
+    title: 'Sample Free',
+    desc: 'จัดทำตัวอย่างเสื้อจริงให้ตรวจสอบดีไซน์และเนื้อผ้าทอก่อนเริ่มการผลิตล็อตใหญ่ (เมื่อสั่งตามเกณฑ์)'
+  },
+  {
+    num: "06",
+    iconName: "shield",
+    title: 'QC 100% Free',
+    desc: 'บริการตรวจเช็คสเปคขนาดเสื้อ ความเรียบร้อยของเส้นด้าย และแพ็คบรรจุถุงเดี่ยวให้ฟรีทุกตัว'
+  }
+];
 ---
-{/* Privileges Section */}
-<section class="mt-24 lg:mt-32 relative z-20 py-8">
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-      
-      {/* Left Column - Main Image */}
-      <div class="lg:col-span-4 flex justify-center lg:justify-end">
-        <div class="w-full max-w-md lg:max-w-none rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 group">
-          <Image
-            src={heroImg}
-            alt="ผลิตเสื้อ ผลิตเสื้อยืด ครบวงจร"
-            widths={[300, 448, 640]}
-            sizes="(min-width: 1024px) 33vw, 100vw"
-            class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700"
-          />
-        </div>
+
+{/* Privileges Section - Overhauled to Grid Spec Cards */}
+<section class="mt-24 lg:mt-32 relative z-20 py-24 border-t border-b border-gray-150/60 bg-gray-50/20">
+  <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+    
+    {/* Section Header - Two Columns */}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-16 text-left items-start reveal-up">
+      <div class="lg:col-span-7">
+        <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-4 block">
+          Factory Privileges
+        </span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-[1.15] text-gray-900 uppercase">
+          สิทธิพิเศษและบริการเสริมฟรี <br/>
+          <span class="text-[#FF5A1F]">สำหรับคำสั่งสั่งผลิตยูนิฟอร์ม</span>
+        </h2>
       </div>
-
-      {/* Right Column - Content */}
-      <div class="lg:col-span-8 flex flex-col">
-        <div class="mb-10 text-left">
-          <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6 uppercase">
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-500">ผลิตเสื้อบริการครบวงจร</span>
-          </h2>
-          <div class="text-gray-600 text-base md:text-lg space-y-4 leading-relaxed">
-            <p class="indent-8">
-              ผลิตเสื้อ แบบครบวงจรตั้งแต่ เลือกเนื้อผ้า ตัดเย็บ สกรีนบล็อค สกรีนดิจิตอล ตรวจสอบความเรียบร้อย แพ็คใส่ถุง จัดส่งจนถึงมือท่าน ขั้นตอนเหล่านี้มีความยุ่งยากสูง และยากขึ้นไปอีกขั้นหากต้องควบคุมคุณภาพของชิ้นงาน ซึ่งเราดูแลให้ท่านทั้งหมด เราผลิตด้วยเครื่องจักรทุกขั้นตอน มีช่างมืออาชีพดูแลทุกขั้นตอน พร้อมให้คำปรึกษาจากมืออาชีพ
-            </p>
-            <p class="indent-8">
-              พร้อมบริการช่วยออกแบบ แถมฟรีอีก 2 ชั้น เมื่อสั่งผลิตเสื้อครบ 100 ตัว สกรีนฟรี 1 สี 1 จุด ถ้าสั่งผลิตครบ 20,000 บาท ส่งฟรี (เฉพาะในกรุงเทพฯ)
-            </p>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8 items-start">
-          {/* Box 1 */}
-          <div class="flex flex-col items-center text-center group cursor-pointer">
-            <div class="w-[60%] lg:w-[70%] aspect-square mb-4 overflow-hidden rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:border-gray-200 transition-all duration-500 group-hover:-translate-y-1 bg-white">
-              <Image
-                src={designFreeImg}
-                alt="บริการออกแบบก่อน ผลิตเสื้อ"
-                widths={[120, 200, 300]}
-                sizes="(min-width: 768px) 12vw, 30vw"
-                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-              />
-            </div>
-            <h3 class="text-base md:text-lg font-bold text-gray-900 mb-1 uppercase tracking-wide group-hover:text-black transition-colors">Design Free</h3>
-            <p class="text-gray-500 text-xs md:text-sm group-hover:text-gray-700 transition-colors">บริการช่วยออกแบบ</p>
-          </div>
-
-          {/* Box 2 */}
-          <div class="flex flex-col items-center text-center group cursor-pointer">
-            <div class="w-[60%] lg:w-[70%] aspect-square mb-4 overflow-hidden rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:border-gray-200 transition-all duration-500 group-hover:-translate-y-1 bg-white">
-              <Image
-                src={screenFreeImg}
-                alt="สกรีนฟรี 1 จุด"
-                widths={[120, 200, 300]}
-                sizes="(min-width: 768px) 12vw, 30vw"
-                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-              />
-            </div>
-            <h3 class="text-base md:text-lg font-bold text-gray-900 mb-1 uppercase tracking-wide group-hover:text-black transition-colors">Screen Free</h3>
-            <p class="text-gray-500 text-xs md:text-sm group-hover:text-gray-700 transition-colors">สกรีนฟรี จำนวน 1 จุด</p>
-          </div>
-
-          {/* Box 3 */}
-          <div class="flex flex-col items-center text-center group cursor-pointer">
-            <div class="w-[60%] lg:w-[70%] aspect-square mb-4 overflow-hidden rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:border-gray-200 transition-all duration-500 group-hover:-translate-y-1 bg-white">
-              <Image
-                src={shippingFreeImg}
-                alt="จัดส่งเสื้อยืดหลังจาก ผลิตเสื้อยืดเสร็จ"
-                widths={[120, 200, 300]}
-                sizes="(min-width: 768px) 12vw, 30vw"
-                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-              />
-            </div>
-            <h3 class="text-base md:text-lg font-bold text-gray-900 mb-1 uppercase tracking-wide group-hover:text-black transition-colors">Shipping Free</h3>
-            <p class="text-gray-500 text-xs md:text-sm group-hover:text-gray-700 transition-colors">บริการจัดส่งฟรี</p>
-          </div>
-
-          {/* Box 4 */}
-          <div class="flex flex-col items-center text-center group cursor-pointer">
-            <div class="w-[60%] lg:w-[70%] aspect-square mb-4 overflow-hidden rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:border-gray-200 transition-all duration-500 group-hover:-translate-y-1 bg-white">
-              <Image
-                src={consultFreeImg}
-                alt="ให้คำปรึกษาฟรี"
-                widths={[120, 200, 300]}
-                sizes="(min-width: 768px) 12vw, 30vw"
-                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-              />
-            </div>
-            <h3 class="text-base md:text-lg font-bold text-gray-900 mb-1 uppercase tracking-wide group-hover:text-black transition-colors">Consult Free</h3>
-            <p class="text-gray-500 text-xs md:text-sm group-hover:text-gray-700 transition-colors">ให้คำปรึกษาฟรี</p>
-          </div>
-        </div>
-        
+      <div class="lg:col-span-5 lg:pt-8">
+        <p class="text-gray-500 text-sm md:text-base font-semibold leading-relaxed">
+          เรายินดีอำนวยความสะดวกในกระบวนการทำงานให้กับฝ่ายจัดซื้อและผู้ริเริ่มสร้างแบรนด์ผ้า ด้วยสิทธิประโยชน์พิเศษที่รวมอยู่ในราคาสั่งผลิตตั้งแต่ต้น
+        </p>
       </div>
     </div>
+
+    {/* Grid of 6 Cards (2x3 on Desktop) */}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 pt-6 reveal-up delay-200">
+      {items.map((item, index) => {
+        return (
+          <div class="relative p-8 flex flex-col justify-between items-start min-h-[250px] transition-all duration-300 group border rounded-none bg-white text-gray-900 border-gray-200/80 hover:bg-slate-900 hover:text-white hover:border-slate-900 hover:shadow-xl">
+            
+            {/* Top Row: Icon inside dashed box (Left) and Diagonal Arrow button (Right) */}
+            <div class="flex items-center justify-between w-full mb-8">
+              <div class="border-2 border-dashed p-2.5 flex items-center justify-center flex-shrink-0 border-gray-300 text-gray-600 group-hover:border-slate-700 group-hover:text-white">
+                {item.iconName === 'drafting' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                )}
+                {item.iconName === 'palette' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 5-10.9l-4.7-9a1 1 0 0 0-1.6 0l-4.7 9A7 7 0 0 0 12 22z"/></svg>
+                )}
+                {item.iconName === 'truck' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                )}
+                {item.iconName === 'message' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                )}
+                {item.iconName === 'box' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                )}
+                {item.iconName === 'shield' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                )}
+              </div>
+              
+              {/* Top Right arrow icon button matching theme color */}
+              <div class="w-9 h-9 flex items-center justify-center transition-all duration-300 bg-gray-150 text-gray-700 group-hover:bg-[#FF5A1F] group-hover:text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </div>
+            </div>
+
+            {/* Bottom Row: Text content */}
+            <div class="w-full text-left mt-auto">
+              <h3 class="text-lg font-black tracking-tight mb-2 uppercase text-gray-900 group-hover:text-white">
+                {item.title}
+              </h3>
+              <p class="text-xs leading-relaxed font-semibold text-gray-500 group-hover:text-slate-400">
+                {item.desc}
+              </p>
+            </div>
+            
+          </div>
+        );
+      })}
+    </div>
+
   </div>
 </section>

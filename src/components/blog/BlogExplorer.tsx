@@ -68,16 +68,16 @@ export default function BlogExplorer({ posts, categories, tags }: Props) {
   };
 
   const pill = (active: boolean) =>
-    `px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+    `px-4 py-2 rounded-none text-sm font-semibold border transition-colors ${
       active
-        ? 'bg-gray-900 text-white border-gray-900'
-        : 'bg-white text-gray-600 border-gray-200 hover:border-gray-900 hover:text-gray-900'
+        ? 'bg-slate-900 text-white border-slate-900'
+        : 'bg-white text-slate-700 border-gray-200 hover:border-slate-900 hover:text-slate-950'
     }`;
 
   return (
-    <div>
+    <div className="select-text">
       {/* แถบควบคุม: ค้นหา + ตัวกรอง */}
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 mb-10">
+      <div className="bg-white rounded-none border border-gray-150 p-6 sm:p-8 mb-10 shadow-sm">
         {/* ช่องค้นหา */}
         <div className="relative mb-6">
           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
@@ -89,13 +89,13 @@ export default function BlogExplorer({ posts, categories, tags }: Props) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="ค้นหาบทความ เช่น งานสกรีน, เลือกผ้า, สร้างแบรนด์..."
             aria-label="ค้นหาบทความ"
-            className="w-full rounded-2xl border border-gray-200 bg-gray-50 py-3.5 pl-12 pr-4 text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 transition-colors"
+            className="w-full rounded-none border border-gray-200 bg-gray-50 py-3.5 pl-12 pr-4 text-gray-900 placeholder:text-gray-400 focus:border-slate-900 focus:bg-white focus:outline-none focus:ring-0 transition-colors"
           />
         </div>
 
         {/* ตัวกรองหมวดหมู่ */}
-        <div className="mb-5">
-          <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">หมวดหมู่</p>
+        <div className="mb-5 text-left">
+          <p className="text-xs font-black uppercase tracking-wider text-gray-400 mb-3">หมวดหมู่</p>
           <div className="flex flex-wrap gap-2.5">
             <button type="button" onClick={() => setActiveCategory('')} className={pill(activeCategory === '')}>
               ทั้งหมด
@@ -110,8 +110,8 @@ export default function BlogExplorer({ posts, categories, tags }: Props) {
 
         {/* ตัวกรองแท็ก (เลือกได้หลายตัว) */}
         {tags.length > 0 && (
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">แท็ก</p>
+          <div className="text-left">
+            <p className="text-xs font-black uppercase tracking-wider text-gray-400 mb-3">แท็ก</p>
             <div className="flex flex-wrap gap-2">
               {tags.map((t) => {
                 const active = activeTags.includes(t);
@@ -121,10 +121,10 @@ export default function BlogExplorer({ posts, categories, tags }: Props) {
                     type="button"
                     onClick={() => toggleTag(t)}
                     aria-pressed={active}
-                    className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-colors ${
+                    className={`px-3 py-1.5 rounded-none text-xs font-black border transition-colors ${
                       active
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'bg-gray-50 text-gray-600 border-gray-100 hover:bg-gray-100 hover:text-gray-900'
+                        ? 'bg-[#FF5A1F] text-white border-[#FF5A1F]'
+                        : 'bg-gray-50 text-slate-600 border-gray-150 hover:bg-gray-150 hover:text-slate-900'
                     }`}
                   >
                     {t}
@@ -138,14 +138,14 @@ export default function BlogExplorer({ posts, categories, tags }: Props) {
 
       {/* แถบสรุปผล + ล้างตัวกรอง */}
       <div className="flex items-center justify-between gap-4 mb-8">
-        <p className="text-sm text-gray-500">
-          พบ <span className="font-bold text-gray-900">{filtered.length}</span> บทความ
+        <p className="text-sm text-gray-500 font-semibold">
+          พบ <span className="font-black text-slate-950">{filtered.length}</span> บทความ
         </p>
         {hasFilter && (
           <button
             type="button"
             onClick={reset}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-black text-gray-500 hover:text-slate-950 transition-colors"
           >
             <ClearIcon />
             ล้างตัวกรอง
@@ -160,9 +160,9 @@ export default function BlogExplorer({ posts, categories, tags }: Props) {
             <a
               key={post.slug}
               href={`/blog/${post.slug}`}
-              className="group block bg-white rounded-3xl p-3 border border-transparent hover:border-gray-100 hover:shadow-lg transition-all duration-300"
+              className="group block bg-white rounded-none p-0 border border-transparent hover:-translate-y-0.5 transition-all duration-300"
             >
-              <div className="rounded-2xl overflow-hidden mb-5 aspect-[4/3] bg-gray-100">
+              <div className="rounded-none overflow-hidden mb-4 aspect-[4/3] bg-gray-100 relative">
                 {post.cover && (
                   <img
                     src={post.cover.src}
@@ -171,26 +171,19 @@ export default function BlogExplorer({ posts, categories, tags }: Props) {
                     alt={post.title}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover transform group-hover:scale-103 transition-transform duration-500"
                   />
                 )}
               </div>
-              <div className="px-2 pb-2">
-                <div className="flex items-center justify-between gap-3 text-sm text-gray-500 mb-3">
-                  {post.tags[0] && (
-                    <span className="bg-gray-100 px-2.5 py-1 rounded-full text-gray-800 font-medium text-xs whitespace-nowrap">
-                      {post.tags[0]}
-                    </span>
-                  )}
-                  <span className="text-xs">{post.date}</span>
+              <div className="text-left">
+                <div className="flex items-center gap-3 text-xs text-gray-400 mb-2 font-semibold">
+                  <span className="text-[#FF5A1F] uppercase font-black">{post.category}</span>
+                  <span>•</span>
+                  <span>{post.date}</span>
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug">
+                <h3 className="text-base font-black text-gray-900 mb-3 group-hover:text-[#FF5A1F] transition-colors line-clamp-2 leading-snug">
                   {post.title}
                 </h3>
-                <div className="flex items-center text-sm font-semibold text-gray-900 group-hover:text-blue-600">
-                  <PlayIcon />
-                  อ่านบทความ
-                </div>
               </div>
             </a>
           ))}

@@ -1,58 +1,269 @@
 ---
 import CollectionCard from './CollectionCard.astro';
-// import รูปจาก src/assets → astro:assets แปลง WebP/AVIF + ใส่ขนาดกัน CLS อัตโนมัติ
-import tshirtsImg from '@/assets/home/T-Shirts_Collection.png';
-import poloImg from '@/assets/home/Polo-Shirts_Collection.png';
-import sportswearImg from '@/assets/home/Sportswear_Collection.png';
+import poloClassicImg from '@/assets/home/polo-classic.png';
+import poloSportyImg from '@/assets/home/polo-sporty.png';
+import poloPremiumImg from '@/assets/home/polo-premium.png';
+import poloDryfitImg from '@/assets/home/polo-dryfit.png';
+import poloExecutiveImg from '@/assets/home/Polo-Shirts_Collection.png';
 
-// คำอธิบายไม่ซ้ำกันต่อหมวด + มีคีย์เวิร์ด → ดีต่อ SEO และ AI Overviews
 const collections = [
   {
-    title: "เสื้อยืด",
-    image: tshirtsImg,
-    alt: "ตัวอย่างงานรับผลิตเสื้อยืดสกรีนลายจากโรงงาน",
-    description: "รับผลิตเสื้อยืด\nสกรีนลายคุณภาพสูง",
-    href: "/products",
+    title: "เสื้อโปโลคลาสสิก",
+    subtitle: "Classic Polo Shirts",
+    image: poloClassicImg,
+    alt: "รับผลิตเสื้อโปโลคลาสสิก",
+    specs: ["ปกคอทอพิเศษ ไม่ม้วนงอ", "เนื้อผ้าจูติไมโคร ทรงสวยอยู่ทรง", "รีดง่าย ยับยาก ไม่เป็นขน"],
+    href: "/products/polo-classic",
   },
   {
-    title: "เสื้อโปโล",
-    image: poloImg,
-    alt: "ตัวอย่างงานรับผลิตเสื้อโปโลปักโลโก้แบรนด์",
-    description: "รับปักโลโก้เสื้อโปโล\nสำหรับองค์กรและทีม",
-    href: "/products",
+    title: "เสื้อโปโลสปอร์ตขลิบสี",
+    subtitle: "Sporty Polo Shirts",
+    image: poloSportyImg,
+    alt: "รับผลิตเสื้อโปโลสปอร์ตขลิบปกขลิบแขน",
+    specs: ["ดีไซน์ขลิบปกและแขนสปอร์ต", "ผ้า TK Micro ทอละเอียด แห้งง่าย", "เหมาะสำหรับกิจกรรมเอาท์ดอร์"],
+    href: "/products/polo-sporty",
   },
   {
-    title: "ชุดกีฬา",
-    image: sportswearImg,
-    alt: "ตัวอย่างงานรับผลิตชุดกีฬาผ้าระบายอากาศ",
-    description: "ผลิตชุดกีฬา\nผ้าระบายอากาศใส่สบาย",
-    href: "/products",
+    title: "เสื้อโปโลองค์กรพรีเมียม",
+    subtitle: "Premium Corporate Polos",
+    image: poloPremiumImg,
+    alt: "รับผลิตเสื้อโปโลพนักงานออฟฟิศองค์กรระดับผู้บริหาร",
+    specs: ["ผ้า CVC เกรดสูง สัมผัสนุ่มพิเศษ", "ขลิบทองปกและแขนเรียบหรู", "เหมาะเป็นยูนิฟอร์มผู้บริหารและทีมงาน"],
+    href: "/products/polo-premium",
+  },
+  {
+    title: "เสื้อโปโลกีฬา Dry-Fit",
+    subtitle: "Athletic Dry-Fit Polos",
+    image: poloDryfitImg,
+    alt: "รับผลิตเสื้อโปโลกีฬาสำหรับหน่วยงาน",
+    specs: ["เทคโนโลยีผ้า Dry-Fit ระบายเหงื่อไว", "ผ้าเนื้อเบา ยืดหยุ่นได้ 4 ทิศทาง", "ป้องกันการสะสมแบคทีเรียและรังสี UV"],
+    href: "/products/polo-dryfit",
+  },
+  {
+    title: "เสื้อโปโลแจ็คการ์ดผู้บริหาร",
+    subtitle: "Executive Pique Polos",
+    image: poloExecutiveImg,
+    alt: "รับผลิตเสื้อโปโลสลาฟเกรดหรู",
+    specs: ["ผ้าฝ้ายสลาฟคอมแบ็ด ทอหนานุ่ม", "ปกเสื้อทอลายแจ็คการ์ดสามสีขลิบปลาย", "เหมาะกับแบรนด์เสื้อผ้าและยูนิฟอร์มพรีเมียม"],
+    href: "/products/polo-executive",
   },
 ];
-
-// การ์ดสุดท้ายวางคู่กับปุ่ม next จึงดึงออกมาแยก
-const featured = collections.slice(0, -1);
-const last = collections[collections.length - 1];
 ---
 
-{/* Collections Section */}
-<section class="mt-32 lg:mt-24 relative z-20" aria-labelledby="collections-heading">
-  {/* หัวข้อระดับ h2 → ลำดับชั้นหัวข้อชัดเจน ช่วยทั้ง SEO และผู้ใช้ screen reader */}
-  <h2 id="collections-heading" class="text-2xl md:text-3xl font-bold mb-6">
-    หมวดสินค้าแนะนำ
-    <span class="block text-sm md:text-base font-normal text-gray-500 mt-1">
-      รับผลิตเสื้อยืด เสื้อโปโล และชุดกีฬา สกรีนและปักครบวงจร
-    </span>
-  </h2>
+{/* Services & Collections Section - Overhauled to Slider Carousel Style */}
+<section id="services" class="w-full py-24 bg-gray-50 text-gray-900 border-t border-gray-150 overflow-hidden" aria-labelledby="collections-heading">
+  <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+    
+    {/* Top Row - Title (Left) & Intro with Button (Right) */}
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16 text-left reveal-up">
+      <div class="max-w-xl">
+        <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-4 block">
+          Our Services
+        </span>
+        <h2 id="collections-heading" class="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-[1.15] uppercase">
+          Tailored Solutions <br/>
+          For Corporate Apparel
+        </h2>
+      </div>
+      <div class="flex flex-col items-start lg:items-end gap-5 lg:max-w-md">
+        <p class="text-gray-500 text-sm leading-relaxed font-semibold lg:text-right">
+          เราให้บริการออกแบบและรับสั่งผลิตเสื้อทีมพนักงานองค์กรแบบปรับสเปกครบชุด (Made-to-order) เพื่อตอบสนองความต้องการและงบประมาณอย่างลงตัว
+        </p>
+        <a
+          href="/products/"
+          class="inline-flex items-center justify-center gap-2 bg-[#FF5A1F] hover:bg-[#E04E17] text-white font-black px-6 py-3 rounded-xl shadow-lg shadow-orange-600/15 hover:-translate-y-0.5 transition-all duration-300 text-sm animate-pulse-slow"
+        >
+          <span>View All Products</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Collections Carousel Slider Showcase (3 visible, rotates to others) -->
+    <div class="relative overflow-hidden w-full py-4 reveal-up delay-200">
+      <div id="collections-slider-track" class="flex gap-6 transition-transform duration-500 ease-in-out">
+        {
+          collections.map((item, idx) => (
+            <div class="collection-slide shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
+              <CollectionCard {...item} index={idx + 1} total={collections.length} />
+            </div>
+          ))
+        }
+      </div>
+      
+      <!-- Slider Navigation Controls -->
+      <div class="flex items-center justify-center gap-4 mt-12" id="collections-slider-controls">
+        <button type="button" id="collections-prev-slide" class="w-10 h-10 rounded-full border border-gray-200 bg-white hover:border-[#FF5A1F] hover:text-[#FF5A1F] text-gray-700 flex items-center justify-center cursor-pointer transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        
+        <div class="flex items-center gap-2" id="collections-slider-dots">
+          {/* Dots will be generated dynamically */}
+        </div>
 
-  {featured.map((c) => <CollectionCard {...c} />)}
-
-  {/* Card สุดท้าย */}
-  <div class="flex gap-4 items-center">
-    <CollectionCard {...last} flex />
-  </div>
+        <button type="button" id="collections-next-slide" class="w-10 h-10 rounded-full border border-gray-200 bg-white hover:border-[#FF5A1F] hover:text-[#FF5A1F] text-gray-700 flex items-center justify-center cursor-pointer transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
 
   </div>
 </section>
+
+<script>
+  function setupCollectionsSlider() {
+    const track = document.getElementById('collections-slider-track') as HTMLElement;
+    const slides = document.querySelectorAll('.collection-slide') as NodeListOf<HTMLElement>;
+    const prevBtn = document.getElementById('collections-prev-slide');
+    const nextBtn = document.getElementById('collections-next-slide');
+    const dotsContainer = document.getElementById('collections-slider-dots');
+
+    if (!track || slides.length === 0) return;
+
+    let currentIndex = 0;
+    let autoPlayInterval: number | null = null;
+
+    function getItemsPerPage() {
+      if (window.innerWidth >= 1024) return 3; // Desktop
+      if (window.innerWidth >= 640) return 2;  // Tablet
+      return 1;                                // Mobile
+    }
+
+    function getMaxIndex() {
+      const itemsPerPage = getItemsPerPage();
+      return Math.max(0, slides.length - itemsPerPage);
+    }
+
+    function updateSlider() {
+      const maxIndex = getMaxIndex();
+      
+      if (currentIndex > maxIndex) {
+        currentIndex = maxIndex;
+      }
+      if (currentIndex < 0) {
+        currentIndex = 0;
+      }
+
+      const slideWidth = slides[0].getBoundingClientRect().width;
+      const gap = 24; // gap-6 = 24px
+      const offset = -currentIndex * (slideWidth + gap);
+      track.style.transform = `translateX(${offset}px)`;
+
+      updateDots();
+
+      if (prevBtn) {
+        const prevHtmlBtn = prevBtn as HTMLButtonElement;
+        prevHtmlBtn.disabled = currentIndex === 0;
+        prevHtmlBtn.style.opacity = currentIndex === 0 ? '0.35' : '1';
+      }
+      if (nextBtn) {
+        const nextHtmlBtn = nextBtn as HTMLButtonElement;
+        nextHtmlBtn.disabled = currentIndex === maxIndex;
+        nextHtmlBtn.style.opacity = currentIndex === maxIndex ? '0.35' : '1';
+      }
+    }
+
+    function updateDots() {
+      if (!dotsContainer) return;
+      dotsContainer.innerHTML = '';
+      
+      const maxIndex = getMaxIndex();
+      if (maxIndex <= 0) return;
+
+      for (let i = 0; i <= maxIndex; i++) {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = `w-2 h-2 rounded-full transition-all cursor-pointer ${
+          i === currentIndex ? 'bg-[#FF5A1F] w-4' : 'bg-gray-300 hover:bg-gray-400'
+        }`;
+        dot.setAttribute('aria-label', `Slide to collection ${i + 1}`);
+        dot.addEventListener('click', () => {
+          currentIndex = i;
+          updateSlider();
+          resetAutoPlay();
+        });
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    function slideNext() {
+      const maxIndex = getMaxIndex();
+      if (currentIndex < maxIndex) {
+        currentIndex++;
+      } else {
+        currentIndex = 0;
+      }
+      updateSlider();
+    }
+
+    function slidePrev() {
+      const maxIndex = getMaxIndex();
+      if (currentIndex > 0) {
+        currentIndex--;
+      } else {
+        currentIndex = maxIndex;
+      }
+      updateSlider();
+    }
+
+    function startAutoPlay() {
+      stopAutoPlay();
+      autoPlayInterval = window.setInterval(slideNext, 4500);
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+      }
+    }
+
+    function resetAutoPlay() {
+      startAutoPlay();
+    }
+
+    // Controls listeners
+    prevBtn?.addEventListener('click', () => {
+      slidePrev();
+      resetAutoPlay();
+    });
+
+    nextBtn?.addEventListener('click', () => {
+      slideNext();
+      resetAutoPlay();
+    });
+
+    // Touch events for mobile swipes
+    let startX = 0;
+    track.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      stopAutoPlay();
+    }, { passive: true });
+
+    track.addEventListener('touchend', (e) => {
+      const diffX = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diffX) > 50) {
+        if (diffX > 0) {
+          slideNext();
+        } else {
+          slidePrev();
+        }
+      }
+      startAutoPlay();
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      updateSlider();
+    });
+
+    updateSlider();
+    startAutoPlay();
+  }
+
+  document.addEventListener('astro:page-load', setupCollectionsSlider);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupCollectionsSlider);
+  } else {
+    setupCollectionsSlider();
+  }
+</script>

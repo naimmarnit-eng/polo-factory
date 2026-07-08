@@ -8,7 +8,20 @@ const products = (await getCollection('products')).sort(
   (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
 );
 
-// JSON-LD ItemList Schema for better SEO of category pages
+// ดึงหมวดหมู่ (Tags) ทั้งหมดที่มีในคอลเลกชันสินค้า
+const uniqueTags = [...new Set(products.flatMap((product) => product.data.tags || []))];
+
+// แปลง tag ภาษาอังกฤษเป็นฉลากภาษาไทยที่สวยงาม
+const tagLabels: Record<string, string> = {
+  'polo': 'เสื้อโปโล (Polo)',
+  't-shirt': 'เสื้อยืด (T-Shirt)',
+  'classic': 'ทรงคลาสสิก',
+  'premium': 'ผ้าเกรดพรีเมียม',
+  'workwear': 'ชุดทำงาน/พนักงาน',
+  'cotton': 'ผ้าฝ้ายคอมแบ็ด',
+};
+
+// JSON-LD ItemList Schema
 const itemListElement = products.map((product, index) => ({
   '@type': 'ListItem',
   position: index + 1,
@@ -23,7 +36,7 @@ const listJsonLd = {
   itemListElement,
 };
 
-// Breadcrumb JSON-LD — หน้าแรก → ผลงาน (สัญญาณโครงสร้างไซต์ของหน้า listing)
+// Breadcrumb JSON-LD
 const breadcrumbJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -35,96 +48,387 @@ const breadcrumbJsonLd = {
 ---
 
 <PageLayout
-  title="ผลงานรับผลิตเสื้อ ตัวอย่างงานสกรีนและตัดเย็บ"
-  description="รวมผลงานรับผลิตเสื้อยืด โปโล และงานสกรีนจาก เสื้อแท้ (ธน พลัส 153) ตั้งแต่ออกแบบ ตัดเย็บ จนถึงงานสกรีน DTG/DTF ผลิตด้วยมาตรฐานพรีเมียมทุกตัว"
+  title="ผลงานผลิตเสื้อโปโลพนักงาน และตัวอย่างงานปัก/สกรีน"
+  description="รวมผลงานการผลิตเสื้อโปโล เสื้อยูนิฟอร์มองค์กร และงานปักโลโก้จาก โรงงานเสื้อโปโล.com (ธน พลัส 153) ประณีตทุกขั้นตอนพร้อมงานสกรีนและปักมาตรฐานสูง"
   jsonLd={[listJsonLd, breadcrumbJsonLd]}
 >
-    <!-- header section -->
-    <div class="mb-16 text-center max-w-2xl mx-auto">
-      <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-        ผลงานรับผลิตเสื้อ
-        <span class="block text-xl md:text-2xl font-normal text-muted-foreground mt-2">Our Portfolio</span>
-      </h1>
-      <p class="text-lg text-muted-foreground">
-        ผลงานบางส่วนจาก {SITE.name} <strong class="font-semibold text-foreground">โรงงานรับผลิตเสื้อครบวงจร</strong>
-        ตั้งแต่ออกแบบ ตัดเย็บ จนถึงงานสกรีน ค้นพบคุณภาพที่แตกต่าง ด้วยการผลิตที่ใส่ใจทุกขั้นตอน
-      </p>
+    <!-- Header Hero Banner with dark gradient mesh style -->
+    <div class="relative w-full overflow-hidden bg-slate-950 rounded-3xl min-h-[300px] flex items-center justify-center p-8 md:p-12 mb-16 shadow-2xl border border-white/5 reveal-up">
+      <div class="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-950/70 to-orange-950/20 z-10"></div>
+      <div class="relative z-20 text-center max-w-3xl space-y-4">
+        <span class="text-[10px] font-black tracking-widest text-[#FF5A1F] uppercase px-3.5 py-1.5 bg-[#FF5A1F]/10 border border-[#FF5A1F]/30 rounded-full inline-block">
+          Our Products & Showcase
+        </span>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white uppercase leading-tight">
+          ผลงานผลิตเสื้อโปโล <span class="text-[#FF5A1F]">& ยูนิฟอร์ม</span>
+        </h1>
+        <p class="text-gray-300 text-xs sm:text-sm md:text-base leading-relaxed font-semibold max-w-2xl mx-auto">
+          ผลงานเสื้อโปโลพนักงาน เสื้อยืด และเสื้อทีมองค์กรสำเร็จรูป โดย {SITE.name} <br/>
+          ประณีตทุกขั้นตอน ออกแบบปกเสื้อและแพทเทิร์นฟรี เลือกปัก/สกรีนด้วยคอมพิวเตอร์มาตรฐานสูง
+        </p>
+      </div>
     </div>
     
-    <!-- masonry grid -->
-    <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 sm:gap-6">
-      {
-        products.map((product) => (
-          <PortfolioCard 
-            id={product.id}
-            title={product.data.title}
-            description={product.data.description}
-            image={product.data.image}
-            imageAlt={product.data.imageAlt}
-          />
-        ))
-      }
+    <!-- Interactive Category Navigation Filter Bar -->
+    <div class="mb-12 flex flex-col items-center justify-center gap-4 reveal-up delay-100">
+      <span class="text-xs font-black text-gray-400 uppercase tracking-widest">
+        กรองประเภทผลงานผลิต (Filter Portfolio):
+      </span>
+      <div class="flex flex-wrap items-center justify-center gap-2 max-w-3xl" id="filter-buttons">
+        <button
+          type="button"
+          data-filter="all"
+          class="filter-btn px-5 py-2.5 rounded-xl border border-gray-900 bg-gray-950 text-white text-xs font-black cursor-pointer shadow-sm transition-all"
+        >
+          ทั้งหมด (All)
+        </button>
+        {uniqueTags.map((tag) => (
+          <button
+            type="button"
+            data-filter={tag}
+            class="filter-btn px-5 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-700 hover:border-gray-900 text-xs font-black cursor-pointer transition-all"
+          >
+            {tagLabels[tag] || tag.toUpperCase()}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Product Carousel Slider Showcase (3 visible, rotates to others) -->
+    <div class="relative overflow-hidden w-full py-4 reveal-up delay-200">
+      <div id="portfolio-grid" class="flex gap-6 transition-transform duration-500 ease-in-out">
+        {
+          products.map((product) => (
+            <div class="product-slide shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]" data-tags={product.data.tags.join(' ')}>
+              <PortfolioCard 
+                id={product.id}
+                title={product.data.title}
+                description={product.data.description}
+                image={product.data.image}
+                imageAlt={product.data.imageAlt}
+                tags={product.data.tags}
+              />
+            </div>
+          ))
+        }
+      </div>
+      
+      <!-- Slider Navigation Controls -->
+      <div class="flex items-center justify-center gap-4 mt-12" id="slider-controls">
+        <button type="button" id="prev-slide" class="w-10 h-10 rounded-full border border-gray-200 bg-white hover:border-[#FF5A1F] hover:text-[#FF5A1F] text-gray-700 flex items-center justify-center cursor-pointer transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        
+        <div class="flex items-center gap-2" id="slider-dots">
+          {/* Dots will be generated dynamically */}
+        </div>
+
+        <button type="button" id="next-slide" class="w-10 h-10 rounded-full border border-gray-200 bg-white hover:border-[#FF5A1F] hover:text-[#FF5A1F] text-gray-700 flex items-center justify-center cursor-pointer transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
     </div>
     
     {products.length === 0 && (
-      <div class="text-center py-20 text-muted-foreground">
+      <div class="text-center py-20 text-muted-foreground reveal-up">
         <p class="text-xl">Coming soon...</p>
       </div>
     )}
 
-    <!-- testimonials section -->
-    <section class="mt-32 mb-16 text-center">
-      <div class="inline-block px-5 py-1.5 rounded-full border border-border text-sm font-medium mb-8">
-        รีวิวจากลูกค้า
+    <!-- Wholesale Inquiry Call-To-Action Banner -->
+    <section class="mt-24 max-w-5xl mx-auto px-4 reveal-up">
+      <div class="relative overflow-hidden bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-3xl p-8 sm:p-12 border border-orange-200/50 shadow-premium flex flex-col md:flex-row items-center justify-between gap-8">
+        <div class="text-left space-y-3 max-w-2xl">
+          <span class="text-xs font-black text-[#FF5A1F] uppercase tracking-widest">Wholesale Inquiry</span>
+          <h3 class="text-2xl sm:text-3xl font-black text-gray-900 leading-tight">ต้องการสั่งผลิตเสื้อสำหรับพนักงานหรือองค์กร?</h3>
+          <p class="text-sm font-semibold text-gray-600 leading-relaxed">
+            ติดต่อพูดคุยกับทีมงาน ธน พลัส 153 เพื่อรับคำแนะนำเรื่องผ้า ออกแบบปกเสื้อและแพทเทิร์น ฟรีบริการขึ้นตัวอย่างงานปัก/สกรีนชิ้นจริงก่อนผลิตล็อตใหญ่!
+          </p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto shrink-0">
+          <a
+            href={SITE.contact.lineLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#FF5A1F] to-[#FF8A00] hover:from-[#E04E17] hover:to-[#FF5A1F] text-white font-black px-8 py-4.5 rounded-xl shadow-md transition-all duration-300 text-center pulse-glow w-full md:w-auto"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>สอบถามสั่งผลิตทาง LINE</span>
+          </a>
+        </div>
       </div>
-      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 tracking-tight">ลูกค้าหลากหลายวงการไว้วางใจ</h2>
-      <p class="text-xl md:text-2xl text-muted-foreground mb-16 font-light">ทั้งสตาร์ทอัพ องค์กร และเจ้าของแบรนด์</p>
+    </section>
+
+    <!-- Testimonials reviews section -->
+    <section class="mt-32 mb-16 text-center reveal-up">
+      <div class="inline-block px-5 py-1.5 rounded-full bg-orange-50 border border-orange-100 text-xs font-black text-[#FF5A1F] tracking-widest uppercase mb-8">
+        Testimonials
+      </div>
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight leading-none">ลูกค้าหลากหลายวงการไว้วางใจ</h2>
+      <p class="text-base sm:text-lg text-muted-foreground mb-16 font-semibold max-w-xl mx-auto">ทั้งองค์กรธุรกิจ สตาร์ทอัพ และเจ้าของแบรนด์ผ้าที่ไว้วางใจให้เราผลิตให้</p>
       
-      <div class="grid md:grid-cols-3 gap-8 md:gap-12 text-left max-w-5xl mx-auto px-4">
-        <!-- Testimonial 1 -->
-        <div class="space-y-4">
-          <div class="text-amber-400 text-lg md:text-xl tracking-widest">★★★★★</div>
-          <p class="text-muted-foreground leading-relaxed text-sm md:text-base">"คุณภาพเสื้อจากเสื้อแท้ดีเกินคาดมาก งานสกรีนออกมาคมชัดเป๊ะทุกตัว ทีมงานคุยง่ายและใส่ใจรายละเอียด แนะนำเลยครับ!"</p>
-          <div class="flex items-center gap-4 mt-6 pt-4">
-            <div class="w-12 h-12 bg-secondary/50 rounded-full overflow-hidden flex items-center justify-center text-secondary-foreground font-bold">
+      <div class="grid md:grid-cols-3 gap-8 text-left max-w-5xl mx-auto px-4">
+        
+        {/* Testimonial 1 */}
+        <div class="glass-card p-8 rounded-3xl border border-gray-200/50 shadow-premium flex flex-col justify-between hover:shadow-premium-hover transition-shadow duration-300 group">
+          <div class="space-y-4">
+            <div class="text-amber-400 text-base">★★★★★</div>
+            <p class="text-gray-600 leading-relaxed text-sm font-semibold">"คุณภาพเสื้อจากโรงงานเสื้อโปโล.com ดีเกินคาดมาก งานปักโลโก้ออกมาคมชัดเป๊ะทุกตัว ทีมงานคุยง่ายและช่วยแนะนำเนื้อผ้าจูติไมโครอย่างดี แนะนำเลยครับ!"</p>
+          </div>
+          <div class="flex items-center gap-4 mt-8 pt-4 border-t border-gray-150">
+            <div class="w-11 h-11 bg-orange-50 text-[#FF5A1F] border border-orange-100 rounded-full flex items-center justify-center font-black text-sm shrink-0">
               น
             </div>
             <div>
-              <h4 class="font-bold text-sm">คุณนภัส ว.</h4>
-              <p class="text-xs text-muted-foreground">ผู้ก่อตั้งสตาร์ทอัพ</p>
+              <h4 class="font-black text-sm text-gray-900">คุณนภัส ว.</h4>
+              <p class="text-[10px] font-black text-gray-400 uppercase tracking-wider mt-0.5">ผู้ก่อตั้งสตาร์ทอัพ</p>
             </div>
           </div>
         </div>
         
-        <!-- Testimonial 2 -->
-        <div class="space-y-4">
-          <div class="text-amber-400 text-lg md:text-xl tracking-widest">★★★★★</div>
-          <p class="text-muted-foreground leading-relaxed text-sm md:text-base">"ทีมเรามองหาพาร์ตเนอร์ที่ยืดหยุ่นและไว้ใจได้สำหรับยูนิฟอร์มคอลเลกชันใหม่ เสื้อแท้ทำได้ตามที่ต้องการเป๊ะ ขั้นตอนราบรื่นและส่งงานตรงเวลา"</p>
-          <div class="flex items-center gap-4 mt-6 pt-4">
-            <div class="w-12 h-12 bg-secondary/50 rounded-full overflow-hidden flex items-center justify-center text-secondary-foreground font-bold">
+        {/* Testimonial 2 */}
+        <div class="glass-card p-8 rounded-3xl border border-gray-200/50 shadow-premium flex flex-col justify-between hover:shadow-premium-hover transition-shadow duration-300 group">
+          <div class="space-y-4">
+            <div class="text-amber-400 text-base">★★★★★</div>
+            <p class="text-gray-600 leading-relaxed text-sm font-semibold">"ทีมเรามองหาพาร์ตเนอร์ที่ยืดหยุ่นและไว้ใจได้สำหรับผลิตเสื้อโปโลพนักงานคอลเลกชันใหม่ โรงงานเสื้อโปโล.com ทำงานปักและสกรีนได้ตามแบบเป๊ะ ส่งงานตรงเวลาครับ"</p>
+          </div>
+          <div class="flex items-center gap-4 mt-8 pt-4 border-t border-gray-150">
+            <div class="w-11 h-11 bg-orange-50 text-[#FF5A1F] border border-orange-100 rounded-full flex items-center justify-center font-black text-sm shrink-0">
               ภ
             </div>
             <div>
-              <h4 class="font-bold text-sm">คุณภูริ ก.</h4>
-              <p class="text-xs text-muted-foreground">นักออกแบบ UX</p>
+              <h4 class="font-black text-sm text-gray-900">คุณภูริ ก.</h4>
+              <p class="text-[10px] font-black text-gray-400 uppercase tracking-wider mt-0.5">ฝ่ายจัดซื้อบริษัทมหาชน</p>
             </div>
           </div>
         </div>
 
-        <!-- Testimonial 3 -->
-        <div class="space-y-4">
-          <div class="text-amber-400 text-lg md:text-xl tracking-widest">★★★★★</div>
-          <p class="text-muted-foreground leading-relaxed text-sm md:text-base">"ชอบที่มีตัวเลือกเนื้อผ้าหลากหลายมาก ไม่ว่าจะผ้าคอตตอนพรีเมียมสำหรับสินค้าแบรนด์ หรือผ้ากีฬาระบายอากาศดี เสื้อแท้มีให้เลือกครบทุกแบบ"</p>
-          <div class="flex items-center gap-4 mt-6 pt-4">
-            <div class="w-12 h-12 bg-secondary/50 rounded-full overflow-hidden flex items-center justify-center text-secondary-foreground font-bold">
+        {/* Testimonial 3 */}
+        <div class="glass-card p-8 rounded-3xl border border-gray-200/50 shadow-premium flex flex-col justify-between hover:shadow-premium-hover transition-shadow duration-300 group">
+          <div class="space-y-4">
+            <div class="text-amber-400 text-base">★★★★★</div>
+            <p class="text-gray-600 leading-relaxed text-sm font-semibold">"ชอบที่มีตัวเลือกเนื้อผ้าผลิตเสื้อโปโลหลากหลายมาก ทั้งจูติ ไมโคร คอตตอนคอมแบด หรือผ้ากีฬาก็มี ปรึกษาฟรีและช่วยออกแบบตัวอย่างให้อย่างดีเลยค่ะ"</p>
+          </div>
+          <div class="flex items-center gap-4 mt-8 pt-4 border-t border-gray-150">
+            <div class="w-11 h-11 bg-orange-50 text-[#FF5A1F] border border-orange-100 rounded-full flex items-center justify-center font-black text-sm shrink-0">
               ล
             </div>
             <div>
-              <h4 class="font-bold text-sm">คุณลออ อ.</h4>
-              <p class="text-xs text-muted-foreground">นักการตลาดดิจิทัล</p>
+              <h4 class="font-black text-sm text-gray-900">คุณลออ อ.</h4>
+              <p class="text-[10px] font-black text-gray-400 uppercase tracking-wider mt-0.5">ผู้ดูแลภาพลักษณ์องค์กร</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 </PageLayout>
+
+<script>
+  // Setup horizontal slider for cards
+  function setupPortfolioSlider() {
+    const track = document.getElementById('portfolio-grid') as HTMLElement;
+    const cards = document.querySelectorAll('.product-slide') as NodeListOf<HTMLElement>;
+    const prevBtn = document.getElementById('prev-slide');
+    const nextBtn = document.getElementById('next-slide');
+    const dotsContainer = document.getElementById('slider-dots');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+
+    if (!track || cards.length === 0) return;
+
+    let activeCards = Array.from(cards);
+    let currentIndex = 0;
+    let autoPlayInterval: number | null = null;
+
+    function getItemsPerPage() {
+      if (window.innerWidth >= 1024) return 3; // Desktop
+      if (window.innerWidth >= 640) return 2;  // Tablet
+      return 1;                                // Mobile
+    }
+
+    function getMaxIndex() {
+      const itemsPerPage = getItemsPerPage();
+      return Math.max(0, activeCards.length - itemsPerPage);
+    }
+
+    function updateSlider() {
+      const maxIndex = getMaxIndex();
+      
+      // Ensure current index is within bounds
+      if (currentIndex > maxIndex) {
+        currentIndex = maxIndex;
+      }
+      if (currentIndex < 0) {
+        currentIndex = 0;
+      }
+
+      // Calculate translation offset
+      if (activeCards.length > 0) {
+        const cardWidth = activeCards[0].getBoundingClientRect().width;
+        const gap = 24; // 24px gap in Tailwind (gap-6)
+        const offset = -currentIndex * (cardWidth + gap);
+        track.style.transform = `translateX(${offset}px)`;
+      } else {
+        track.style.transform = `translateX(0px)`;
+      }
+
+      // Generate dot elements
+      updateDots();
+      
+      // Toggle button states
+      if (prevBtn) {
+        const prevHtmlBtn = prevBtn as HTMLButtonElement;
+        prevHtmlBtn.disabled = currentIndex === 0;
+        prevHtmlBtn.style.opacity = currentIndex === 0 ? '0.35' : '1';
+      }
+      if (nextBtn) {
+        const nextHtmlBtn = nextBtn as HTMLButtonElement;
+        nextHtmlBtn.disabled = currentIndex === maxIndex;
+        nextHtmlBtn.style.opacity = currentIndex === maxIndex ? '0.35' : '1';
+      }
+    }
+
+    function updateDots() {
+      if (!dotsContainer) return;
+      dotsContainer.innerHTML = '';
+      
+      const maxIndex = getMaxIndex();
+      if (maxIndex <= 0) return;
+
+      for (let i = 0; i <= maxIndex; i++) {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = `w-2 h-2 rounded-full transition-all cursor-pointer ${
+          i === currentIndex ? 'bg-[#FF5A1F] w-4' : 'bg-gray-300 hover:bg-gray-400'
+        }`;
+        dot.setAttribute('aria-label', `Slide to product ${i + 1}`);
+        dot.addEventListener('click', () => {
+          currentIndex = i;
+          updateSlider();
+          resetAutoPlay();
+        });
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    function slideNext() {
+      const maxIndex = getMaxIndex();
+      if (currentIndex < maxIndex) {
+        currentIndex++;
+      } else {
+        currentIndex = 0; // Rotate/loop back to start
+      }
+      updateSlider();
+    }
+
+    function slidePrev() {
+      const maxIndex = getMaxIndex();
+      if (currentIndex > 0) {
+        currentIndex--;
+      } else {
+        currentIndex = maxIndex; // Loop back to end
+      }
+      updateSlider();
+    }
+
+    function startAutoPlay() {
+      stopAutoPlay();
+      autoPlayInterval = window.setInterval(slideNext, 4500);
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+      }
+    }
+
+    function resetAutoPlay() {
+      startAutoPlay();
+    }
+
+    // Controls listeners
+    prevBtn?.addEventListener('click', () => {
+      slidePrev();
+      resetAutoPlay();
+    });
+
+    nextBtn?.addEventListener('click', () => {
+      slideNext();
+      resetAutoPlay();
+    });
+
+    // Touch events for mobile swipes
+    let startX = 0;
+    track.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      stopAutoPlay();
+    }, { passive: true });
+
+    track.addEventListener('touchend', (e) => {
+      const diffX = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diffX) > 50) {
+        if (diffX > 0) {
+          slideNext();
+        } else {
+          slidePrev();
+        }
+      }
+      startAutoPlay();
+    }, { passive: true });
+
+    // Handle filtering categories
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach((b) => {
+          b.classList.remove('border-gray-900', 'bg-gray-950', 'text-white', 'shadow-sm');
+          b.classList.add('border-gray-200', 'bg-white', 'text-gray-700', 'hover:border-gray-900');
+        });
+        btn.classList.add('border-gray-900', 'bg-gray-950', 'text-white', 'shadow-sm');
+        btn.classList.remove('border-gray-200', 'bg-white', 'text-gray-700', 'hover:border-gray-900');
+
+        const filterValue = btn.getAttribute('data-filter') || 'all';
+
+        activeCards = [];
+        cards.forEach((card) => {
+          const cardTags = card.getAttribute('data-tags') || '';
+          const tagsArray = cardTags.split(' ');
+
+          if (filterValue === 'all' || tagsArray.includes(filterValue)) {
+            card.style.display = 'block';
+            activeCards.push(card);
+            requestAnimationFrame(() => {
+              card.style.opacity = '1';
+              card.style.transform = 'scale(1)';
+            });
+          } else {
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.95)';
+            card.style.display = 'none';
+          }
+        });
+
+        currentIndex = 0; // Reset index
+        updateSlider();
+        resetAutoPlay();
+      });
+    });
+
+    // Handle resizing windows
+    window.addEventListener('resize', () => {
+      updateSlider();
+    });
+
+    // Initialize
+    updateSlider();
+    startAutoPlay();
+  }
+
+  // Astro page transitions support
+  document.addEventListener('astro:page-load', setupPortfolioSlider);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupPortfolioSlider);
+  } else {
+    setupPortfolioSlider();
+  }
+</script>
+

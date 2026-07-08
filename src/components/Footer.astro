@@ -1,0 +1,121 @@
+---
+import { Image } from 'astro:assets';
+import logo from '@/assets/logo.png';
+import { SITE } from '@/consts';
+---
+
+<footer class="w-full mt-24 border-t border-gray-200/50 print:hidden">
+
+  {/* Bottom: Main Footer */}
+  <div class="w-full bg-slate-950 text-white py-20 px-6 sm:px-12 lg:px-16 select-text">
+    <div class="max-w-[1400px] mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        
+        {/* Col 1: Company Links */}
+        <div class="lg:col-span-2 text-left">
+          <h4 class="text-sm font-black uppercase tracking-wider text-white mb-6 relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-8 after:h-0.5 after:bg-[#FF5A1F]">
+            Company
+          </h4>
+          <ul class="space-y-3.5 text-xs text-slate-400 font-semibold">
+            <li>
+              <a href="/" class="hover:text-[#FF5A1F] transition-colors">หน้าหลัก (Home)</a>
+            </li>
+            <li>
+              <a href="/services/" class="hover:text-[#FF5A1F] transition-colors">บริการของเรา (Services)</a>
+            </li>
+            <li>
+              <a href="/products/" class="hover:text-[#FF5A1F] transition-colors">สินค้าทั้งหมด (Products)</a>
+            </li>
+            <li>
+              <a href="/blog/" class="hover:text-[#FF5A1F] transition-colors">บล็อกความรู้ (Blog)</a>
+            </li>
+          </ul>
+        </div>
+
+        {/* Col 2: Services Links */}
+        <div class="lg:col-span-2.5 text-left">
+          <h4 class="text-sm font-black uppercase tracking-wider text-white mb-6 relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-8 after:h-0.5 after:bg-[#FF5A1F]">
+            Services
+          </h4>
+          <ul class="space-y-3.5 text-xs text-slate-400 font-semibold">
+            <li>
+              <a href="/services/#screen" class="hover:text-[#FF5A1F] transition-colors">งานซิลค์สกรีน (Silk Screen)</a>
+            </li>
+            <li>
+              <a href="/services/#screen" class="hover:text-[#FF5A1F] transition-colors">พิมพ์ดิจิทัล (DFT / DTG)</a>
+            </li>
+            <li>
+              <a href="/services/#screen" class="hover:text-[#FF5A1F] transition-colors">งานพิมพ์ซับลิเมชัน (Sublimation)</a>
+            </li>
+            <li>
+              <a href="/services/#screen" class="hover:text-[#FF5A1F] transition-colors">งานปักคอมพิวเตอร์ (Embroidery)</a>
+            </li>
+          </ul>
+        </div>
+
+        {/* Col 3: Support Links */}
+        <div class="lg:col-span-2 text-left">
+          <h4 class="text-sm font-black uppercase tracking-wider text-white mb-6 relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-8 after:h-0.5 after:bg-[#FF5A1F]">
+            Support
+          </h4>
+          <ul class="space-y-3.5 text-xs text-slate-400 font-semibold">
+            <li>
+              <a href="/services/#process" class="hover:text-[#FF5A1F] transition-colors">ขั้นตอนการสั่งซื้อ</a>
+            </li>
+            <li>
+              <a href="/services/#faq-heading" class="hover:text-[#FF5A1F] transition-colors">คำถามที่พบบ่อย (FAQ)</a>
+            </li>
+            <li>
+              <a href="/services/#contact" class="hover:text-[#FF5A1F] transition-colors">ติดต่อสอบถาม</a>
+            </li>
+          </ul>
+        </div>
+
+        {/* Col 4: Logo & Info */}
+        <div class="lg:col-span-5 text-left flex flex-col items-start">
+          
+          {/* Logo block */}
+          <a href="/" class="flex items-center gap-2.5 group mb-6">
+            <div class="p-1.5 bg-slate-900 rounded-xl group-hover:scale-105 transition-transform duration-300 border border-slate-800">
+              <Image src={logo} alt="โรงงานเสื้อโปโล ธน พลัส 153" width={28} height={28} class="w-7 h-7 object-contain" />
+            </div>
+            <span class="text-xl font-black tracking-tight text-white group-hover:opacity-80 transition-opacity">
+              โรงงานเสื้อโปโล<span class="text-[#FF5A1F]">.com</span>
+            </span>
+          </a>
+
+          <p class="text-slate-400 text-xs leading-relaxed font-semibold mb-6">
+            บริษัท ธน พลัส 153 จำกัด - โรงงานรับผลิตเสื้อโปโลพนักงาน เสื้อทีมองค์กร ยูนิฟอร์ม และเสื้อยืดสำเร็จรูปครบจบในที่เดียว ด้วยมาตรฐานระดับสากล ประสบการณ์กว่า 10 ปี
+          </p>
+
+          <div class="space-y-3.5 text-xs text-slate-400 font-semibold w-full">
+            <div class="flex items-start gap-2.5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF5A1F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>{SITE.contact.address}</span>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF5A1F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <a href={SITE.contact.phoneLink} class="hover:text-[#FF5A1F] transition-colors">{SITE.contact.phone}</a>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF5A1F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              <a href={`mailto:${SITE.contact.email}`} class="hover:text-[#FF5A1F] transition-colors">{SITE.contact.email}</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Copyright */}
+      <div class="border-t border-slate-800 mt-16 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-xs font-semibold">
+        <span>© 2026 {SITE.name}. All rights reserved.</span>
+        <div class="flex gap-4">
+          <a href="/privacy/" class="hover:text-slate-400">นโยบายความเป็นส่วนตัว</a>
+          <span>·</span>
+          <a href="/terms/" class="hover:text-slate-400">ข้อกำหนดการใช้งาน</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</footer>

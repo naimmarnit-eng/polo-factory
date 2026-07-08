@@ -1,14 +1,13 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
-import BlogHero from '@/components/blog/BlogHero.astro';
-import BlogPopularTags from '@/components/blog/BlogPopularTags.astro';
-import BlogFeatured from '@/components/blog/BlogFeatured.astro';
-import BlogGrid from '@/components/blog/BlogGrid.astro';
-import BlogExplorerSection from '@/components/blog/BlogExplorerSection.astro';
+import { getCollection } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import BlogExplorer, { type BlogCardData } from '@/components/blog/BlogExplorer.tsx';
 
-// JSON-LD: Blog + Breadcrumb (หน้าแรก → บทความ) — บอกโครงสร้าง hub ของบล็อก
+// JSON-LD: Blog + Breadcrumb
 const blogUrl = new URL('/blog/', Astro.site).toString();
 const orgId = new URL('/#organization', Astro.site).toString();
+
 const blogJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Blog',
@@ -17,6 +16,7 @@ const blogJsonLd = {
   inLanguage: 'th-TH',
   publisher: { '@id': orgId },
 };
+
 const breadcrumbJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -25,6 +25,66 @@ const breadcrumbJsonLd = {
     { '@type': 'ListItem', position: 2, name: 'บทความ', item: blogUrl },
   ],
 };
+
+// ดึงบทความทั้งหมดที่เผยแพร่จริง เรียงใหม่สุดก่อน
+const allPosts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+
+// กำหนดบทความหลักที่จะเป็น Hero Featured (ดึงคู่มือสร้างแบรนด์เสื้อผ้ามาเป็นหลัก หรือใช้ล่าสุด)
+const featuredPost = allPosts.find((p) => p.id === 'clothing-brand-startup-guide') || allPosts[0];
+
+// บทความที่เหลือสำหรับจัดแถบย่อย
+const remainingPosts = allPosts.filter((p) => p.id !== featuredPost.id);
+
+// 1. แถบข้างของ Hero (3 บทความล่าสุดถัดไป)
+const sidebarPosts = remainingPosts.slice(0, 3);
+
+// 2. แถว 3 คอลัมน์เด่น (3 บทความต่อมา)
+const subFeaturedPosts = remainingPosts.slice(3, 6);
+
+// 3. หมวดหมู่ "ความรู้เรื่องผ้า" (สูงสุด 3 บทความ)
+const fabricPosts = allPosts
+  .filter((p) => p.data.category === 'ความรู้เรื่องผ้า' && p.id !== featuredPost.id)
+  .slice(0, 3);
+
+// 4. หมวดหมู่ "งานสกรีน" (สูงสุด 4 บทความ)
+const screenPosts = allPosts
+  .filter((p) => p.data.category === 'งานสกรีน' && p.id !== featuredPost.id)
+  .slice(0, 4);
+
+// 5. หมวดหมู่ "ธุรกิจ" (สูงสุด 4 บทความ)
+const businessPosts = allPosts
+  .filter((p) => p.data.category === 'ธุรกิจ' && p.id !== featuredPost.id)
+  .slice(0, 4);
+
+// เตรียมข้อมูลส่งเข้า React island (BlogExplorer) สำหรับการค้นหา
+const cards: BlogCardData[] = await Promise.all(
+  allPosts.map(async (post) => {
+    const d = post.data;
+    let cover: BlogCardData['cover'] = null;
+    if (d.cover) {
+      const img = await getImage({
+        src: d.cover,
+        widths: [400, 600, 800],
+        format: 'webp',
+      });
+      cover = { src: img.src, srcSet: img.srcSet.attribute };
+    }
+    return {
+      slug: post.id,
+      title: d.title,
+      description: d.description,
+      category: d.category,
+      tags: d.tags,
+      date: d.publishedAt.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' }),
+      cover,
+    };
+  })
+);
+
+const categories = [...new Set(allPosts.map((p) => p.data.category).filter(Boolean))];
+const tags = [...new Set(allPosts.flatMap((p) => p.data.tags))].sort();
 ---
 
 <PageLayout
@@ -32,11 +92,268 @@ const breadcrumbJsonLd = {
   description="รวมบทความน่ารู้ เทรนด์แฟชั่น เทคนิคงานสกรีน และเคล็ดลับการทำแบรนด์เสื้อผ้า จากโรงงานผลิตเสื้อผ้าครบวงจร เสื้อแท้ (ธน พลัส 153)"
   jsonLd={[blogJsonLd, breadcrumbJsonLd]}
 >
-  <BlogHero />
-  <BlogPopularTags />
-  <BlogFeatured />
-  {/* id="latest-posts" = เป้าหมายของปุ่ม "อ่านบทความล่าสุด" ใน BlogHero */}
-  <div id="latest-posts" class="scroll-mt-24"><BlogGrid /></div>
-  {/* บทความทั้งหมด + ค้นหา/กรอง */}
-  <BlogExplorerSection />
+  
+  {/* SECTION 1: Redesigned Editorial Hero (Featured Left, Sidebar Right) */}
+  <section class="mt-8 mb-16 select-text">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 border-b border-gray-200 pb-12">
+      
+      {/* 2/3 Column: Main Featured Article */}
+      <article class="lg:col-span-8 flex flex-col justify-between group text-left">
+        <a href={`/blog/${featuredPost.id}`} class="block w-full">
+          <div class="rounded-none overflow-hidden aspect-[16/9] bg-gray-100 mb-5 relative">
+            {featuredPost.data.cover && (
+              <Image
+                src={featuredPost.data.cover}
+                alt={featuredPost.data.coverAlt || featuredPost.data.title}
+                widths={[600, 900, 1200]}
+                sizes="(max-width: 1024px) 100vw, 66vw"
+                class="w-full h-full object-cover transform group-hover:scale-102 transition-transform duration-500"
+              />
+            )}
+          </div>
+          <div>
+            <span class="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-[#FF5A1F] mb-3">
+              Featured Story
+            </span>
+            <h2 class="text-3xl md:text-4xl font-black text-gray-900 leading-tight tracking-tight mb-4 group-hover:text-[#FF5A1F] transition-colors">
+              {featuredPost.data.title}
+            </h2>
+            <p class="text-gray-500 text-sm sm:text-base leading-relaxed mb-4 font-semibold">
+              {featuredPost.data.description}
+            </p>
+            <div class="flex items-center gap-2.5 text-xs text-gray-400 font-semibold">
+              <span class="text-slate-800 uppercase font-bold">{featuredPost.data.category}</span>
+              <span>•</span>
+              <span>{featuredPost.data.publishedAt.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+            </div>
+          </div>
+        </a>
+      </article>
+
+      {/* 1/3 Column: Vertical Sidebar (3 items, Text-only editorial layout) */}
+      <div class="lg:col-span-4 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-gray-200 pt-8 lg:pt-0 lg:pl-8 text-left">
+        <h3 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-6 font-mono">
+          Latest Bulletins
+        </h3>
+        
+        <div class="flex-grow flex flex-col justify-between gap-6">
+          {sidebarPosts.map((post, idx) => (
+            <article class="group relative flex flex-col justify-between pb-6 border-b border-gray-150 last:border-0 last:pb-0">
+              <a href={`/blog/${post.id}`} class="block">
+                <span class="text-xs font-black text-[#FF5A1F] uppercase tracking-wider mb-2 block">
+                  0{idx + 1} . {post.data.category}
+                </span>
+                <h4 class="text-base font-extrabold text-gray-900 leading-snug mb-3 group-hover:text-[#FF5A1F] transition-colors line-clamp-2">
+                  {post.data.title}
+                </h4>
+                <div class="text-[11px] text-gray-400 font-semibold">
+                  {post.data.publishedAt.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}
+                </div>
+              </a>
+            </article>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  {/* SECTION 2: 3-Column Prominent Articles */}
+  {subFeaturedPosts.length > 0 && (
+    <section class="mb-16 select-text">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 border-b border-gray-200 pb-16">
+        {subFeaturedPosts.map((post) => (
+          <article class="group block text-left">
+            <a href={`/blog/${post.id}`} class="block">
+              <div class="rounded-none overflow-hidden aspect-[16/10] bg-gray-100 mb-4">
+                {post.data.cover && (
+                  <Image
+                    src={post.data.cover}
+                    alt={post.data.title}
+                    widths={[400, 600]}
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    class="w-full h-full object-cover transform group-hover:scale-103 transition-transform duration-500"
+                  />
+                )}
+              </div>
+              <div class="flex items-center gap-3 text-xs text-gray-400 mb-2 font-semibold">
+                <span class="text-[#FF5A1F] uppercase font-black">{post.data.category}</span>
+                <span>•</span>
+                <span>{post.data.publishedAt.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+              </div>
+              <h3 class="text-lg font-black text-gray-900 leading-snug mb-3 group-hover:text-[#FF5A1F] transition-colors line-clamp-2">
+                {post.data.title}
+              </h3>
+              <p class="text-gray-500 text-xs sm:text-sm leading-relaxed line-clamp-2 font-semibold">
+                {post.data.description}
+              </p>
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {/* SECTION 3: Category Block 1 - "ความรู้เรื่องผ้า" (BBC News layout style) */}
+  {fabricPosts.length > 0 && (
+    <section class="mb-20 select-text">
+      <div class="flex items-center gap-3 border-b border-gray-200 pb-4 mb-8 text-left">
+        <span class="w-3.5 h-3.5 bg-red-600 inline-block shrink-0"></span>
+        <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight uppercase">
+          ความรู้เรื่องผ้า & การเลือกเส้นด้าย
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left 2 Items: standard 1/4 layout */}
+        {fabricPosts.slice(0, 2).map((post) => (
+          <article class="lg:col-span-3 group block text-left">
+            <a href={`/blog/${post.id}`}>
+              <div class="rounded-none overflow-hidden aspect-[4/3] bg-gray-100 mb-4">
+                {post.data.cover && (
+                  <Image
+                    src={post.data.cover}
+                    alt={post.data.title}
+                    widths={[400]}
+                    sizes="(max-width: 1024px) 100vw, 25vw"
+                    class="w-full h-full object-cover transform group-hover:scale-103 transition-transform duration-500"
+                  />
+                )}
+              </div>
+              <div class="text-xs text-gray-400 mb-2 font-semibold">
+                {post.data.publishedAt.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}
+              </div>
+              <h3 class="text-base font-black text-gray-900 leading-snug mb-2 group-hover:text-[#FF5A1F] transition-colors line-clamp-2">
+                {post.data.title}
+              </h3>
+            </a>
+          </article>
+        ))}
+
+        {/* Right 1 Item: double-width horizontal layout */}
+        {fabricPosts[2] && (
+          <article class="lg:col-span-6 group block text-left bg-gray-50/50 p-4 border border-gray-150/40">
+            <a href={`/blog/${fabricPosts[2].id}`} class="grid grid-cols-1 sm:grid-cols-2 gap-5 h-full items-center">
+              <div class="rounded-none overflow-hidden aspect-[4/3] bg-gray-100">
+                {fabricPosts[2].data.cover && (
+                  <Image
+                    src={fabricPosts[2].data.cover}
+                    alt={fabricPosts[2].data.title}
+                    widths={[400]}
+                    sizes="(max-width: 1024px) 100vw, 25vw"
+                    class="w-full h-full object-cover transform group-hover:scale-103 transition-transform duration-500"
+                  />
+                )}
+              </div>
+              <div class="flex flex-col justify-between py-2">
+                <div>
+                  <span class="text-xs font-black text-red-600 uppercase tracking-wide block mb-1">
+                    Special Feature
+                  </span>
+                  <h3 class="text-lg font-black text-gray-900 leading-snug mb-3 group-hover:text-[#FF5A1F] transition-colors line-clamp-3">
+                    {fabricPosts[2].data.title}
+                  </h3>
+                  <p class="text-gray-500 text-xs sm:text-sm leading-relaxed line-clamp-2 mb-4 font-semibold">
+                    {fabricPosts[2].data.description}
+                  </p>
+                </div>
+                <div class="text-[11px] text-gray-400 font-semibold">
+                  {fabricPosts[2].data.publishedAt.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}
+                </div>
+              </div>
+            </a>
+          </article>
+        )}
+      </div>
+    </section>
+  )}
+
+  {/* SECTION 4: Category Block 2 - "งานพิมพ์และสกรีน" (Sport 4-column style) */}
+  {screenPosts.length > 0 && (
+    <section class="mb-20 select-text">
+      <div class="flex items-center gap-3 border-b border-gray-200 pb-4 mb-8 text-left">
+        <span class="w-3.5 h-3.5 bg-yellow-500 inline-block shrink-0"></span>
+        <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight uppercase">
+          เทคนิคงานพิมพ์สกรีน & DFT / DTF
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {screenPosts.map((post) => (
+          <article class="group block text-left">
+            <a href={`/blog/${post.id}`}>
+              <div class="rounded-none overflow-hidden aspect-[4/3] bg-gray-100 mb-4">
+                {post.data.cover && (
+                  <Image
+                    src={post.data.cover}
+                    alt={post.data.title}
+                    widths={[400]}
+                    sizes="(max-width: 768px) 100vw, 25vw"
+                    class="w-full h-full object-cover transform group-hover:scale-103 transition-transform duration-500"
+                  />
+                )}
+              </div>
+              <div class="text-xs text-gray-400 mb-2 font-semibold">
+                {post.data.publishedAt.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}
+              </div>
+              <h3 class="text-base font-black text-gray-900 leading-snug mb-2 group-hover:text-[#FF5A1F] transition-colors line-clamp-2">
+                {post.data.title}
+              </h3>
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {/* SECTION 5: Category Block 3 - "ธุรกิจ" (Reel style smaller cards) */}
+  {businessPosts.length > 0 && (
+    <section class="mb-24 select-text">
+      <div class="flex items-center gap-3 border-b border-gray-200 pb-4 mb-8 text-left">
+        <span class="w-3.5 h-3.5 bg-blue-500 inline-block shrink-0"></span>
+        <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight uppercase">
+          เคล็ดลับการเริ่มธุรกิจเสื้อผ้า & สร้างแบรนด์
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {businessPosts.map((post) => (
+          <article class="group block text-left">
+            <a href={`/blog/${post.id}`}>
+              <div class="rounded-none overflow-hidden aspect-[16/10] bg-gray-100 mb-4">
+                {post.data.cover && (
+                  <Image
+                    src={post.data.cover}
+                    alt={post.data.title}
+                    widths={[400]}
+                    sizes="(max-width: 768px) 100vw, 25vw"
+                    class="w-full h-full object-cover transform group-hover:scale-103 transition-transform duration-500"
+                  />
+                )}
+              </div>
+              <div class="text-xs text-gray-400 mb-2 font-semibold">
+                {post.data.publishedAt.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}
+              </div>
+              <h3 class="text-base font-black text-gray-900 leading-snug mb-2 group-hover:text-[#FF5A1F] transition-colors line-clamp-2">
+                {post.data.title}
+              </h3>
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {/* SECTION 6: Blog Explorer Section (All posts with Search & Filters) */}
+  <section id="latest-posts" class="mb-32 scroll-mt-24">
+    <div class="flex items-center gap-3 border-b border-gray-200 pb-4 mb-10 text-left">
+      <span class="w-3.5 h-3.5 bg-slate-400 inline-block shrink-0"></span>
+      <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight uppercase">
+        ค้นหาบทความทั้งหมด
+      </h2>
+    </div>
+
+    <BlogExplorer client:load posts={cards} categories={categories} tags={tags} />
+  </section>
+
 </PageLayout>

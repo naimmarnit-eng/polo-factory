@@ -21,7 +21,7 @@ const {
 {/* ไม่มีข้อมูล/ว่าง → ไม่เรนเดอร์อะไรเลย */}
 {items && items.length > 0 && (
   <section
-    class:list={[className]}
+    class:list={[className, 'reveal-up']}
     {...(title
       ? { 'aria-labelledby': 'faq-heading' }
       : { 'aria-label': 'คำถามที่พบบ่อย' })}

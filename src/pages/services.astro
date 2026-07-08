@@ -1,31 +1,34 @@
 ---
 // หน้าบริการ /services — ปลายทางของลิงก์ Services บน Navbar
-// ประกอบด้วยคอมโพเนนต์ใหม่ (services/*) ทั้งหมด เพื่อเพิ่มเอกลักษณ์เฉพาะของหน้าบริการ
-// พร้อมปรับปรุงข้อมูลโครงสร้าง SEO (JSON-LD) ให้สอดคล้องกับช่องทางการติดต่อจริง
+// ประกอบด้วยการจัดหน้าแบบผสมผสานสไตล์อุตสาหกรรมพรีเมียม (Redesigned completely)
 import PageLayout from '@/layouts/PageLayout.astro';
 import { getCollection } from 'astro:content';
-import ServicesHero from '@/components/services/ServicesHero.astro';
-import ServiceGrid from '@/components/services/ServiceGrid.astro';
-import ServicePrinting from '@/components/services/ServicePrinting.astro';
-import ServiceProcess from '@/components/services/ServiceProcess.astro';
-import ServiceWhyChooseUs from '@/components/services/ServiceWhyChooseUs.astro';
-import ServicePrivileges from '@/components/services/ServicePrivileges.astro';
-import ServiceCta from '@/components/services/ServiceCta.astro';
+import { Image } from 'astro:assets';
 import Faq from '@/components/Faq.astro';
 import { buildFaqJsonLd, type FaqItem } from '@/lib/faq';
-import { SERVICES } from '@/lib/services';
+import { SERVICES, PRIVILEGES, WHY_CHOOSE_US } from '@/lib/services';
 import { SITE } from '@/consts';
 import logo from '@/assets/logo.png';
 
+// นำเข้ารูปภาพสำหรับเทคนิคงานสกรีน
+import silkScreenImg from '@/assets/home/ScreenServices/Silk Screen.png';
+import dftDtgImg from '@/assets/home/ScreenServices/DFT_DTG.png';
+import sublimationImg from '@/assets/home/ScreenServices/Sublimation.png';
+
+// นำเข้ารูปภาพประกอบของโรงงาน
+import whyChooseImg from '@/assets/home/WhyChooseUsHover.png';
+import whyChooseOverlay from '@/assets/home/WhyChooseUs.png';
+
+
+
 // URL หน้านี้ (absolute, ลงท้าย / ให้ตรง canonical) — ใช้ใน JSON-LD ของ Service และ Breadcrumb
 const pageUrl = new URL('/services/', Astro.site).toString();
-// @id ของ Organization กลาง (ออกทุกหน้าจาก SEO.astro) — อ้างผูก LocalBusiness ให้เป็น entity เดียวกัน
 const orgId = new URL('/#organization', Astro.site).toString();
 
 // จำนวนผลงานจริงสำหรับโชว์เป็นสถิติใน hero
 const works = (await getCollection('products')).length;
 
-// FAQ เฉพาะหน้าบริการ — แหล่งข้อมูลชุดเดียว ป้อนทั้ง accordion + FAQPage JSON-LD
+// FAQ เฉพาะหน้าบริการ
 const faqItems: FaqItem[] = [
   {
     question: 'รับผลิตเสื้อขั้นต่ำกี่ตัว?',
@@ -106,9 +109,6 @@ const faqItems: FaqItem[] = [
 
 const faqJsonLd = buildFaqJsonLd(faqItems);
 
-// Service JSON-LD — อธิบายบริการของโรงงานสำหรับ search/LLM crawler
-// hasOfferCatalog สร้างจาก SERVICES ชุดเดียวกับ ServiceGrid → ตรงกับที่เห็นบนหน้าเสมอ
-// provider ใช้โครงสร้างของ LocalBusiness เพื่อระบุเบอร์โทรศัพท์ อีเมล และที่อยู่อย่างชัดเจน
 const serviceJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Service',
@@ -118,13 +118,10 @@ const serviceJsonLd = {
   url: pageUrl,
   provider: {
     '@type': 'LocalBusiness',
-    // @id เดียวกับ Organization กลาง → Google/LLM รวมเป็น entity เดียว (ไม่แตกเป็นสองก้อน)
     '@id': orgId,
     name: SITE.name,
-    // ชื่อนิติบุคคล + ชื่อพ้อง ให้ตรงกับ Organization กลาง (entity เดียวกัน)
     legalName: 'บริษัท ธน พลัส 153 จำกัด',
     alternateName: ['ธน พลัส 153', 'Thana Plus 153'],
-    // โลโก้แบรนด์จริงผ่าน astro:assets (.src = path ที่ hash จริง) — เดิมชี้ /favicon.png ที่ 404
     image: new URL(logo.src, Astro.site).toString(),
     url: Astro.site?.toString(),
     telephone: SITE.contact.phone,
@@ -155,7 +152,6 @@ const serviceJsonLd = {
   },
 };
 
-// Breadcrumb JSON-LD — หน้าแรก → บริการของเรา
 const breadcrumbJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -165,8 +161,58 @@ const breadcrumbJsonLd = {
   ],
 };
 
-// รวม JSON-LD ทั้งหมด (กรอง null ของ FAQ ออก)
 const jsonLd = [serviceJsonLd, breadcrumbJsonLd, ...(faqJsonLd ? [faqJsonLd] : [])];
+
+// ข้อมูลขั้นตอนการผลิต (จาก ServiceProcess.astro)
+const steps = [
+  {
+    title: 'ปรึกษา & ขอใบเสนอราคา',
+    desc: 'แจ้งแบบเสื้อ จำนวน และลายที่ต้องการ ทีมงานประเมินราคาให้ฟรีรวดเร็ว',
+  },
+  {
+    title: 'ออกแบบ & ขึ้นแบบ',
+    desc: 'ทีมดีไซน์ช่วยจัดวางลายและขึ้นม็อคอัพ 3D ให้ดูก่อนตัดสินใจเริ่มผลิตจริง',
+  },
+  {
+    title: 'เลือกผ้า & ยืนยันเสื้อตัวอย่าง',
+    desc: 'เลือกเนื้อผ้า สี รูปทรง และตรวจเช็คความสมบูรณ์แบบของเสื้อตัวอย่างจริง',
+  },
+  {
+    title: 'เข้าสู่สายการผลิต & สกรีน',
+    desc: 'ตัดเย็บและสกรีนพิมพ์ลวดลายอย่างพิถีพิถันด้วยเครื่องจักรที่ทันสมัย',
+  },
+  {
+    title: 'ตรวจสอบคุณภาพ QC 100%',
+    desc: 'ตรวจสอบมาตรฐานทุกจุดตามหลัก QPC ก่อนบรรจุลงกล่องอย่างเรียบร้อย',
+  },
+  {
+    title: 'แพ็คสินค้า & จัดส่งฟรี',
+    desc: 'ห่อกันกระแทกอย่างดีและส่งมอบฟรีถึงที่หมายปลายทางทั่วไทย (ตามเงื่อนไข)',
+  },
+] as const;
+
+// รูปภาพและคีย์สำหรับงานพิมพ์ (จาก ServicePrinting.astro)
+const IMAGE_MAP = {
+  silk: {
+    src: silkScreenImg,
+    alt: 'งานซิลค์สกรีน (Silk Screen) ระดับมาตรฐานอุตสาหกรรม',
+    badge: 'Silk Screen Printing',
+  },
+  dtg: {
+    src: dftDtgImg,
+    alt: 'งานพิมพ์ดิจิทัลระบบ DFT และ DTG ความคมชัดสูง',
+    badge: 'Direct-to-Garment / Film',
+  },
+  sublimation: {
+    src: sublimationImg,
+    alt: 'งานพิมพ์ซับลิเมชัน (Sublimation) สีสดใสเต็มตัว',
+    badge: 'Sublimation Printing',
+  },
+} as const;
+
+
+
+const printingServices = SERVICES.filter((s) => s.printing && s.key && s.key in IMAGE_MAP);
 ---
 
 <PageLayout
@@ -174,16 +220,439 @@ const jsonLd = [serviceJsonLd, breadcrumbJsonLd, ...(faqJsonLd ? [faqJsonLd] : [
   description="โรงงานผลิตเสื้อผ้าครบวงจร เสื้อแท้ รับผลิตเสื้อยืด โปโล แจ็คเก็ต ตั้งแต่เลือกผ้า ตัดเย็บ ออกแบบฟรี งานซิลค์สกรีนและ DTG/DTF พร้อมขอใบเสนอราคาฟรี"
   jsonLd={jsonLd}
 >
-  <ServicesHero works={works} />
-  <ServiceGrid />
-  <ServicePrinting />
-  <ServiceProcess />
-  <ServiceWhyChooseUs />
-  <ServicePrivileges />
+  
+  {/* SECTION 1: Redesigned Minimalist Hero */}
+  <section class="relative py-20 lg:py-28 select-text">
+    <div class="max-w-[1200px] mx-auto text-left">
+      <span class="inline-flex items-center justify-center bg-[#FF5A1F] text-white font-black px-4 py-1.5 text-[10px] tracking-wider uppercase mb-6 rounded-none">
+        Services & Capabilities
+      </span>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 tracking-tight leading-[1.1] mb-6 uppercase">
+        ยกระดับภาพลักษณ์ทีมงาน<br/>
+        ด้วยบริการผลิตเสื้อมาตรฐานสากล
+      </h1>
+      <p class="text-gray-500 text-sm sm:text-base md:text-lg leading-relaxed max-w-2xl font-semibold mb-12">
+        บริษัท ธน พลัส 153 จำกัด ผู้ให้บริการรับผลิตเสื้อยืด เสื้อโปโล ยูนิฟอร์ม และเสื้อผ้าสำเร็จรูปสำหรับองค์กรแบบครบวงจร (One-Stop Service) ตั้งแต่วางไอเดีย ออกแบบ ขึ้นแพทเทิร์น จนถึงส่งมอบถึงมือคุณ
+      </p>
+
+      {/* Hero Stats Grid */}
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-10 border-t border-gray-150 w-full max-w-4xl">
+        <div class="text-left">
+          <span class="block text-3xl sm:text-4xl font-black text-[#FF5A1F] leading-none mb-1.5">{works}+</span>
+          <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Product Styles</span>
+        </div>
+        <div class="text-left">
+          <span class="block text-3xl sm:text-4xl font-black text-slate-900 leading-none mb-1.5">10+</span>
+          <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Years Experience</span>
+        </div>
+        <div class="text-left">
+          <span class="block text-3xl sm:text-4xl font-black text-slate-900 leading-none mb-1.5">100%</span>
+          <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Custom Tailored</span>
+        </div>
+        <div class="text-left">
+          <span class="block text-3xl sm:text-4xl font-black text-[#FF5A1F] leading-none mb-1.5">QPC</span>
+          <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Quality Certified</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* SECTION 2: Core Services Catalogue (Grid Cards) */}
+  <section id="services" class="scroll-mt-24 py-16 border-t border-gray-150">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="text-left mb-16">
+        <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-3 block">
+          Our Main Offerings
+        </span>
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 tracking-tight uppercase leading-tight">
+          บริการผลิตและขึ้นโครงเสื้อผ้าสำเร็จรูป
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {SERVICES.map((s, idx) => (
+          <article class="relative p-8 flex flex-col justify-between items-start min-h-[270px] transition-all duration-300 group border border-gray-200/80 bg-white hover:bg-slate-900 hover:text-white hover:border-slate-900 hover:shadow-xl rounded-none select-text">
+            
+            <div class="flex items-center justify-between w-full mb-6">
+              {/* Dashed Border Icon box */}
+              <div class="border-2 border-dashed border-gray-300 text-[#FF5A1F] p-2.5 flex items-center justify-center flex-shrink-0 group-hover:border-slate-700">
+                {s.icon === 'building-factory-2' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 0-1.69.9L9.6 9.3a2 2 0 0 1-1.69.9H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16Z"/><path d="M2 10V6a2 2 0 0 1 2-2h6"/></svg>
+                )}
+                {s.icon === 'scissors' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="9.8" y1="8.2" x2="22" y2="20"/><line x1="9.8" y1="15.8" x2="22" y2="4"/></svg>
+                )}
+                {s.icon === 'palette' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 5-10.9l-4.7-9a1 1 0 0 0-1.6 0l-4.7 9A7 7 0 0 0 12 22z"/></svg>
+                )}
+                {s.icon === 'printer' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14" rx="1"/><path d="M6 9V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v5"/></svg>
+                )}
+                {s.icon === 'droplet' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-13-7-13S5 10.7 5 15a7 7 0 0 0 7 7z"/></svg>
+                )}
+                {s.icon === 'pencil' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                )}
+              </div>
+              
+              <span class="font-mono text-3xl font-black text-gray-200 group-hover:text-slate-800 transition-colors duration-300">
+                0{idx + 1}
+              </span>
+            </div>
+
+            <div class="w-full text-left mt-auto">
+              <h3 class="text-lg font-black tracking-tight mb-2 group-hover:text-white transition-colors uppercase">
+                {s.title}
+              </h3>
+              <p class="text-gray-500 text-xs sm:text-sm font-semibold leading-relaxed mb-4 group-hover:text-slate-400">
+                {s.description}
+              </p>
+              
+              <ul class="flex flex-wrap gap-2 pt-3 border-t border-gray-100 group-hover:border-slate-800">
+                {s.points.map((p) => (
+                  <li class="bg-gray-100 text-gray-800 text-[10px] font-bold px-2 py-0.5 rounded-none group-hover:bg-slate-800 group-hover:text-slate-200">
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* SECTION 3: Printing Techniques Editorial Showcase */}
+  <section id="screen" class="scroll-mt-24 py-16 border-t border-gray-150 bg-gray-50/20">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="text-left mb-16">
+        <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-3 block">
+          Print Tech Specifications
+        </span>
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 tracking-tight uppercase leading-tight">
+          เทคโนโลยีและงานพิมพ์ลวดลายระบบดิจิทัล
+        </h2>
+      </div>
+
+      <div class="space-y-16 mt-16 select-text">
+        {printingServices.map((s, index) => {
+          const imgData = IMAGE_MAP[s.key as keyof typeof IMAGE_MAP];
+          const isEven = index % 2 === 1;
+          return (
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center bg-white border border-gray-150/60 p-6 md:p-8 rounded-none shadow-sm">
+              {/* Image Block */}
+              <div class={`lg:col-span-6 relative overflow-hidden aspect-[4/3] ${isEven ? 'lg:order-2' : ''}`}>
+                <Image
+                  src={imgData.src}
+                  alt={imgData.alt}
+                  widths={[400, 640]}
+                  sizes="(min-width: 1024px) 45vw, 90vw"
+                  class="w-full h-full object-cover transform hover:scale-103 transition-transform duration-500"
+                />
+                <div class="absolute bottom-4 left-4 bg-slate-950 text-white text-[10px] sm:text-xs font-black uppercase tracking-wider px-3 py-1.5 rounded-none z-20">
+                  {imgData.badge}
+                </div>
+              </div>
+              
+              {/* Description Block */}
+              <div class="lg:col-span-6 flex flex-col items-start text-left lg:px-6">
+                <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-2 font-mono">
+                  Tech 0{index + 1}
+                </span>
+                <h3 class="text-xl sm:text-2xl font-black text-gray-900 mb-4">{s.title}</h3>
+                <p class="text-gray-500 text-sm leading-relaxed mb-6 font-semibold">{s.description}</p>
+                
+                <ul class="space-y-2.5 w-full mb-8">
+                  {s.points.map((p) => (
+                    <li class="flex items-start gap-2.5 text-xs sm:text-sm text-gray-700 font-semibold">
+                      <div class="w-5 h-5 rounded-full bg-orange-50 text-[#FF5A1F] flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      </div>
+                      <span>{p}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <a
+                  href="#contact"
+                  class="inline-flex items-center gap-1.5 text-xs font-black text-slate-900 hover:text-[#FF5A1F] transition-colors border-b border-slate-900 hover:border-[#FF5A1F] pb-0.5"
+                >
+                  <span>ปรึกษาเทคนิคลายพิมพ์นี้</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  {/* SECTION 4: Redesigned Alternating Workflow Timeline */}
+  <section id="process" class="scroll-mt-24 py-24 border-t border-gray-150 bg-white">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="text-left mb-16">
+        <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-3 block">
+          Step-by-Step Workflow
+        </span>
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 tracking-tight uppercase leading-tight">
+          ขั้นตอนการวางแผนและส่งมอบเสื้อผ้าสำเร็จรูป
+        </h2>
+      </div>
+
+      {/* Alternating Timeline Wrapper */}
+      <div class="relative w-full max-w-4xl mx-auto mt-16 select-text">
+        {/* Vertical center line */}
+        <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gray-200 transform md:-translate-x-1/2"></div>
+        
+        <div class="space-y-12 relative">
+          {steps.map((step, i) => {
+            const isLeft = i % 2 === 0;
+            return (
+              <div class="flex flex-col md:flex-row items-start md:justify-between w-full relative">
+                {/* Timeline dot */}
+                <div class="absolute left-4 md:left-1/2 w-3.5 h-3.5 bg-white border-3 border-[#FF5A1F] rounded-full transform -translate-x-[6px] md:-translate-x-1/2 z-20 mt-2"></div>
+                
+                {/* Left container or Spacer */}
+                {isLeft ? (
+                  <div class="w-full md:w-[45%] pl-10 md:pl-0 md:text-right flex flex-col md:items-end">
+                    <span class="text-4xl font-black text-[#FF5A1F]/30 leading-none mb-2 block font-mono">0{i+1}</span>
+                    <h3 class="text-lg font-black text-gray-900 mb-1">{step.title}</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm leading-relaxed max-w-sm font-semibold">{step.desc}</p>
+                  </div>
+                ) : (
+                  <div class="hidden md:block w-[45%]"></div>
+                )}
+                
+                {/* Right container or Spacer */}
+                {!isLeft ? (
+                  <div class="w-full md:w-[45%] pl-10 md:pl-0 md:text-left flex flex-col md:items-start">
+                    <span class="text-4xl font-black text-[#FF5A1F]/30 leading-none mb-2 block font-mono">0{i+1}</span>
+                    <h3 class="text-lg font-black text-gray-900 mb-1">{step.title}</h3>
+                    <p class="text-gray-500 text-xs sm:text-sm leading-relaxed max-w-sm font-semibold">{step.desc}</p>
+                  </div>
+                ) : (
+                  <div class="hidden md:block w-[45%]"></div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* SECTION 5: Why Choose Us (Dark Section) */}
+  <section class="w-full bg-[#0A1128] text-white py-24 select-text">
+    <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        
+        {/* Left Column: Text & Reasons */}
+        <div class="lg:col-span-6 text-left flex flex-col items-start">
+          <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-4 block">
+            Why Choose Us
+          </span>
+          <h2 class="text-3xl md:text-4xl font-black tracking-tight leading-tight text-white mb-6 uppercase">
+            โรงงานรับผลิตเสื้อผ้าสำเร็จรูป<br/>
+            <span class="text-slate-400">บริษัท ธน พลัส 153 จำกัด</span>
+          </h2>
+          <p class="text-slate-400 text-sm sm:text-base leading-relaxed mb-10 font-semibold max-w-xl">
+            สัมผัสการร่วมงานกับพาร์ทเนอร์ที่พร้อมเติบโตและยกระดับแบรนด์ของคุณ ด้วยโรงงานที่เพียบพร้อมด้วยเทคโนโลยีและทีมงานมืออาชีพที่มีประสบการณ์ยาวนาน
+          </p>
+
+          <div class="flex flex-col gap-8 w-full">
+            {WHY_CHOOSE_US.map((item) => (
+              <div class="flex items-start gap-4 group">
+                <div class="bg-white/10 p-3 flex items-center justify-center shrink-0 group-hover:bg-[#FF5A1F] group-hover:scale-105 transition-all duration-300">
+                  {item.icon === 'trophy' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"/><path d="M12 2a4 4 0 0 0-4 4v5a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4Z"/></svg>
+                  )}
+                  {item.icon === 'building-factory-2' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 0-1.69.9L9.6 9.3a2 2 0 0 1-1.69.9H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16Z"/><path d="M2 10V6a2 2 0 0 1 2-2h6"/></svg>
+                  )}
+                  {item.icon === 'heart-handshake' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M12 5 9.04 7.96a2.17 2.17 0 0 0 0 3.08v0c.8.8 2.1.8 2.9 0L15 8"/></svg>
+                  )}
+                </div>
+                <div class="text-left">
+                  <h3 class="text-lg font-black text-white mb-1.5 uppercase">{item.title}</h3>
+                  <p class="text-slate-400 text-xs sm:text-sm leading-relaxed font-semibold">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right Column: Factory Image */}
+        <div class="lg:col-span-6 relative h-[400px] lg:h-[500px] rounded-none overflow-hidden group border border-white/10 shadow-2xl">
+          <Image
+            src={whyChooseOverlay}
+            alt="โรงงานทอปกเสื้อ ธน พลัส 153"
+            widths={[400, 600, 800]}
+            sizes="(min-width: 1024px) 45vw, 90vw"
+            class="absolute inset-0 w-full h-full object-cover pointer-events-none z-10 transition-opacity duration-500 group-hover:opacity-0"
+          />
+          <Image
+            src={whyChooseImg}
+            alt="โรงงานผลิตและสกรีนเสื้อโปโล ธน พลัส 153"
+            widths={[400, 600, 800]}
+            sizes="(min-width: 1024px) 45vw, 90vw"
+            class="w-full h-full object-cover transform group-hover:scale-103 transition-transform duration-700"
+          />
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  {/* SECTION 6: Factory Privileges Grid */}
+  <section class="py-24 border-t border-b border-gray-150 bg-gray-50/20">
+    <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+      
+      {/* Redesigned 2-Column Header */}
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-16 text-left items-start">
+        <div class="lg:col-span-7">
+          <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-4 block">
+            Factory Privileges
+          </span>
+          <h2 class="text-3xl md:text-4xl font-black tracking-tight leading-[1.15] text-gray-900 uppercase">
+            สิทธิพิเศษและบริการเสริมฟรี <br/>
+            <span class="text-[#FF5A1F]">สำหรับการผลิตเสื้อล็อตพิเศษ</span>
+          </h2>
+        </div>
+        <div class="lg:col-span-5 lg:pt-8">
+          <p class="text-gray-500 text-sm md:text-base font-semibold leading-relaxed">
+            เพื่อให้ลูกค้าของเราได้รับความคุ้มค่าและสะดวกสบายที่สุดในการผลิตเสื้อ เรามีข้อเสนอพิเศษเพิ่มเติมโดยไม่มีค่าใช้จ่ายแฝงใดๆ ทั้งสิ้น
+          </p>
+        </div>
+      </div>
+
+      {/* Grid of 4 Privilege cards (2x2 on Mobile, 4 columns on Tablet/Desktop) */}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 pt-6">
+        {PRIVILEGES.map((item, index) => {
+          return (
+            <article class="relative p-8 flex flex-col justify-between items-start min-h-[250px] transition-all duration-300 group border rounded-none shadow-sm bg-white text-gray-900 border-gray-200/80 hover:bg-slate-900 hover:text-white hover:border-slate-900 hover:shadow-xl">
+              
+              {/* Top Row: Icon inside dashed box and Diagonal Arrow badge */}
+              <div class="flex items-center justify-between w-full mb-8">
+                <div class="border-2 border-dashed p-2.5 flex items-center justify-center flex-shrink-0 w-11 h-11 border-gray-300 text-gray-600 group-hover:border-slate-700 group-hover:text-white">
+                  {item.key === 'design' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                  )}
+                  {item.key === 'screen' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 5-10.9l-4.7-9a1 1 0 0 0-1.6 0l-4.7 9A7 7 0 0 0 12 22z"/></svg>
+                  )}
+                  {item.key === 'shipping' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                  )}
+                  {item.key === 'consult' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  )}
+                </div>
+                
+                <div class="w-9 h-9 flex items-center justify-center transition-all duration-300 bg-gray-150 text-gray-700 group-hover:bg-[#FF5A1F] group-hover:text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                </div>
+              </div>
+
+              {/* Bottom Row: Text content */}
+              <div class="w-full text-left mt-auto">
+                <h3 class="text-base font-black tracking-tight mb-2 uppercase text-gray-900 group-hover:text-white">
+                  {item.title}
+                </h3>
+                <p class="text-xs leading-relaxed font-semibold text-gray-500 group-hover:text-slate-400">
+                  {item.description}
+                </p>
+              </div>
+
+            </article>
+          );
+        })}
+      </div>
+
+    </div>
+  </section>
+
+  {/* SECTION 7: FAQ Accordion */}
   <Faq
     items={faqItems}
     title="คำถามที่พบบ่อยเกี่ยวกับบริการ"
     class="mt-24 lg:mt-32 max-w-4xl mx-auto"
   />
-  <ServiceCta />
+
+  {/* SECTION 8: Redesigned Call-to-Action Panel */}
+  <section id="contact" class="scroll-mt-24 w-full bg-slate-900 text-white py-20 px-6 sm:px-12 lg:px-16 mt-24 rounded-none relative overflow-hidden select-text">
+    {/* Dark Overlay Filter */}
+    <div class="absolute inset-0 bg-slate-950/80 z-10 pointer-events-none"></div>
+    <Image
+      src={whyChooseOverlay}
+      alt="Factory Background"
+      widths={[600, 1200]}
+      sizes="100vw"
+      class="absolute inset-0 w-full h-full object-cover opacity-20 z-0 pointer-events-none select-none"
+    />
+
+    <div class="max-w-[1200px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-20 items-center">
+      {/* Left Block: Description */}
+      <div class="lg:col-span-7 flex flex-col items-start text-left">
+        <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-4 block">
+          Contact Us
+        </span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-white mb-6 uppercase">
+          พร้อมร่วมงานกับ<br/>
+          <span class="text-slate-400">ทีมงานมืออาชีพแล้วหรือยัง?</span>
+        </h2>
+        <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-8 max-w-xl font-semibold">
+          คุยรายละเอียดผ้า คิวงานสกรีน ม็อคอัพ หรือขอใบเสนอราคาฟรีได้เลย ทีมงาน Thanaplus ยินดีดูแลคุณตั้งแต่ต้นจนจบงาน
+        </p>
+
+        {/* Address */}
+        <div class="flex items-start gap-3 text-xs sm:text-sm text-slate-400 bg-white/5 border border-white/10 p-4 max-w-xl w-full">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 mt-0.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div>
+            <strong class="block text-white font-bold mb-1">สถานที่ตั้งโรงงาน (Head Office)</strong>
+            <span>{SITE.contact.address}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Block: Contact Channels Buttons */}
+      <div class="lg:col-span-5 w-full bg-slate-950/60 border border-white/10 p-8 rounded-none">
+        <h3 class="text-base font-black text-white mb-6 uppercase tracking-wider pb-3 border-b border-white/10 text-left">
+          เลือกช่องทางติดต่อทีมงาน
+        </h3>
+
+        <div class="flex flex-col gap-4">
+          <a
+            href={SITE.contact.lineLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full bg-[#06C755] hover:bg-[#05b34c] text-white py-3.5 text-center flex items-center justify-center gap-2 cursor-pointer font-black text-sm uppercase rounded-none transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <span>คุยทาง Line: {SITE.contact.line}</span>
+          </a>
+
+          <a
+            href={SITE.contact.phoneLink}
+            class="w-full bg-white text-slate-950 hover:bg-slate-100 py-3.5 text-center flex items-center justify-center gap-2 cursor-pointer font-black text-sm uppercase rounded-none transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span>โทรติดต่อ: {SITE.contact.phone}</span>
+          </a>
+
+          <a
+            href={`mailto:${SITE.contact.email}`}
+            class="w-full border border-white/20 text-white hover:bg-white/5 py-3.5 text-center flex items-center justify-center gap-2 cursor-pointer font-black text-sm uppercase rounded-none transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <span>ส่งอีเมล: {SITE.contact.email}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </PageLayout>

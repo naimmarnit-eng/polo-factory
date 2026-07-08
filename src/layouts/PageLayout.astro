@@ -3,6 +3,8 @@
 // ใช้ครอบ Layout (โครง HTML/SEO) เพื่อให้ระยะขอบทุกหน้าเท่ากัน
 import Layout from '@/layouts/Layout.astro';
 import Navbar from '@/components/Navbar.astro';
+import FloatingContact from '@/components/FloatingContact.astro';
+import Footer from '@/components/Footer.astro';
 
 interface Props {
   title?: string;
@@ -16,18 +18,21 @@ interface Props {
 }
 
 const {
-  mainClass = 'px-4 sm:px-8 lg:px-12 pt-8 pb-20',
+  mainClass = 'px-4 sm:px-8 lg:px-12 pt-28 pb-20',
   ...seo
 } = Astro.props;
 ---
 
 <Layout {...seo}>
-  <div class="min-h-screen bg-white p-2 sm:p-4 md:p-6 font-sans">
-    <div class="max-w-[1400px] mx-auto bg-[#FAFAFA] rounded-[2rem] sm:rounded-[3rem] overflow-hidden relative shadow-sm border border-gray-100">
-      <Navbar />
+  <div class="min-h-screen bg-[#FAFAFA] font-sans flex flex-col">
+    <Navbar />
+    <div class="w-full max-w-[1400px] mx-auto flex-grow relative">
       <main class={mainClass}>
         <slot />
       </main>
     </div>
+    <Footer />
   </div>
+  <FloatingContact />
 </Layout>
+

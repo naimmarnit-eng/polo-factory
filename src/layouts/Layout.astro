@@ -4,6 +4,7 @@ import '@/styles/global.css';
 import SEO from '@/components/SEO.astro';
 import { SITE } from '@/consts';
 import favicon from '@/assets/favicon.png';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title?: string;
@@ -89,8 +90,58 @@ const { title, description, image, type, noindex, jsonLd } = Astro.props;
       noindex={noindex}
       jsonLd={jsonLd}
     />
+
+    {/* Astro Client Router to enable seamless page transition animations */}
+    <ClientRouter />
   </head>
   <body class="min-h-screen bg-background text-foreground antialiased">
     <slot />
+
+    {/* Scroll Reveal Animation script */}
+    <script>
+      function initScrollReveal() {
+        const revealElements = document.querySelectorAll(
+          '.reveal, .reveal-up, .reveal-left, .reveal-right, .reveal-scale'
+        );
+
+        if (revealElements.length === 0) return;
+
+        // Immediately show if user prefers reduced motion
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) {
+          revealElements.forEach((el) => el.classList.add('active'));
+          return;
+        }
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            threshold: 0.05,
+            rootMargin: '0px 0px -40px 0px',
+          }
+        );
+
+        revealElements.forEach((el) => {
+          observer.observe(el);
+        });
+      }
+
+      // Initialize on load and on page navigation (Astro transitions support)
+      document.addEventListener('astro:page-load', initScrollReveal);
+      
+      // Fallback
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initScrollReveal);
+      } else {
+        initScrollReveal();
+      }
+    </script>
   </body>
 </html>

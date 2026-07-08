@@ -1,66 +1,114 @@
 ---
 import { Image } from 'astro:assets';
-import Icon from '@/components/Icon.astro';
-import whyChooseImg from '@/assets/home/WhyChooseUsHover.png';
 import whyChooseOverlay from '@/assets/home/WhyChooseUs.png';
+import whyChooseHover from '@/assets/home/WhyChooseUsHover.png';
 ---
-{/* Why Choose Us Section */}
-<section class="mt-32 relative z-20 bg-gray-900 text-white rounded-[3rem] p-10 md:p-16 lg:p-20 overflow-hidden shadow-2xl mx-2 md:mx-0">
-  {/* Background decorative elements */}
-  <div class="absolute -right-[10%] -top-[20%] w-[50%] h-[150%] bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
 
-  <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-    
-    <div class="lg:col-span-6 flex flex-col items-start">
-      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-6 leading-tight">ทำไมต้องเลือกโรงงานผลิตเสื้อ ธน พลัส 153</h2>
-      <p class="text-gray-400 text-lg mb-10 leading-relaxed max-w-xl">
-        ในฐานะโรงงานรับผลิตเสื้อครบวงจร เราคือพาร์ทเนอร์ที่พร้อมเติบโตไปพร้อมกับแบรนด์ของคุณ ด้วยประสบการณ์กว่า 10 ปี เราเข้าใจทุกรายละเอียดของงานผ้าและงานสกรีน เพื่อส่งมอบสินค้าที่ดีที่สุดให้คุณ
-      </p>
-
-      <div class="flex flex-col gap-8 w-full">
-        <div class="flex items-start gap-4">
-          <div class="bg-white/10 p-3 rounded-2xl shrink-0"><Icon name="trophy" size={28} class="text-white" /></div>
-          <div>
-            <h3 class="text-xl font-semibold mb-2">มาตรฐาน QPC (Quality, Price, Control)</h3>
-            <p class="text-gray-400 text-sm leading-relaxed">ควบคุมคุณภาพทุกขั้นตอน (Quality) ราคาคุ้มค่าสมเหตุสมผล (Price) และสามารถควบคุมระยะเวลาการผลิตให้ตรงตามกำหนด (Control)</p>
+{/* About Us & Core Values Section - Overhauled to Mockup Style */}
+<section id="about" class="w-full py-24 bg-white text-gray-900">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      
+      {/* Left Column - Two overlapping square images */}
+      <div class="lg:col-span-6 relative flex justify-center reveal-left">
+        <div class="relative w-full max-w-lg aspect-[4/4.5] flex items-start justify-start">
+          {/* Main Image (Left, Top) */}
+          <div class="w-[75%] aspect-[3/4] overflow-hidden shadow-lg border border-gray-100">
+            <Image
+              src={whyChooseOverlay}
+              alt="โรงงานทอปกเสื้อและตัดเย็บครบวงจร"
+              widths={[400, 600]}
+              sizes="(min-width: 1024px) 35vw, 80vw"
+              class="w-full h-full object-cover"
+            />
           </div>
-        </div>
-        
-        <div class="flex items-start gap-4">
-          <div class="bg-white/10 p-3 rounded-2xl shrink-0"><Icon name="building-factory-2" size={28} class="text-white" /></div>
-          <div>
-            <h3 class="text-xl font-semibold mb-2">กำลังผลิตสูง รองรับทุกสเกล</h3>
-            <p class="text-gray-400 text-sm leading-relaxed">มีโรงงานผลิตและเครื่องจักรที่ทันสมัยของตัวเอง รองรับการผลิตจำนวนมาก พร้อมทีมช่างตัดเย็บผู้เชี่ยวชาญ</p>
-          </div>
-        </div>
-
-        <div class="flex items-start gap-4">
-          <div class="bg-white/10 p-3 rounded-2xl shrink-0"><Icon name="heart-handshake" size={28} class="text-white" /></div>
-          <div>
-            <h3 class="text-xl font-semibold mb-2">ประสบการณ์ยาวนานกว่า 10 ปี</h3>
-            <p class="text-gray-400 text-sm leading-relaxed">ได้รับความไว้วางใจจากแบรนด์เสื้อผ้าและองค์กรชั้นนำมากมาย การันตีด้วยผลงานจริง</p>
+          
+          {/* Overlapping Image (Bottom, Right) */}
+          <div class="absolute bottom-0 right-0 w-[55%] aspect-[4/3] overflow-hidden shadow-2xl border-4 border-white z-20">
+            <Image
+              src={whyChooseHover}
+              alt="โรงงานสกรีนเสื้อโปโลคอมพิวเตอร์"
+              widths={[300, 450]}
+              sizes="(min-width: 1024px) 25vw, 60vw"
+              class="w-full h-full object-cover"
+            />
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="lg:col-span-6 relative h-[400px] lg:h-[600px] rounded-[2rem] overflow-hidden group">
-      <Image
-        src={whyChooseOverlay}
-        alt=""
-        aria-hidden="true"
-        widths={[400, 600, 800, 1000]}
-        sizes="(min-width: 1024px) 50vw, 100vw"
-        class="absolute inset-0 w-full h-full object-cover pointer-events-none z-10 transition-opacity duration-500 group-hover:opacity-0"
-      />
-      <Image
-        src={whyChooseImg}
-        alt="โรงงานผลิตเสื้อ ธน พลัส 153 กำลังตัดเย็บและสกรีนเสื้อ"
-        widths={[400, 600, 800, 1000]}
-        sizes="(min-width: 1024px) 50vw, 100vw"
-        class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-      />
-    </div>
+      {/* Right Column - Text Details & 3-Column QPC Row */}
+      <div class="lg:col-span-6 flex flex-col text-left lg:pl-6 reveal-right delay-200">
+        
+        <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-4 block">
+          Why Choose Us
+        </span>
 
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight mb-6 leading-[1.15] uppercase">
+          Trusted Global Partner <br/>
+          For Custom Apparel
+        </h2>
+
+        <p class="text-gray-500 text-sm sm:text-base leading-relaxed mb-8 font-semibold">
+          ธน พลัส 153 คือโรงงานผู้ผลิตเสื้อผ้าสำเร็จรูปที่มุ่งเน้นความเป็นเลิศในการตัดเย็บ เสริมสร้างภาพลักษณ์ที่ดีของบุคลากรและทีมงานในองค์กรด้วยมาตรฐาน QPC (Quality, Price, Control) ที่ทำให้ทุกคำสั่งผลิตเสร็จสิ้นตรงตามเป้าหมาย
+        </p>
+
+        {/* 3-Column Core Value Items */}
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8 border-t border-gray-150">
+          
+          {/* Point 1: Quality */}
+          <div class="flex flex-col items-start text-left">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-6 h-6 rounded-full bg-[#FF5A1F] text-white flex items-center justify-center flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </div>
+              <h3 class="text-sm font-black text-gray-900 uppercase tracking-wide">Quality</h3>
+            </div>
+            <p class="text-gray-500 text-xs leading-relaxed font-semibold">
+              คัดสรรผ้าเกรดพรีเมียม ตัดเย็บประณีต ตรวจเช็ค QC เข้มงวดทุกขั้นตอน
+            </p>
+          </div>
+
+          {/* Point 2: Price */}
+          <div class="flex flex-col items-start text-left">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-6 h-6 rounded-full bg-[#FF5A1F] text-white flex items-center justify-center flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </div>
+              <h3 class="text-sm font-black text-gray-900 uppercase tracking-wide">Price</h3>
+            </div>
+            <p class="text-gray-500 text-xs leading-relaxed font-semibold">
+              ราคาที่คุ้มค่าสมเหตุสมผล ตรงจากโรงงานผลิตโดยตรง ไม่มีค่าแฝง
+            </p>
+          </div>
+
+          {/* Point 3: Control */}
+          <div class="flex flex-col items-start text-left">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-6 h-6 rounded-full bg-[#FF5A1F] text-white flex items-center justify-center flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </div>
+              <h3 class="text-sm font-black text-gray-900 uppercase tracking-wide">Control</h3>
+            </div>
+            <p class="text-gray-500 text-xs leading-relaxed font-semibold">
+              ควบคุมการผลิตครบวงจร จัดส่งรวดเร็วทันเวลานัดหมาย 100%
+            </p>
+          </div>
+
+        </div>
+
+        {/* Action Button */}
+        <div class="mt-10">
+          <a
+            href="/services/#contact"
+            class="inline-flex items-center justify-center gap-2 bg-[#FF5A1F] hover:bg-[#E04E17] text-white font-black px-7 py-3.5 rounded-xl shadow-lg shadow-orange-600/15 hover:-translate-y-0.5 transition-all duration-300 text-sm w-fit"
+          >
+            <span>Get Your Free Sample</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
   </div>
 </section>
