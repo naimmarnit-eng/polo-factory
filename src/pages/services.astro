@@ -18,6 +18,8 @@ import sublimationImg from '@/assets/home/ScreenServices/Sublimation.png';
 // นำเข้ารูปภาพประกอบของโรงงาน
 import whyChooseImg from '@/assets/home/WhyChooseUsHover.png';
 import whyChooseOverlay from '@/assets/home/WhyChooseUs.png';
+import patternDesignImg from '@/assets/home/trending/pattern-design.jpg';
+import sewingQcImg from '@/assets/home/trending/sewing-qc.jpg';
 
 
 
@@ -213,6 +215,16 @@ const IMAGE_MAP = {
 
 
 const printingServices = SERVICES.filter((s) => s.printing && s.key && s.key in IMAGE_MAP);
+
+// แมปภาพพื้นหลังของกล่องบริการแต่ละรายการ
+const serviceImages = [
+  whyChooseOverlay,   // OEM/ODM
+  sewingQcImg,        // ตัดเย็บตามแบบ
+  silkScreenImg,      // ซิลค์สกรีน
+  dftDtgImg,          // DTG/DTF
+  sublimationImg,     // Sublimation
+  patternDesignImg    // ออกแบบฟรี
+];
 ---
 
 <PageLayout
@@ -257,9 +269,9 @@ const printingServices = SERVICES.filter((s) => s.printing && s.key && s.key in 
     </div>
   </section>
 
-  {/* SECTION 2: Core Services Catalogue (Grid Cards) */}
-  <section id="services" class="scroll-mt-24 py-16 border-t border-gray-150">
-    <div class="max-w-[1200px] mx-auto">
+  {/* SECTION 2: Core Services Catalogue (Grid Cards -> Carousel Slider) */}
+  <section id="services" class="scroll-mt-24 py-16 border-t border-gray-150 overflow-hidden">
+    <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-left mb-16">
         <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-3 block">
           Our Main Offerings
@@ -269,57 +281,96 @@ const printingServices = SERVICES.filter((s) => s.printing && s.key && s.key in 
         </h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-        {SERVICES.map((s, idx) => (
-          <article class:list={["relative p-8 flex flex-col justify-between items-start min-h-[270px] hover-lift group border border-gray-200/80 bg-white hover:bg-slate-900 hover:text-white hover:border-slate-900 hover:shadow-xl rounded-none select-text reveal-scale", idx === 0 ? "delay-75" : idx === 1 ? "delay-150" : "delay-200"]}>
-            
-            <div class="flex items-center justify-between w-full mb-6">
-              {/* Dashed Border Icon box */}
-              <div class="border-2 border-dashed border-gray-300 text-[#FF5A1F] p-2.5 flex items-center justify-center flex-shrink-0 group-hover:border-slate-700">
-                {s.icon === 'building-factory-2' && (
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 0-1.69.9L9.6 9.3a2 2 0 0 1-1.69.9H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16Z"/><path d="M2 10V6a2 2 0 0 1 2-2h6"/></svg>
-                )}
-                {s.icon === 'scissors' && (
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="9.8" y1="8.2" x2="22" y2="20"/><line x1="9.8" y1="15.8" x2="22" y2="4"/></svg>
-                )}
-                {s.icon === 'palette' && (
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 5-10.9l-4.7-9a1 1 0 0 0-1.6 0l-4.7 9A7 7 0 0 0 12 22z"/></svg>
-                )}
-                {s.icon === 'printer' && (
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14" rx="1"/><path d="M6 9V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v5"/></svg>
-                )}
-                {s.icon === 'droplet' && (
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-13-7-13S5 10.7 5 15a7 7 0 0 0 7 7z"/></svg>
-                )}
-                {s.icon === 'pencil' && (
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
-                )}
-              </div>
-              
-              <span class="font-mono text-3xl font-black text-gray-200 group-hover:text-slate-800 transition-colors duration-300">
-                0{idx + 1}
-              </span>
-            </div>
+      <!-- Services Carousel Slider Wrapper -->
+      <div class="relative overflow-hidden w-full py-4 reveal-up">
+        <div id="services-slider-track" class="flex gap-6 transition-transform duration-500 ease-in-out">
+          {SERVICES.map((s, idx) => (
+            <div class="services-slide shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
+              <article class:list={["relative p-8 flex flex-col justify-between items-start min-h-[300px] hover-lift group border border-slate-850 bg-slate-950 rounded-3xl overflow-hidden select-text w-full h-full shadow-lg", idx === 0 ? "delay-75" : idx === 1 ? "delay-150" : "delay-200"]}>
+                
+                {/* Background Image */}
+                <Image 
+                  src={serviceImages[idx]} 
+                  alt={s.title} 
+                  widths={[300, 450]} 
+                  sizes="(max-width: 640px) 100vw, 33vw"
+                  class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-all duration-700 z-0 select-none pointer-events-none group-hover:scale-105"
+                />
+                
+                {/* Dark Gradient Overlay */}
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/85 to-slate-950/60 z-10 pointer-events-none"></div>
 
-            <div class="w-full text-left mt-auto">
-              <h3 class="text-lg font-black tracking-tight mb-2 group-hover:text-white transition-colors uppercase">
-                {s.title}
-              </h3>
-              <p class="text-gray-500 text-xs sm:text-sm font-semibold leading-relaxed mb-4 group-hover:text-slate-400">
-                {s.description}
-              </p>
-              
-              <ul class="flex flex-wrap gap-2 pt-3 border-t border-gray-100 group-hover:border-slate-800">
-                {s.points.map((p) => (
-                  <li class="bg-gray-100 text-gray-800 text-[10px] font-bold px-2 py-0.5 rounded-none group-hover:bg-slate-800 group-hover:text-slate-200">
-                    {p}
-                  </li>
-                ))}
-              </ul>
-            </div>
+                {/* Content Container (Z-indexed) */}
+                <div class="relative z-20 w-full h-full flex flex-col justify-between items-start flex-grow">
+                  
+                  {/* Top Bar */}
+                  <div class="flex items-center justify-between w-full mb-8">
+                    {/* Dashed Border Icon box */}
+                    <div class="border-2 border-dashed border-slate-700 text-[#FF5A1F] p-2.5 flex items-center justify-center flex-shrink-0 group-hover:border-[#FF5A1F] transition-colors rounded-xl bg-slate-900/40">
+                      {s.icon === 'building-factory-2' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 0-1.69.9L9.6 9.3a2 2 0 0 1-1.69.9H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16Z"/><path d="M2 10V6a2 2 0 0 1 2-2h6"/></svg>
+                      )}
+                      {s.icon === 'scissors' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="9.8" y1="8.2" x2="22" y2="20"/><line x1="9.8" y1="15.8" x2="22" y2="4"/></svg>
+                      )}
+                      {s.icon === 'palette' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 5-10.9l-4.7-9a1 1 0 0 0-1.6 0l-4.7 9A7 7 0 0 0 12 22z"/></svg>
+                      )}
+                      {s.icon === 'printer' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14" rx="1"/><path d="M6 9V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v5"/></svg>
+                      )}
+                      {s.icon === 'droplet' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-13-7-13S5 10.7 5 15a7 7 0 0 0 7 7z"/></svg>
+                      )}
+                      {s.icon === 'pencil' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                      )}
+                    </div>
+                    
+                    <span class="font-mono text-3xl font-black text-slate-800 group-hover:text-[#FF5A1F]/30 transition-colors duration-300">
+                      0{idx + 1}
+                    </span>
+                  </div>
 
-          </article>
-        ))}
+                  {/* Text Details */}
+                  <div class="w-full text-left mt-auto">
+                    <h3 class="text-xl font-black tracking-tight mb-2 text-white group-hover:text-[#FF5A1F] transition-colors uppercase">
+                      {s.title}
+                    </h3>
+                    <p class="text-slate-400 text-xs sm:text-sm font-semibold leading-relaxed mb-5">
+                      {s.description}
+                    </p>
+                    
+                    <ul class="flex flex-wrap gap-2 pt-3 border-t border-slate-800 w-full">
+                      {s.points.map((p) => (
+                        <li class="bg-slate-900/60 text-slate-300 text-[10px] font-bold px-2.5 py-1 rounded-md border border-slate-800/80 group-hover:border-[#FF5A1F]/20 group-hover:text-white transition-colors">
+                          {p}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                </div>
+
+              </article>
+            </div>
+          ))}
+        </div>
+
+        <!-- Slider Controls -->
+        <div class="flex items-center justify-center gap-4 mt-12" id="services-slider-controls">
+          <button type="button" id="services-prev-slide" class="w-10 h-10 rounded-full border border-gray-200 bg-white hover:border-[#FF5A1F] hover:text-[#FF5A1F] text-gray-700 flex items-center justify-center cursor-pointer transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          
+          <div class="flex items-center gap-2" id="services-slider-dots">
+            {/* Dots will be generated dynamically */}
+          </div>
+
+          <button type="button" id="services-next-slide" class="w-10 h-10 rounded-full border border-gray-200 bg-white hover:border-[#FF5A1F] hover:text-[#FF5A1F] text-gray-700 flex items-center justify-center cursor-pointer transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
       </div>
     </div>
   </section>
@@ -694,12 +745,161 @@ const printingServices = SERVICES.filter((s) => s.printing && s.key && s.key in 
       counters.forEach(c => observer.observe(c));
     }
 
-    // Astro page loads
-    document.addEventListener('astro:page-load', initStatsCounters);
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initStatsCounters);
-    } else {
+    function setupServicesSlider() {
+      const track = document.getElementById('services-slider-track') as HTMLElement;
+      const slides = document.querySelectorAll('.services-slide') as NodeListOf<HTMLElement>;
+      const prevBtn = document.getElementById('services-prev-slide');
+      const nextBtn = document.getElementById('services-next-slide');
+      const dotsContainer = document.getElementById('services-slider-dots');
+
+      if (!track || slides.length === 0) return;
+
+      let currentIndex = 0;
+      let autoPlayInterval: number | null = null;
+
+      function getItemsPerPage() {
+        if (window.innerWidth >= 1024) return 3;
+        if (window.innerWidth >= 640) return 2;
+        return 1;
+      }
+
+      function getMaxIndex() {
+        return Math.max(0, slides.length - getItemsPerPage());
+      }
+
+      function updateSlider() {
+        const maxIndex = getMaxIndex();
+        if (currentIndex > maxIndex) {
+          currentIndex = maxIndex;
+        }
+        if (currentIndex < 0) {
+          currentIndex = 0;
+        }
+
+        const slideWidth = slides[0].getBoundingClientRect().width;
+        const gap = 24; // gap-6
+        const offset = -currentIndex * (slideWidth + gap);
+        track.style.transform = `translateX(${offset}px)`;
+
+        updateDots();
+
+        if (prevBtn) {
+          const prevHtmlBtn = prevBtn as HTMLButtonElement;
+          prevHtmlBtn.disabled = currentIndex === 0;
+          prevHtmlBtn.style.opacity = currentIndex === 0 ? '0.35' : '1';
+        }
+        if (nextBtn) {
+          const nextHtmlBtn = nextBtn as HTMLButtonElement;
+          nextHtmlBtn.disabled = currentIndex === maxIndex;
+          nextHtmlBtn.style.opacity = currentIndex === maxIndex ? '0.35' : '1';
+        }
+      }
+
+      function updateDots() {
+        if (!dotsContainer) return;
+        dotsContainer.innerHTML = '';
+        const maxIndex = getMaxIndex();
+        if (maxIndex <= 0) return;
+
+        for (let i = 0; i <= maxIndex; i++) {
+          const dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = `w-2 h-2 rounded-full transition-all cursor-pointer ${
+            i === currentIndex ? 'bg-[#FF5A1F] w-4' : 'bg-gray-300 hover:bg-gray-400'
+          }`;
+          dot.setAttribute('aria-label', `Slide to service ${i + 1}`);
+          dot.addEventListener('click', () => {
+            currentIndex = i;
+            updateSlider();
+            resetAutoPlay();
+          });
+          dotsContainer.appendChild(dot);
+        }
+      }
+
+      function slideNext() {
+        const maxIndex = getMaxIndex();
+        if (currentIndex < maxIndex) {
+          currentIndex++;
+        } else {
+          currentIndex = 0;
+        }
+        updateSlider();
+      }
+
+      function slidePrev() {
+        const maxIndex = getMaxIndex();
+        if (currentIndex > 0) {
+          currentIndex--;
+        } else {
+          currentIndex = maxIndex;
+        }
+        updateSlider();
+      }
+
+      function startAutoPlay() {
+        stopAutoPlay();
+        autoPlayInterval = window.setInterval(slideNext, 4500);
+      }
+
+      function stopAutoPlay() {
+        if (autoPlayInterval) {
+          clearInterval(autoPlayInterval);
+          autoPlayInterval = null;
+        }
+      }
+
+      function resetAutoPlay() {
+        startAutoPlay();
+      }
+
+      prevBtn?.addEventListener('click', () => {
+        slidePrev();
+        resetAutoPlay();
+      });
+
+      nextBtn?.addEventListener('click', () => {
+        slideNext();
+        resetAutoPlay();
+      });
+
+      let startX = 0;
+      track.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        stopAutoPlay();
+      }, { passive: true });
+
+      track.addEventListener('touchend', (e) => {
+        const diffX = startX - e.changedTouches[0].clientX;
+        if (Math.abs(diffX) > 50) {
+          if (diffX > 0) {
+            slideNext();
+          } else {
+            slidePrev();
+          }
+        }
+        startAutoPlay();
+      }, { passive: true });
+
+      window.addEventListener('resize', () => {
+        updateSlider();
+      });
+
+      updateSlider();
+      startAutoPlay();
+    }
+
+    function initAll() {
       initStatsCounters();
+      setupServicesSlider();
+    }
+
+    // Astro page loads
+    document.addEventListener('astro:page-load', initAll);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+      initAll();
     }
   </script>
 

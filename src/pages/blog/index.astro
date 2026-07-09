@@ -71,6 +71,11 @@ const cards: BlogCardData[] = await Promise.all(
       });
       cover = { src: img.src, srcSet: img.srcSet.attribute };
     }
+    
+    // คำนวณเวลาอ่าน: ภาษาไทยประมาณ 250 ตัวอักษรต่อนาที
+    const cleanBody = post.body ? post.body.replace(/\s+/g, '') : '';
+    const readingTime = Math.max(1, Math.ceil(cleanBody.length / 250));
+
     return {
       slug: post.id,
       title: d.title,
@@ -79,6 +84,7 @@ const cards: BlogCardData[] = await Promise.all(
       tags: d.tags,
       date: d.publishedAt.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' }),
       cover,
+      readingTime,
     };
   })
 );
@@ -305,9 +311,9 @@ const tags = [...new Set(allPosts.flatMap((p) => p.data.tags))].sort();
     </section>
   )}
 
-  {/* SECTION 5: Category Block 3 - "ธุรกิจ" (Reel style smaller cards) */}
+  {/* SECTION 5: Category Block 3 - "ธุรกิจ" (Reel style smaller cards -> Carousel Slider) */}
   {businessPosts.length > 0 && (
-    <section class="mb-24 select-text">
+    <section class="mb-24 select-text overflow-hidden">
       <div class="flex items-center gap-3 border-b border-gray-200 pb-4 mb-8 text-left">
         <span class="w-3.5 h-3.5 bg-blue-500 inline-block shrink-0"></span>
         <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight uppercase">
@@ -315,30 +321,49 @@ const tags = [...new Set(allPosts.flatMap((p) => p.data.tags))].sort();
         </h2>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {businessPosts.map((post, idx) => (
-          <article class:list={["group block text-left hover-lift reveal-scale", idx === 0 ? "delay-75" : idx === 1 ? "delay-100" : idx === 2 ? "delay-150" : "delay-200"]}>
-            <a href={`/blog/${post.id}`}>
-              <div class="rounded-none overflow-hidden aspect-[16/10] bg-gray-100 mb-4">
-                {post.data.cover && (
-                  <Image
-                    src={post.data.cover}
-                    alt={post.data.title}
-                    widths={[400]}
-                    sizes="(max-width: 768px) 100vw, 25vw"
-                    class="w-full h-full object-cover transform group-hover:scale-103 transition-transform duration-500"
-                  />
-                )}
-              </div>
-              <div class="text-xs text-gray-400 mb-2 font-semibold">
-                {post.data.publishedAt.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}
-              </div>
-              <h3 class="text-base font-black text-gray-900 leading-snug mb-2 group-hover:text-[#FF5A1F] transition-colors line-clamp-2">
-                {post.data.title}
-              </h3>
-            </a>
-          </article>
-        ))}
+      <div class="relative overflow-hidden w-full py-4 reveal-up">
+        <div id="business-slider-track" class="flex gap-6 transition-transform duration-500 ease-in-out">
+          {businessPosts.map((post, idx) => (
+            <div class="business-slide shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
+              <article class:list={["group block text-left hover-lift w-full h-full", idx === 0 ? "delay-75" : idx === 1 ? "delay-100" : idx === 2 ? "delay-150" : "delay-200"]}>
+                <a href={`/blog/${post.id}`} class="block">
+                  <div class="rounded-none overflow-hidden aspect-[16/10] bg-gray-100 mb-4">
+                    {post.data.cover && (
+                      <Image
+                        src={post.data.cover}
+                        alt={post.data.title}
+                        widths={[400]}
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                        class="w-full h-full object-cover transform group-hover:scale-103 transition-transform duration-500"
+                      />
+                    )}
+                  </div>
+                  <div class="text-xs text-gray-400 mb-2 font-semibold">
+                    {post.data.publishedAt.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}
+                  </div>
+                  <h3 class="text-base font-black text-gray-900 leading-snug mb-2 group-hover:text-[#FF5A1F] transition-colors line-clamp-2">
+                    {post.data.title}
+                  </h3>
+                </a>
+              </article>
+            </div>
+          ))}
+        </div>
+
+        <!-- Slider Controls -->
+        <div class="flex items-center justify-center gap-4 mt-8" id="business-slider-controls">
+          <button type="button" id="business-prev-slide" class="w-9 h-9 rounded-full border border-gray-200 bg-white hover:border-[#FF5A1F] hover:text-[#FF5A1F] text-gray-700 flex items-center justify-center cursor-pointer transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          
+          <div class="flex items-center gap-2" id="business-slider-dots">
+            {/* Dots generated dynamically */}
+          </div>
+
+          <button type="button" id="business-next-slide" class="w-9 h-9 rounded-full border border-gray-200 bg-white hover:border-[#FF5A1F] hover:text-[#FF5A1F] text-gray-700 flex items-center justify-center cursor-pointer transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
       </div>
     </section>
   )}
@@ -354,5 +379,160 @@ const tags = [...new Set(allPosts.flatMap((p) => p.data.tags))].sort();
 
     <BlogExplorer client:load posts={cards} categories={categories} tags={tags} />
   </section>
+
+  <script>
+    function setupBusinessSlider() {
+      const track = document.getElementById('business-slider-track') as HTMLElement;
+      const slides = document.querySelectorAll('.business-slide') as NodeListOf<HTMLElement>;
+      const prevBtn = document.getElementById('business-prev-slide');
+      const nextBtn = document.getElementById('business-next-slide');
+      const dotsContainer = document.getElementById('business-slider-dots');
+
+      if (!track || slides.length === 0) return;
+
+      let currentIndex = 0;
+      let autoPlayInterval: number | null = null;
+
+      function getItemsPerPage() {
+        if (window.innerWidth >= 1024) return 4;
+        if (window.innerWidth >= 768) return 3;
+        if (window.innerWidth >= 640) return 2;
+        return 1;
+      }
+
+      function getMaxIndex() {
+        return Math.max(0, slides.length - getItemsPerPage());
+      }
+
+      function updateSlider() {
+        const maxIndex = getMaxIndex();
+        if (currentIndex > maxIndex) {
+          currentIndex = maxIndex;
+        }
+        if (currentIndex < 0) {
+          currentIndex = 0;
+        }
+
+        const slideWidth = slides[0].getBoundingClientRect().width;
+        const gap = 24; // gap-6
+        const offset = -currentIndex * (slideWidth + gap);
+        track.style.transform = `translateX(${offset}px)`;
+
+        updateDots();
+
+        if (prevBtn) {
+          const prevHtmlBtn = prevBtn as HTMLButtonElement;
+          prevHtmlBtn.disabled = currentIndex === 0;
+          prevHtmlBtn.style.opacity = currentIndex === 0 ? '0.35' : '1';
+        }
+        if (nextBtn) {
+          const nextHtmlBtn = nextBtn as HTMLButtonElement;
+          nextHtmlBtn.disabled = currentIndex === maxIndex;
+          nextHtmlBtn.style.opacity = currentIndex === maxIndex ? '0.35' : '1';
+        }
+      }
+
+      function updateDots() {
+        if (!dotsContainer) return;
+        dotsContainer.innerHTML = '';
+        const maxIndex = getMaxIndex();
+        if (maxIndex <= 0) return;
+
+        for (let i = 0; i <= maxIndex; i++) {
+          const dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = `w-2 h-2 rounded-full transition-all cursor-pointer ${
+            i === currentIndex ? 'bg-[#FF5A1F] w-4' : 'bg-gray-300 hover:bg-gray-400'
+          }`;
+          dot.setAttribute('aria-label', `Slide to business post ${i + 1}`);
+          dot.addEventListener('click', () => {
+            currentIndex = i;
+            updateSlider();
+            resetAutoPlay();
+          });
+          dotsContainer.appendChild(dot);
+        }
+      }
+
+      function slideNext() {
+        const maxIndex = getMaxIndex();
+        if (currentIndex < maxIndex) {
+          currentIndex++;
+        } else {
+          currentIndex = 0;
+        }
+        updateSlider();
+      }
+
+      function slidePrev() {
+        const maxIndex = getMaxIndex();
+        if (currentIndex > 0) {
+          currentIndex--;
+        } else {
+          currentIndex = maxIndex;
+        }
+        updateSlider();
+      }
+
+      function startAutoPlay() {
+        stopAutoPlay();
+        autoPlayInterval = window.setInterval(slideNext, 5000);
+      }
+
+      function stopAutoPlay() {
+        if (autoPlayInterval) {
+          clearInterval(autoPlayInterval);
+          autoPlayInterval = null;
+        }
+      }
+
+      function resetAutoPlay() {
+        startAutoPlay();
+      }
+
+      prevBtn?.addEventListener('click', () => {
+        slidePrev();
+        resetAutoPlay();
+      });
+
+      nextBtn?.addEventListener('click', () => {
+        slideNext();
+        resetAutoPlay();
+      });
+
+      let startX = 0;
+      track.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        stopAutoPlay();
+      }, { passive: true });
+
+      track.addEventListener('touchend', (e) => {
+        const diffX = startX - e.changedTouches[0].clientX;
+        if (Math.abs(diffX) > 50) {
+          if (diffX > 0) {
+            slideNext();
+          } else {
+            slidePrev();
+          }
+        }
+        startAutoPlay();
+      }, { passive: true });
+
+      window.addEventListener('resize', () => {
+        updateSlider();
+      });
+
+      updateSlider();
+      startAutoPlay();
+    }
+
+    // Astro page loads
+    document.addEventListener('astro:page-load', setupBusinessSlider);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupBusinessSlider);
+    } else {
+      setupBusinessSlider();
+    }
+  </script>
 
 </PageLayout>

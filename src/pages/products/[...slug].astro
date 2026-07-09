@@ -4,6 +4,7 @@ import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 
 import ProductGallery from '@/components/products/ProductGallery.astro';
+import PortfolioCard from '@/components/products/PortfolioCard.astro';
 import RelatedServices from '@/components/RelatedServices.astro';
 import Faq from '@/components/Faq.astro';
 import { buildFaqJsonLd } from '@/lib/faq';
@@ -63,6 +64,12 @@ const faqJsonLd = buildFaqJsonLd(d.faq);
 const allImages = [d.image, ...(d.gallery || [])].filter((value, index, self) => 
   self.findIndex(img => img.src === value.src) === index
 );
+
+// ดึงผลงานอื่นๆ ที่เกี่ยวข้องมาแนะนำท้ายหน้า
+const allProducts = await getCollection('products');
+const relatedProducts = allProducts
+  .filter((p) => p.id !== product.id)
+  .slice(0, 6);
 ---
 
 <PageLayout
@@ -431,6 +438,48 @@ const allImages = [d.image, ...(d.gallery || [])].filter((value, index, self) =>
       <ProductGallery images={[d.image, ...(d.gallery || [])]} altPrefix={d.title} />
     </div>
 
+    {/* Section 4: Related Products Carousel Slider */}
+    {relatedProducts.length > 0 && (
+      <div class="mt-24 border-t border-gray-200 pt-16 reveal-up overflow-hidden">
+        <h2 class="text-2xl sm:text-3xl font-black text-gray-900 text-center tracking-tight mb-4">
+          ผลงานผลิตเสื้ออื่นๆ ที่คุณอาจสนใจ
+        </h2>
+        <p class="text-center text-sm text-gray-500 font-bold mb-10">ตัวอย่างงานทอ ตัดเย็บ และงานสกรีนปักจากโรงงานเสื้อโปโล ธน พลัส 153</p>
+        
+        <div class="relative overflow-hidden w-full py-4">
+          <div id="related-products-slider-track" class="flex gap-6 transition-transform duration-500 ease-in-out font-sans">
+            {relatedProducts.map((p) => (
+              <div class="related-product-slide shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
+                <PortfolioCard 
+                  id={p.id}
+                  title={p.data.title}
+                  description={p.data.description}
+                  image={p.data.image}
+                  imageAlt={p.data.imageAlt}
+                  tags={p.data.tags}
+                />
+              </div>
+            ))}
+          </div>
+
+          <!-- Slider Controls -->
+          <div class="flex items-center justify-center gap-4 mt-12" id="related-slider-controls">
+            <button type="button" id="related-prev-slide" class="w-10 h-10 rounded-full border border-gray-200 bg-white hover:border-[#FF5A1F] hover:text-[#FF5A1F] text-gray-700 flex items-center justify-center cursor-pointer transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            
+            <div class="flex items-center gap-2" id="related-slider-dots">
+              {/* Dots will be generated dynamically */}
+            </div>
+
+            <button type="button" id="related-next-slide" class="w-10 h-10 rounded-full border border-gray-200 bg-white hover:border-[#FF5A1F] hover:text-[#FF5A1F] text-gray-700 flex items-center justify-center cursor-pointer transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
     {/* FAQ Accordion Section */}
     {d.faq && d.faq.length > 0 && (
       <div class="max-w-3xl mx-auto mt-24 reveal-up delay-200">
@@ -536,10 +585,155 @@ const allImages = [d.image, ...(d.gallery || [])].filter((value, index, self) =>
     }
   }
 
+  function setupRelatedProductsSlider() {
+    const track = document.getElementById('related-products-slider-track') as HTMLElement;
+    const slides = document.querySelectorAll('.related-product-slide') as NodeListOf<HTMLElement>;
+    const prevBtn = document.getElementById('related-prev-slide');
+    const nextBtn = document.getElementById('related-next-slide');
+    const dotsContainer = document.getElementById('related-slider-dots');
+
+    if (!track || slides.length === 0) return;
+
+    let currentIndex = 0;
+    let autoPlayInterval: number | null = null;
+
+    function getItemsPerPage() {
+      if (window.innerWidth >= 1024) return 3;
+      if (window.innerWidth >= 640) return 2;
+      return 1;
+    }
+
+    function getMaxIndex() {
+      return Math.max(0, slides.length - getItemsPerPage());
+    }
+
+    function updateSlider() {
+      const maxIndex = getMaxIndex();
+      if (currentIndex > maxIndex) {
+        currentIndex = maxIndex;
+      }
+      if (currentIndex < 0) {
+        currentIndex = 0;
+      }
+
+      const slideWidth = slides[0].getBoundingClientRect().width;
+      const gap = 24; // gap-6
+      const offset = -currentIndex * (slideWidth + gap);
+      track.style.transform = `translateX(${offset}px)`;
+
+      updateDots();
+
+      if (prevBtn) {
+        const prevHtmlBtn = prevBtn as HTMLButtonElement;
+        prevHtmlBtn.disabled = currentIndex === 0;
+        prevHtmlBtn.style.opacity = currentIndex === 0 ? '0.35' : '1';
+      }
+      if (nextBtn) {
+        const nextHtmlBtn = nextBtn as HTMLButtonElement;
+        nextHtmlBtn.disabled = currentIndex === maxIndex;
+        nextHtmlBtn.style.opacity = currentIndex === maxIndex ? '0.35' : '1';
+      }
+    }
+
+    function updateDots() {
+      if (!dotsContainer) return;
+      dotsContainer.innerHTML = '';
+      const maxIndex = getMaxIndex();
+      if (maxIndex <= 0) return;
+
+      for (let i = 0; i <= maxIndex; i++) {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = `w-2 h-2 rounded-full transition-all cursor-pointer ${
+          i === currentIndex ? 'bg-[#FF5A1F] w-4' : 'bg-gray-300 hover:bg-gray-400'
+        }`;
+        dot.setAttribute('aria-label', `Slide to product ${i + 1}`);
+        dot.addEventListener('click', () => {
+          currentIndex = i;
+          updateSlider();
+          resetAutoPlay();
+        });
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    function slideNext() {
+      const maxIndex = getMaxIndex();
+      if (currentIndex < maxIndex) {
+        currentIndex++;
+      } else {
+        currentIndex = 0;
+      }
+      updateSlider();
+    }
+
+    function slidePrev() {
+      const maxIndex = getMaxIndex();
+      if (currentIndex > 0) {
+        currentIndex--;
+      } else {
+        currentIndex = maxIndex;
+      }
+      updateSlider();
+    }
+
+    function startAutoPlay() {
+      stopAutoPlay();
+      autoPlayInterval = window.setInterval(slideNext, 4500);
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+      }
+    }
+
+    function resetAutoPlay() {
+      startAutoPlay();
+    }
+
+    prevBtn?.addEventListener('click', () => {
+      slidePrev();
+      resetAutoPlay();
+    });
+
+    nextBtn?.addEventListener('click', () => {
+      slideNext();
+      resetAutoPlay();
+    });
+
+    let startX = 0;
+    track.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      stopAutoPlay();
+    }, { passive: true });
+
+    track.addEventListener('touchend', (e) => {
+      const diffX = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diffX) > 50) {
+        if (diffX > 0) {
+          slideNext();
+        } else {
+          slidePrev();
+        }
+      }
+      startAutoPlay();
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      updateSlider();
+    });
+
+    updateSlider();
+    startAutoPlay();
+  }
+
   // Astro page transitions initialization
   document.addEventListener('astro:page-load', () => {
     setupTabs();
     setupProductInteractions();
+    setupRelatedProductsSlider();
   });
 
   // Fallback for non-transitions
@@ -547,10 +741,12 @@ const allImages = [d.image, ...(d.gallery || [])].filter((value, index, self) =>
     document.addEventListener('DOMContentLoaded', () => {
       setupTabs();
       setupProductInteractions();
+      setupRelatedProductsSlider();
     });
   } else {
     setupTabs();
     setupProductInteractions();
+    setupRelatedProductsSlider();
   }
 </script>
 

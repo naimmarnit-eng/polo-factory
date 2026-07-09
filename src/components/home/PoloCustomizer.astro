@@ -1,0 +1,447 @@
+---
+// Polo Shirt Customizer component - Micro-interactive mockup tool
+---
+
+<section id="customizer" class="mt-24 lg:mt-32 relative z-20 py-20 border-t border-b border-gray-200/50 bg-gray-50/40 scroll-mt-24">
+  <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+    
+    {/* Section Header */}
+    <div class="text-center max-w-3xl mx-auto mb-16 reveal-up">
+      <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-4 block">
+        Interactive Customizer
+      </span>
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-[1.15]">
+        จำลองแบบเสื้อโปโลของคุณเอง <br/>
+        <span class="text-[#FF5A1F]">Polo Configurator Mockup</span>
+      </h2>
+      <p class="text-gray-500 text-sm sm:text-base font-semibold leading-relaxed mt-4">
+        ทดลองเลือกสีผ้า ปกเสื้อขลิบสี และตำแหน่งโลโก้ เพื่อดูตัวอย่างเบื้องต้น พร้อมคัดลอกรายละเอียดไปสั่งผลิตได้ทันที!
+      </p>
+    </div>
+
+    {/* Customizer Grid */}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      
+      {/* Left: 3D-like Vector Polo Shirt Preview */}
+      <div class="lg:col-span-5 flex flex-col items-center justify-center p-8 bg-white rounded-3xl border border-gray-200/80 shadow-premium min-h-[420px] reveal-left">
+        
+        <div class="relative w-full flex items-center justify-center">
+          
+          <svg viewBox="0 0 400 400" class="w-full h-auto max-w-[320px] md:max-w-[350px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* Ambient Shadow */}
+            <ellipse cx="200" cy="370" rx="90" ry="12" fill="rgba(0,0,0,0.06)" />
+            
+            {/* Left Sleeve */}
+            <path d="M 125,120 L 65,155 L 85,195 L 125,180 Z" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="3" stroke-linejoin="round" />
+            
+            {/* Right Sleeve */}
+            <path d="M 275,120 L 335,155 L 315,195 L 275,180 Z" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="3" stroke-linejoin="round" />
+            
+            {/* Left Sleeve Trim */}
+            <path d="M 65,155 L 85,195 M 68,157 L 87,196" id="trim-sleeve-l" class="trim-stroke transition-all duration-500" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
+            
+            {/* Right Sleeve Trim */}
+            <path d="M 335,155 L 315,195 M 332,157 L 313,196" id="trim-sleeve-r" class="trim-stroke transition-all duration-500" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
+            
+            {/* Main Body */}
+            <path d="M 125,120 Q 200,130 275,120 L 290,350 L 110,350 Z" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="3" stroke-linejoin="round" />
+            
+            {/* Placket (Button strip) */}
+            <path d="M 188,126 L 212,126 L 212,200 L 188,200 Z" fill="#E2E8F0" stroke="#1E293B" stroke-width="2.5" stroke-linejoin="round" />
+            
+            {/* Buttons */}
+            <circle cx="200" cy="145" r="4.5" fill="#FFFFFF" stroke="#475569" stroke-width="1.5" />
+            <circle cx="200" cy="165" r="4.5" fill="#FFFFFF" stroke="#475569" stroke-width="1.5" />
+            <circle cx="200" cy="185" r="4.5" fill="#FFFFFF" stroke="#475569" stroke-width="1.5" />
+            
+            {/* Left Collar Wing */}
+            <path d="M 200,126 L 140,118 L 160,158 L 200,126 Z" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="3" stroke-linejoin="round" />
+            
+            {/* Right Collar Wing */}
+            <path d="M 200,126 L 260,118 L 240,158 L 200,126 Z" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="3" stroke-linejoin="round" />
+            
+            {/* Left Collar Trim Edge */}
+            <path d="M 140,118 L 160,158" id="trim-collar-l" class="trim-stroke transition-all duration-500" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
+            
+            {/* Right Collar Trim Edge */}
+            <path d="M 260,118 L 240,158" id="trim-collar-r" class="trim-stroke transition-all duration-500" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
+            
+            {/* Chest Pocket */}
+            <path d="M 140,205 L 175,205 L 175,240 L 157.5,250 L 140,240 Z" id="polo-pocket" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="2.5" stroke-linejoin="round" />
+            
+            {/* Pocket Trim Edge */}
+            <path d="M 140,205 L 175,205" id="trim-pocket" class="trim-stroke transition-all duration-500" stroke="#FFFFFF" stroke-width="3.5" />
+            
+            {/* Logo Group */}
+            <g id="logo-crown" class="logo-overlay hidden">
+              {/* Crown Emblem (Gold) */}
+              <path d="M 235,210 L 242,223 L 250,210 L 258,223 L 265,210 L 261,232 L 239,232 Z" fill="#F59E0B" stroke="#B45309" stroke-width="1" />
+              <circle cx="235" cy="210" r="1.5" fill="#F59E0B" />
+              <circle cx="250" cy="210" r="1.5" fill="#F59E0B" />
+              <circle cx="265" cy="210" r="1.5" fill="#F59E0B" />
+            </g>
+            
+            <g id="logo-star" class="logo-overlay hidden">
+              {/* Sporty Star (Silver-blue) */}
+              <path d="M 250,208 L 253,217 H 262 L 255,222 L 257,231 L 250,226 L 243,231 L 245,222 L 238,217 H 247 Z" fill="#3B82F6" stroke="#1D4ED8" stroke-width="1" />
+            </g>
+            
+            <g id="logo-lion" class="logo-overlay hidden">
+              {/* Shield Emblem (Red/Silver) */}
+              <path d="M 242,208 H 258 V 222 C 258,229 250,233 250,233 C 250,233 242,229 242,222 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5" />
+              <path d="M 250,212 L 246,220 H 254 Z" fill="#FFFFFF" />
+            </g>
+          </svg>
+        </div>
+
+        {/* Dynamic Display Indicators */}
+        <div class="mt-6 flex flex-wrap justify-center gap-4 text-xs font-bold bg-slate-50 p-4.5 rounded-2xl w-full border border-slate-100">
+          <div class="flex items-center gap-1.5 text-gray-700">
+            <span class="w-3 h-3 rounded-full border" id="info-color-indicator" style="background-color: #FF5A1F;"></span>
+            <span>สีผ้า: <span id="info-color-text" class="text-gray-900">ส้ม (Signature Orange)</span></span>
+          </div>
+          <div class="flex items-center gap-1.5 text-gray-700">
+            <span class="w-3 h-3 rounded-full border bg-white" id="info-trim-indicator"></span>
+            <span>ขลิบ: <span id="info-trim-text" class="text-gray-900">ขาว (Classic White)</span></span>
+          </div>
+          <div class="flex items-center gap-1.5 text-gray-700">
+            <span>โลโก้: <span id="info-logo-text" class="text-gray-900">ไม่มีโลโก้</span></span>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Right: Customization Controls Panel */}
+      <div class="lg:col-span-7 space-y-8 text-left reveal-right delay-200">
+        
+        {/* Step 1: Fabric Color Selection */}
+        <div class="space-y-3">
+          <h3 class="text-sm font-black text-gray-900 uppercase tracking-wider flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-[#FF5A1F] text-white text-[10px] flex items-center justify-center">1</span>
+            เลือกสีเนื้อผ้า (Fabric Color)
+          </h3>
+          <div class="flex flex-wrap gap-3" id="color-swatches">
+            <button type="button" data-hex="#FF5A1F" data-name="ส้ม (Signature Orange)" class="color-btn w-10 h-10 rounded-full border-3 border-orange-500 scale-110 shadow-md ring-2 ring-offset-2 ring-orange-400 relative focus:outline-none" style="background-color: #FF5A1F;" aria-label="Signature Orange"></button>
+            <button type="button" data-hex="#0F172A" data-name="น้ำเงินกรมท่า (Deep Navy)" class="color-btn w-10 h-10 rounded-full border border-gray-200 focus:outline-none" style="background-color: #0F172A;" aria-label="Deep Navy"></button>
+            <button type="button" data-hex="#064E3B" data-name="เขียวเอมเมอรัลด์ (Forest Green)" class="color-btn w-10 h-10 rounded-full border border-gray-200 focus:outline-none" style="background-color: #064E3B;" aria-label="Forest Green"></button>
+            <button type="button" data-hex="#374151" data-name="เทาชาร์โคล (Charcoal Grey)" class="color-btn w-10 h-10 rounded-full border border-gray-200 focus:outline-none" style="background-color: #374151;" aria-label="Charcoal Grey"></button>
+            <button type="button" data-hex="#1D4ED8" data-name="น้ำเงินหลวง (Royal Blue)" class="color-btn w-10 h-10 rounded-full border border-gray-200 focus:outline-none" style="background-color: #1D4ED8;" aria-label="Royal Blue"></button>
+            <button type="button" data-hex="#FFFFFF" data-name="ขาวคลาสสิก (Classic White)" class="color-btn w-10 h-10 rounded-full border border-gray-200 focus:outline-none" style="background-color: #FFFFFF;" aria-label="Classic White"></button>
+          </div>
+        </div>
+
+        {/* Step 2: Collar & Sleeve Trim Selection */}
+        <div class="space-y-3">
+          <h3 class="text-sm font-black text-gray-900 uppercase tracking-wider flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-[#FF5A1F] text-white text-[10px] flex items-center justify-center">2</span>
+            เลือกสีขลิบปลายปกและแขน (Collar & Cuff Accent)
+          </h3>
+          <div class="flex flex-wrap gap-2.5" id="trim-swatches">
+            <button type="button" data-hex="none" data-name="ไม่มีขลิบ (ล้วนสีเดียว)" class="trim-btn px-4 py-2 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all">ไม่มีขลิบ</button>
+            <button type="button" data-hex="#FFFFFF" data-name="ขลิบสีขาว (Classic White)" class="trim-btn px-4 py-2 text-xs font-bold rounded-xl border-2 border-orange-500 bg-orange-50 text-gray-900 transition-all">ขลิบขาว</button>
+            <button type="button" data-hex="#FF5A1F" data-name="ขลิบสีส้ม (Signature Orange)" class="trim-btn px-4 py-2 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all">ขลิบส้ม</button>
+            <button type="button" data-hex="#0F172A" data-name="ขลิบสีน้ำเงินเข้ม (Deep Navy)" class="trim-btn px-4 py-2 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all">ขลิบน้ำเงินเข้ม</button>
+          </div>
+        </div>
+
+        {/* Step 3: Logo Style Selection */}
+        <div class="space-y-3">
+          <h3 class="text-sm font-black text-gray-900 uppercase tracking-wider flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-[#FF5A1F] text-white text-[10px] flex items-center justify-center">3</span>
+            จำลองตำแหน่งและโลโก้งานปัก (Embroidery Logo Mockup)
+          </h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="logo-options">
+            <button type="button" data-logo="none" data-name="ไม่มีโลโก้" class="logo-btn px-3 py-2.5 text-xs font-bold rounded-xl border-2 border-orange-500 bg-orange-50 text-gray-900 transition-all text-center">ไม่มีโลโก้</button>
+            <button type="button" data-logo="crown" data-name="โลโก้ทองอร่าม (Royal Crown)" class="logo-btn px-3 py-2.5 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all text-center">มงกุฎทอง</button>
+            <button type="button" data-logo="star" data-name="ดาวสปอร์ต (Classic Star)" class="logo-btn px-3 py-2.5 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all text-center">ดาวสปอร์ต</button>
+            <button type="button" data-logo="lion" data-name="โลโก้สิงโตเหยียบลูกโลก (Lion Shield)" class="logo-btn px-3 py-2.5 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all text-center">ตราสิงโต</button>
+          </div>
+        </div>
+
+        {/* Cost & Action Box */}
+        <div class="mt-8 p-6 bg-gradient-to-r from-orange-50 to-orange-100/40 rounded-3xl border border-orange-200/50 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Estimated Cost</span>
+              <span class="text-2xl font-black text-gray-900 tracking-tight" id="estimated-price">~160 - 220 บาท / ตัว</span>
+              <span class="text-[10px] font-bold text-gray-500 block mt-0.5">* ขึ้นอยู่กับจำนวนสั่งผลิต (ขั้นต่ำ 100 ตัว)</span>
+            </div>
+            
+            <button 
+              id="copy-custom-btn" 
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-black text-white font-black text-xs px-5 py-3 rounded-xl cursor-pointer hover:-translate-y-0.5 transition-all shadow-sm"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span>คัดลอกรายละเอียดเสื้อ</span>
+            </button>
+          </div>
+
+          <hr class="border-orange-200/50" />
+
+          <a
+            id="order-line-btn"
+            href="https://line.me/R/ti/p/@thanaplus"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full inline-flex items-center justify-center gap-2.5 bg-[#06C755] hover:bg-[#05b34c] text-white font-black px-7 py-4.5 rounded-2xl shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20 hover:-translate-y-0.5 transition-all duration-300 text-center text-sm pulse-glow"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <span>เปิด LINE @thanaplus เพื่อสั่งผลิตสีนี้</span>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  function initConfigurator() {
+    // 1. DOM Elements
+    const colorSwatches = document.querySelectorAll('#color-swatches .color-btn');
+    const trimSwatches = document.querySelectorAll('#trim-swatches .trim-btn');
+    const logoOptions = document.querySelectorAll('#logo-options .logo-btn');
+    
+    const svgFabricFills = document.querySelectorAll('.fabric-color-fill');
+    
+    // Trim SVG elements
+    const trimSleeveL = document.getElementById('trim-sleeve-l');
+    const trimSleeveR = document.getElementById('trim-sleeve-r');
+    const trimCollarL = document.getElementById('trim-collar-l');
+    const trimCollarR = document.getElementById('trim-collar-r');
+    const trimPocket = document.getElementById('trim-pocket');
+    
+    // Logo elements
+    const logos = {
+      none: null,
+      crown: document.getElementById('logo-crown'),
+      star: document.getElementById('logo-star'),
+      lion: document.getElementById('logo-lion')
+    };
+
+    // Information displays
+    const infoColorText = document.getElementById('info-color-text');
+    const infoColorIndicator = document.getElementById('info-color-indicator');
+    const infoTrimText = document.getElementById('info-trim-text');
+    const infoTrimIndicator = document.getElementById('info-trim-indicator');
+    const infoLogoText = document.getElementById('info-logo-text');
+    const estimatedPriceText = document.getElementById('estimated-price');
+    
+    const copyBtn = document.getElementById('copy-custom-btn');
+    const lineBtn = document.getElementById('order-line-btn') as HTMLAnchorElement;
+
+    // Configurator state
+    let state = {
+      fabricColorHex: '#FF5A1F',
+      fabricColorName: 'ส้ม (Signature Orange)',
+      trimColorHex: '#FFFFFF',
+      trimColorName: 'ขลิบสีขาว (Classic White)',
+      logoStyle: 'none',
+      logoName: 'ไม่มีโลโก้'
+    };
+
+    // 2. Event Handlers
+    
+    // Update Fabric Colors
+    colorSwatches.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Toggle UI buttons styles
+        colorSwatches.forEach(b => {
+          b.classList.remove('scale-110', 'shadow-md', 'ring-2', 'ring-offset-2', 'ring-orange-400', 'border-3', 'border-orange-500');
+          b.classList.add('border');
+        });
+        btn.classList.add('scale-110', 'shadow-md', 'ring-2', 'ring-offset-2', 'ring-orange-400', 'border-3', 'border-orange-500');
+        btn.classList.remove('border');
+
+        const hex = btn.getAttribute('data-hex') || '#FF5A1F';
+        const name = btn.getAttribute('data-name') || '';
+
+        state.fabricColorHex = hex;
+        state.fabricColorName = name;
+
+        // Apply fill colors
+        svgFabricFills.forEach(el => {
+          (el as SVGPathElement).setAttribute('fill', hex);
+        });
+
+        // If trim color is 'none', keep trim stroke identical to fabric color
+        if (state.trimColorHex === 'none') {
+          updateTrimColor(hex);
+        }
+
+        // Update info panel
+        if (infoColorText) infoColorText.innerText = name;
+        if (infoColorIndicator) infoColorIndicator.style.backgroundColor = hex;
+        
+        updatePrice();
+      });
+    });
+
+    // Update Trim Colors
+    trimSwatches.forEach(btn => {
+      btn.addEventListener('click', () => {
+        trimSwatches.forEach(b => {
+          b.classList.remove('border-2', 'border-orange-500', 'bg-orange-50', 'text-gray-900');
+          b.classList.add('border-gray-200', 'bg-white', 'text-gray-700', 'hover:border-gray-900');
+        });
+        btn.classList.add('border-2', 'border-orange-500', 'bg-orange-50', 'text-gray-900');
+        btn.classList.remove('border-gray-200', 'bg-white', 'text-gray-700', 'hover:border-gray-900');
+
+        const hex = btn.getAttribute('data-hex') || 'none';
+        const name = btn.getAttribute('data-name') || '';
+
+        state.trimColorHex = hex;
+        state.trimColorName = name;
+
+        // Apply stroke color
+        const targetColor = hex === 'none' ? state.fabricColorHex : hex;
+        updateTrimColor(targetColor);
+
+        // Update info panel
+        if (infoTrimText) infoTrimText.innerText = name;
+        if (infoTrimIndicator) {
+          infoTrimIndicator.style.backgroundColor = hex === 'none' ? 'transparent' : hex;
+        }
+
+        updatePrice();
+      });
+    });
+
+    // Update Logo Style
+    logoOptions.forEach(btn => {
+      btn.addEventListener('click', () => {
+        logoOptions.forEach(b => {
+          b.classList.remove('border-2', 'border-orange-500', 'bg-orange-50', 'text-gray-900');
+          b.classList.add('border-gray-200', 'bg-white', 'text-gray-700', 'hover:border-gray-900');
+        });
+        btn.classList.add('border-2', 'border-orange-500', 'bg-orange-50', 'text-gray-900');
+        btn.classList.remove('border-gray-200', 'bg-white', 'text-gray-700', 'hover:border-gray-900');
+
+        const logoId = btn.getAttribute('data-logo') || 'none';
+        const name = btn.getAttribute('data-name') || '';
+
+        state.logoStyle = logoId;
+        state.logoName = name;
+
+        // Hide all logos
+        Object.keys(logos).forEach(key => {
+          const el = logos[key as keyof typeof logos];
+          if (el) el.classList.add('hidden');
+        });
+
+        // Show selected logo
+        const selectedEl = logos[logoId as keyof typeof logos];
+        if (selectedEl) selectedEl.classList.remove('hidden');
+
+        // Update info panel
+        if (infoLogoText) infoLogoText.innerText = name;
+
+        updatePrice();
+      });
+    });
+
+    // Helper functions
+    function updateTrimColor(color: string) {
+      const isNone = state.trimColorHex === 'none';
+      const elements = [trimSleeveL, trimSleeveR, trimCollarL, trimCollarR, trimPocket];
+      
+      elements.forEach(el => {
+        if (!el) return;
+        if (isNone) {
+          el.setAttribute('stroke', color);
+          if (el === trimPocket) el.setAttribute('stroke', '#1E293B'); // Pocket upper seam line
+        } else {
+          el.setAttribute('stroke', color);
+        }
+      });
+    }
+
+    function updatePrice() {
+      let baseMin = 150;
+      let baseMax = 200;
+
+      // Custom trim adds a bit to production cost
+      if (state.trimColorHex !== 'none') {
+        baseMin += 10;
+        baseMax += 15;
+      }
+
+      // Logo adds a bit
+      if (state.logoStyle !== 'none') {
+        baseMin += 15;
+        baseMax += 20;
+      }
+
+      if (estimatedPriceText) {
+        estimatedPriceText.innerText = `~${baseMin} - ${baseMax} บาท / ตัว`;
+      }
+    }
+
+    function generateSummaryText() {
+      return `รายละเอียดสั่งผลิตเสื้อโปโลพนักงาน:\n- สีผ้า: ${state.fabricColorName}\n- งานขลิบปก/แขน: ${state.trimColorName}\n- งานปักโลโก้: ${state.logoName}\n- จำนวนผลิตที่เสนอราคา: 100 ตัว`;
+    }
+
+    // Copy to clipboard
+    copyBtn?.addEventListener('click', () => {
+      const summary = generateSummaryText();
+      navigator.clipboard.writeText(summary).then(() => {
+        // Simple visual feedback
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><path d="M20 6 9 17l-5-5"/></svg>
+          <span>คัดลอกเรียบร้อย!</span>
+        `;
+        copyBtn.classList.remove('bg-slate-900');
+        copyBtn.classList.add('bg-emerald-800');
+        
+        setTimeout(() => {
+          copyBtn.innerHTML = originalText;
+          copyBtn.classList.add('bg-slate-900');
+          copyBtn.classList.remove('bg-emerald-800');
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy text: ', err);
+      });
+    });
+
+    // Update LINE button link with pre-filled text
+    function updateLineLink() {
+      if (!lineBtn) return;
+      const summary = `สวัสดีครับ สนใจสั่งผลิตเสื้อโปโลตามตัวอย่างจำลอง:\n- สีผ้า: ${state.fabricColorName}\n- งานขลิบ: ${state.trimColorName}\n- โลโก้: ${state.logoName}`;
+      const lineUrl = `https://line.me/R/ti/p/@thanaplus?text=${encodeURIComponent(summary)}`;
+      lineBtn.href = lineUrl;
+    }
+
+    // Listen to changes to update the dynamic line URL
+    colorSwatches.forEach(btn => btn.addEventListener('click', updateLineLink));
+    trimSwatches.forEach(btn => btn.addEventListener('click', updateLineLink));
+    logoOptions.forEach(btn => btn.addEventListener('click', updateLineLink));
+
+    // Initialize line link
+    updateLineLink();
+  }
+
+  // Hook into Astro Page Load
+  document.addEventListener('astro:page-load', initConfigurator);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initConfigurator);
+  } else {
+    initConfigurator();
+  }
+</script>
+
+<style>
+  /* Pulsing Animation for order button */
+  .pulse-glow {
+    animation: pulse-glow-btn 2.5s infinite;
+  }
+  @keyframes pulse-glow-btn {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(6, 199, 85, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 20px 6px rgba(6, 199, 85, 0.2);
+    }
+  }
+</style>

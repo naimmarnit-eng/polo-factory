@@ -13,6 +13,8 @@ export interface BlogCardData {
   date: string;
   /** รูปปก optimize แล้ว (null ถ้าบทความไม่มี cover) */
   cover: { src: string; srcSet: string } | null;
+  /** เวลาอ่านคร่าวๆ (นาที) */
+  readingTime?: number;
 }
 
 interface Props {
@@ -98,13 +100,16 @@ export default function BlogExplorer({ posts, categories, tags }: Props) {
           <p className="text-xs font-black uppercase tracking-wider text-gray-400 mb-3">หมวดหมู่</p>
           <div className="flex flex-wrap gap-2.5">
             <button type="button" onClick={() => setActiveCategory('')} className={pill(activeCategory === '')}>
-              ทั้งหมด
+              ทั้งหมด ({posts.length})
             </button>
-            {categories.map((c) => (
-              <button key={c} type="button" onClick={() => setActiveCategory(c)} className={pill(activeCategory === c)}>
-                {c}
-              </button>
-            ))}
+            {categories.map((c) => {
+              const count = posts.filter((p) => p.category === c).length;
+              return (
+                <button key={c} type="button" onClick={() => setActiveCategory(c)} className={pill(activeCategory === c)}>
+                  {c} ({count})
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -115,6 +120,7 @@ export default function BlogExplorer({ posts, categories, tags }: Props) {
             <div className="flex flex-wrap gap-2">
               {tags.map((t) => {
                 const active = activeTags.includes(t);
+                const count = posts.filter((p) => p.tags.includes(t)).length;
                 return (
                   <button
                     key={t}
@@ -127,7 +133,7 @@ export default function BlogExplorer({ posts, categories, tags }: Props) {
                         : 'bg-gray-50 text-slate-600 border-gray-150 hover:bg-gray-150 hover:text-slate-900'
                     }`}
                   >
-                    {t}
+                    {t} ({count})
                   </button>
                 );
               })}
@@ -155,12 +161,15 @@ export default function BlogExplorer({ posts, categories, tags }: Props) {
 
       {/* กริดบทความ — สไตล์เดียวกับ BlogGrid.astro */}
       {filtered.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+        <div 
+          key={`${query}-${activeCategory}-${activeTags.join(',')}`}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10"
+        >
           {filtered.map((post) => (
             <a
               key={post.slug}
               href={`/blog/${post.slug}`}
-              className="group block bg-white rounded-none p-0 border border-transparent hover:-translate-y-0.5 transition-all duration-300"
+              className="group block bg-white rounded-none p-0 border border-transparent hover:-translate-y-0.5 transition-all duration-300 animate-card-enter"
             >
               <div className="rounded-none overflow-hidden mb-4 aspect-[4/3] bg-gray-100 relative">
                 {post.cover && (
@@ -176,10 +185,18 @@ export default function BlogExplorer({ posts, categories, tags }: Props) {
                 )}
               </div>
               <div className="text-left">
-                <div className="flex items-center gap-3 text-xs text-gray-400 mb-2 font-semibold">
-                  <span className="text-[#FF5A1F] uppercase font-black">{post.category}</span>
+                <div className="flex items-center flex-wrap gap-2 text-xs text-gray-400 mb-2 font-semibold font-mono">
+                  <span className="text-[#FF5A1F] uppercase font-black font-sans">{post.category}</span>
                   <span>•</span>
                   <span>{post.date}</span>
+                  {post.readingTime && (
+                    <>
+                      <span>•</span>
+                      <span className="inline-flex items-center gap-1 bg-gray-150 text-gray-600 px-1.5 py-0.5 rounded text-[10px]">
+                        ⏱️ อ่าน {post.readingTime} นาที
+                      </span>
+                    </>
+                  )}
                 </div>
                 <h3 className="text-base font-black text-gray-900 mb-3 group-hover:text-[#FF5A1F] transition-colors line-clamp-2 leading-snug">
                   {post.title}
