@@ -1,5 +1,5 @@
 ---
-// Polo Shirt Customizer component - Micro-interactive mockup tool
+// Polo Shirt Customizer component - Micro-interactive mockup tool (Upgraded with 3D details & Front/Back view)
 ---
 
 <section id="customizer" class="mt-24 lg:mt-32 relative z-20 py-20 border-t border-b border-gray-200/50 bg-gray-50/40 scroll-mt-24">
@@ -15,7 +15,7 @@
         <span class="text-[#FF5A1F]">Polo Configurator Mockup</span>
       </h2>
       <p class="text-gray-500 text-sm sm:text-base font-semibold leading-relaxed mt-4">
-        ทดลองเลือกสีผ้า ปกเสื้อขลิบสี และตำแหน่งโลโก้ เพื่อดูตัวอย่างเบื้องต้น พร้อมคัดลอกรายละเอียดไปสั่งผลิตได้ทันที!
+        ทดลองเลือกสีผ้า ปกเสื้อขลิบสี ตำแหน่งโลโก้หน้า และลายพิมพ์ด้านหลัง เพื่อดูตัวอย่างแบบ 3D และส่งประเมินราคาได้ทันที!
       </p>
     </div>
 
@@ -23,19 +23,72 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
       
       {/* Left: 3D-like Vector Polo Shirt Preview */}
-      <div class="lg:col-span-5 flex flex-col items-center justify-center p-8 bg-white rounded-3xl border border-gray-200/80 shadow-premium min-h-[420px] reveal-left">
+      <div class="lg:col-span-5 flex flex-col items-center justify-center p-8 bg-white rounded-3xl border border-gray-200/80 shadow-premium min-h-[460px] reveal-left">
         
+        {/* View Toggle Buttons */}
+        <div class="flex items-center gap-1.5 mb-6 bg-gray-100/85 dark:bg-slate-900/60 p-1.5 rounded-2xl border border-gray-200/50 w-fit select-none shadow-sm">
+          <button 
+            type="button" 
+            id="view-front-btn" 
+            class="px-5 py-2 text-xs font-black rounded-xl transition-all cursor-pointer bg-white text-gray-900 shadow-sm border border-gray-200/30"
+            data-view="front"
+          >
+            ด้านหน้า (Front)
+          </button>
+          <button 
+            type="button" 
+            id="view-back-btn" 
+            class="px-5 py-2 text-xs font-black rounded-xl transition-all cursor-pointer text-gray-500 hover:text-gray-900 dark:hover:text-white"
+            data-view="back"
+          >
+            ด้านหลัง (Back)
+          </button>
+        </div>
+
         <div class="relative w-full flex items-center justify-center">
           
           <svg viewBox="0 0 400 400" class="w-full h-auto max-w-[320px] md:max-w-[350px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              {/* Body Shading Gradients to simulate 3D cylinder light source */}
+              <linearGradient id="body-highlight" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.22" />
+                <stop offset="30%" stop-color="#ffffff" stop-opacity="0.08" />
+                <stop offset="70%" stop-color="#000000" stop-opacity="0" />
+                <stop offset="100%" stop-color="#000000" stop-opacity="0.28" />
+              </linearGradient>
+
+              <linearGradient id="sleeve-l-shading" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.25" />
+                <stop offset="100%" stop-color="#000000" stop-opacity="0.2" />
+              </linearGradient>
+
+              <linearGradient id="sleeve-r-shading" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.08" />
+                <stop offset="100%" stop-color="#000000" stop-opacity="0.32" />
+              </linearGradient>
+              
+              <linearGradient id="collar-wing-shading" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.25" />
+                <stop offset="100%" stop-color="#000000" stop-opacity="0.25" />
+              </linearGradient>
+
+              <linearGradient id="collar-back-shading" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#000000" stop-opacity="0.35" />
+                <stop offset="50%" stop-color="#000000" stop-opacity="0.15" />
+                <stop offset="100%" stop-color="#ffffff" stop-opacity="0.12" />
+              </linearGradient>
+            </defs>
+
             {/* Ambient Shadow */}
             <ellipse cx="200" cy="370" rx="90" ry="12" fill="rgba(0,0,0,0.06)" />
             
-            {/* Left Sleeve */}
+            {/* Left Sleeve base & shading */}
             <path d="M 125,120 L 65,155 L 85,195 L 125,180 Z" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="3" stroke-linejoin="round" />
+            <path d="M 125,120 L 65,155 L 85,195 L 125,180 Z" fill="url(#sleeve-l-shading)" style="mix-blend-mode: multiply;" />
             
-            {/* Right Sleeve */}
+            {/* Right Sleeve base & shading */}
             <path d="M 275,120 L 335,155 L 315,195 L 275,180 Z" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="3" stroke-linejoin="round" />
+            <path d="M 275,120 L 335,155 L 315,195 L 275,180 Z" fill="url(#sleeve-r-shading)" style="mix-blend-mode: multiply;" />
             
             {/* Left Sleeve Trim */}
             <path d="M 65,155 L 85,195 M 68,157 L 87,196" id="trim-sleeve-l" class="trim-stroke transition-all duration-500" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
@@ -43,69 +96,118 @@
             {/* Right Sleeve Trim */}
             <path d="M 335,155 L 315,195 M 332,157 L 313,196" id="trim-sleeve-r" class="trim-stroke transition-all duration-500" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
             
-            {/* Main Body */}
+            {/* Main Body base & shading */}
             <path d="M 125,120 Q 200,130 275,120 L 290,350 L 110,350 Z" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="3" stroke-linejoin="round" />
+            <path d="M 125,120 Q 200,130 275,120 L 290,350 L 110,350 Z" fill="url(#body-highlight)" style="mix-blend-mode: multiply;" />
             
-            {/* Placket (Button strip) */}
-            <path d="M 188,126 L 212,126 L 212,200 L 188,200 Z" fill="#E2E8F0" stroke="#1E293B" stroke-width="2.5" stroke-linejoin="round" />
+            {/* Creases and folds to increase 3D realism */}
+            <path d="M 122,160 Q 140,175 160,170" stroke="black" stroke-width="2" stroke-linecap="round" opacity="0.08" fill="none" />
+            <path d="M 122,163 Q 140,178 160,173" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.08" fill="none" />
+            <path d="M 278,160 Q 260,175 240,170" stroke="black" stroke-width="2" stroke-linecap="round" opacity="0.08" fill="none" />
+            <path d="M 278,163 Q 260,178 240,173" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.08" fill="none" />
             
-            {/* Buttons */}
-            <circle cx="200" cy="145" r="4.5" fill="#FFFFFF" stroke="#475569" stroke-width="1.5" />
-            <circle cx="200" cy="165" r="4.5" fill="#FFFFFF" stroke="#475569" stroke-width="1.5" />
-            <circle cx="200" cy="185" r="4.5" fill="#FFFFFF" stroke="#475569" stroke-width="1.5" />
-            
-            {/* Left Collar Wing */}
-            <path d="M 200,126 L 140,118 L 160,158 L 200,126 Z" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="3" stroke-linejoin="round" />
-            
-            {/* Right Collar Wing */}
-            <path d="M 200,126 L 260,118 L 240,158 L 200,126 Z" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="3" stroke-linejoin="round" />
-            
-            {/* Left Collar Trim Edge */}
-            <path d="M 140,118 L 160,158" id="trim-collar-l" class="trim-stroke transition-all duration-500" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
-            
-            {/* Right Collar Trim Edge */}
-            <path d="M 260,118 L 240,158" id="trim-collar-r" class="trim-stroke transition-all duration-500" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
-            
-            {/* Chest Pocket */}
-            <path d="M 140,205 L 175,205 L 175,240 L 157.5,250 L 140,240 Z" id="polo-pocket" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="2.5" stroke-linejoin="round" />
-            
-            {/* Pocket Trim Edge */}
-            <path d="M 140,205 L 175,205" id="trim-pocket" class="trim-stroke transition-all duration-500" stroke="#FFFFFF" stroke-width="3.5" />
-            
-            {/* Logo Group */}
-            <g id="logo-crown" class="logo-overlay hidden">
-              {/* Crown Emblem (Gold) */}
-              <path d="M 235,210 L 242,223 L 250,210 L 258,223 L 265,210 L 261,232 L 239,232 Z" fill="#F59E0B" stroke="#B45309" stroke-width="1" />
-              <circle cx="235" cy="210" r="1.5" fill="#F59E0B" />
-              <circle cx="250" cy="210" r="1.5" fill="#F59E0B" />
-              <circle cx="265" cy="210" r="1.5" fill="#F59E0B" />
+            <path d="M 115,290 Q 155,302 200,297 Q 245,302 285,290" stroke="black" stroke-width="2" stroke-linecap="round" opacity="0.07" fill="none" />
+            <path d="M 117,294 Q 155,306 200,301 Q 245,306 283,294" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.09" fill="none" />
+
+            {/* Front View Details */}
+            <g id="polo-front-view">
+              {/* Placket (Button strip) */}
+              <path d="M 188,126 L 212,126 L 212,200 L 188,200 Z" fill="#E2E8F0" stroke="#1E293B" stroke-width="2.5" stroke-linejoin="round" />
+              
+              {/* Buttons */}
+              <circle cx="200" cy="145" r="4.5" fill="#FFFFFF" stroke="#475569" stroke-width="1.5" />
+              <circle cx="200" cy="165" r="4.5" fill="#FFFFFF" stroke="#475569" stroke-width="1.5" />
+              <circle cx="200" cy="185" r="4.5" fill="#FFFFFF" stroke="#475569" stroke-width="1.5" />
+              
+              {/* Left Collar Wing base & shading */}
+              <path d="M 200,126 L 140,118 L 160,158 L 200,126 Z" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="3" stroke-linejoin="round" />
+              <path d="M 200,126 L 140,118 L 160,158 L 200,126 Z" fill="url(#collar-wing-shading)" style="mix-blend-mode: multiply;" />
+              
+              {/* Right Collar Wing base & shading */}
+              <path d="M 200,126 L 260,118 L 240,158 L 200,126 Z" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="3" stroke-linejoin="round" />
+              <path d="M 200,126 L 260,118 L 240,158 L 200,126 Z" fill="url(#collar-wing-shading)" style="mix-blend-mode: multiply;" />
+              
+              {/* Left Collar Trim Edge */}
+              <path d="M 140,118 L 160,158" id="trim-collar-l" class="trim-stroke transition-all duration-500" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
+              
+              {/* Right Collar Trim Edge */}
+              <path d="M 260,118 L 240,158" id="trim-collar-r" class="trim-stroke transition-all duration-500" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
+              
+              {/* Chest Pocket base & shading */}
+              <path d="M 140,205 L 175,205 L 175,240 L 157.5,250 L 140,240 Z" id="polo-pocket" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="2.5" stroke-linejoin="round" />
+              <path d="M 140,205 L 175,205 L 175,240 L 157.5,250 L 140,240 Z" fill="url(#collar-wing-shading)" style="mix-blend-mode: multiply;" />
+              
+              {/* Pocket Trim Edge */}
+              <path d="M 140,205 L 175,205" id="trim-pocket" class="trim-stroke transition-all duration-500" stroke="#FFFFFF" stroke-width="3.5" />
+              
+              {/* Logo Group */}
+              <g id="logo-crown" class="logo-overlay hidden">
+                {/* Crown Emblem (Gold) */}
+                <path d="M 235,210 L 242,223 L 250,210 L 258,223 L 265,210 L 261,232 L 239,232 Z" fill="#F59E0B" stroke="#B45309" stroke-width="1" />
+                <circle cx="235" cy="210" r="1.5" fill="#F59E0B" />
+                <circle cx="250" cy="210" r="1.5" fill="#F59E0B" />
+                <circle cx="265" cy="210" r="1.5" fill="#F59E0B" />
+              </g>
+              
+              <g id="logo-star" class="logo-overlay hidden">
+                {/* Sporty Star (Silver-blue) */}
+                <path d="M 250,208 L 253,217 H 262 L 255,222 L 257,231 L 250,226 L 243,231 L 245,222 L 238,217 H 247 Z" fill="#3B82F6" stroke="#1D4ED8" stroke-width="1" />
+              </g>
+              
+              <g id="logo-lion" class="logo-overlay hidden">
+                {/* Shield Emblem (Red/Silver) */}
+                <path d="M 242,208 H 258 V 222 C 258,229 250,233 250,233 C 250,233 242,229 242,222 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5" />
+                <path d="M 250,212 L 246,220 H 254 Z" fill="#FFFFFF" />
+              </g>
             </g>
-            
-            <g id="logo-star" class="logo-overlay hidden">
-              {/* Sporty Star (Silver-blue) */}
-              <path d="M 250,208 L 253,217 H 262 L 255,222 L 257,231 L 250,226 L 243,231 L 245,222 L 238,217 H 247 Z" fill="#3B82F6" stroke="#1D4ED8" stroke-width="1" />
-            </g>
-            
-            <g id="logo-lion" class="logo-overlay hidden">
-              {/* Shield Emblem (Red/Silver) */}
-              <path d="M 242,208 H 258 V 222 C 258,229 250,233 250,233 C 250,233 242,229 242,222 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5" />
-              <path d="M 250,212 L 246,220 H 254 Z" fill="#FFFFFF" />
+
+            {/* Back View Details */}
+            <g id="polo-back-view" class="hidden">
+              {/* Back Collar base & shading */}
+              <path d="M 125,120 Q 200,95 275,120 L 260,128 Q 200,108 140,128 Z" class="fabric-color-fill transition-all duration-500" fill="#FF5A1F" stroke="#1E293B" stroke-width="3" stroke-linejoin="round" />
+              <path d="M 125,120 Q 200,95 275,120 L 260,128 Q 200,108 140,128 Z" fill="url(#collar-back-shading)" style="mix-blend-mode: multiply;" />
+
+              {/* Back Collar Trim */}
+              <path d="M 125,120 Q 200,95 275,120" id="trim-collar-back" class="trim-stroke transition-all duration-500" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" />
+              
+              {/* Back Printing Templates */}
+              <g id="back-print-staff" class="back-print-overlay hidden">
+                <text x="200" y="215" font-family="'Prompt', sans-serif" font-weight="900" font-size="28" fill="#FFFFFF" stroke="#1E293B" stroke-width="2.5" paint-order="stroke fill" text-anchor="middle" letter-spacing="4">STAFF</text>
+              </g>
+
+              <g id="back-print-security" class="back-print-overlay hidden">
+                <rect x="100" y="190" width="200" height="34" rx="6" fill="#FBBF24" stroke="#1E293B" stroke-width="2.5" />
+                <text x="200" y="215" font-family="'Prompt', sans-serif" font-weight="900" font-size="20" fill="#000000" text-anchor="middle" letter-spacing="3">SECURITY</text>
+              </g>
+
+              <g id="back-print-logo" class="back-print-overlay hidden">
+                <circle cx="200" cy="195" r="22" fill="#FFFFFF" stroke="#1E293B" stroke-width="3" />
+                <path d="M 190,185 L 195,195 L 200,185 L 205,195 L 210,185 L 207,203 L 193,203 Z" fill="#F59E0B" stroke="#B45309" stroke-width="1.5" />
+                <text x="200" y="242" font-family="'Prompt', sans-serif" font-weight="850" font-size="12" fill="#FFFFFF" stroke="#1E293B" stroke-width="2" paint-order="stroke fill" text-anchor="middle" letter-spacing="2">POLO ATHLETIC</text>
+              </g>
             </g>
           </svg>
         </div>
 
         {/* Dynamic Display Indicators */}
-        <div class="mt-6 flex flex-wrap justify-center gap-4 text-xs font-bold bg-slate-50 p-4.5 rounded-2xl w-full border border-slate-100">
-          <div class="flex items-center gap-1.5 text-gray-700">
-            <span class="w-3 h-3 rounded-full border" id="info-color-indicator" style="background-color: #FF5A1F;"></span>
-            <span>สีผ้า: <span id="info-color-text" class="text-gray-900">ส้ม (Signature Orange)</span></span>
+        <div class="mt-6 flex flex-col gap-2 bg-slate-50 p-4.5 rounded-2xl w-full border border-slate-100 text-xs font-bold">
+          <div class="flex flex-wrap justify-center gap-x-5 gap-y-2">
+            <div class="flex items-center gap-1.5 text-gray-700">
+              <span class="w-3 h-3 rounded-full border" id="info-color-indicator" style="background-color: #FF5A1F;"></span>
+              <span>สีผ้า: <span id="info-color-text" class="text-gray-900 font-extrabold">ส้ม (Signature Orange)</span></span>
+            </div>
+            <div class="flex items-center gap-1.5 text-gray-700">
+              <span class="w-3 h-3 rounded-full border bg-white" id="info-trim-indicator"></span>
+              <span>ขลิบ: <span id="info-trim-text" class="text-gray-900 font-extrabold">ขาว (Classic White)</span></span>
+            </div>
           </div>
-          <div class="flex items-center gap-1.5 text-gray-700">
-            <span class="w-3 h-3 rounded-full border bg-white" id="info-trim-indicator"></span>
-            <span>ขลิบ: <span id="info-trim-text" class="text-gray-900">ขาว (Classic White)</span></span>
-          </div>
-          <div class="flex items-center gap-1.5 text-gray-700">
-            <span>โลโก้: <span id="info-logo-text" class="text-gray-900">ไม่มีโลโก้</span></span>
+          <div class="flex flex-wrap justify-center gap-x-5 gap-y-2 border-t border-gray-200/50 pt-2 mt-1">
+            <div class="flex items-center gap-1.5 text-gray-700">
+              <span>โลโก้หน้า: <span id="info-logo-text" class="text-gray-900 font-extrabold">ไม่มีโลโก้</span></span>
+            </div>
+            <div class="flex items-center gap-1.5 text-gray-700">
+              <span>พิมพ์หลัง: <span id="info-print-text" class="text-gray-900 font-extrabold">ไม่มีงานพิมพ์</span></span>
+            </div>
           </div>
         </div>
 
@@ -117,7 +219,7 @@
         {/* Step 1: Fabric Color Selection */}
         <div class="space-y-3">
           <h3 class="text-sm font-black text-gray-900 uppercase tracking-wider flex items-center gap-2">
-            <span class="w-5 h-5 rounded-full bg-[#FF5A1F] text-white text-[10px] flex items-center justify-center">1</span>
+            <span class="w-5 h-5 rounded-full bg-[#FF5A1F] text-white text-[10px] flex items-center justify-center font-black">1</span>
             เลือกสีเนื้อผ้า (Fabric Color)
           </h3>
           <div class="flex flex-wrap gap-3" id="color-swatches">
@@ -133,28 +235,42 @@
         {/* Step 2: Collar & Sleeve Trim Selection */}
         <div class="space-y-3">
           <h3 class="text-sm font-black text-gray-900 uppercase tracking-wider flex items-center gap-2">
-            <span class="w-5 h-5 rounded-full bg-[#FF5A1F] text-white text-[10px] flex items-center justify-center">2</span>
+            <span class="w-5 h-5 rounded-full bg-[#FF5A1F] text-white text-[10px] flex items-center justify-center font-black">2</span>
             เลือกสีขลิบปลายปกและแขน (Collar & Cuff Accent)
           </h3>
           <div class="flex flex-wrap gap-2.5" id="trim-swatches">
-            <button type="button" data-hex="none" data-name="ไม่มีขลิบ (ล้วนสีเดียว)" class="trim-btn px-4 py-2 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all">ไม่มีขลิบ</button>
-            <button type="button" data-hex="#FFFFFF" data-name="ขลิบสีขาว (Classic White)" class="trim-btn px-4 py-2 text-xs font-bold rounded-xl border-2 border-orange-500 bg-orange-50 text-gray-900 transition-all">ขลิบขาว</button>
-            <button type="button" data-hex="#FF5A1F" data-name="ขลิบสีส้ม (Signature Orange)" class="trim-btn px-4 py-2 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all">ขลิบส้ม</button>
-            <button type="button" data-hex="#0F172A" data-name="ขลิบสีน้ำเงินเข้ม (Deep Navy)" class="trim-btn px-4 py-2 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all">ขลิบน้ำเงินเข้ม</button>
+            <button type="button" data-hex="none" data-name="ไม่มีขลิบ (ล้วนสีเดียว)" class="trim-btn px-4 py-2.5 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all select-none">ไม่มีขลิบ</button>
+            <button type="button" data-hex="#FFFFFF" data-name="ขลิบสีขาว (Classic White)" class="trim-btn px-4 py-2.5 text-xs font-bold rounded-xl border-2 border-orange-500 bg-orange-50 text-gray-900 transition-all select-none">ขลิบขาว</button>
+            <button type="button" data-hex="#FF5A1F" data-name="ขลิบสีส้ม (Signature Orange)" class="trim-btn px-4 py-2.5 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all select-none">ขลิบส้ม</button>
+            <button type="button" data-hex="#0F172A" data-name="ขลิบสีน้ำเงินเข้ม (Deep Navy)" class="trim-btn px-4 py-2.5 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all select-none">ขลิบน้ำเงินเข้ม</button>
           </div>
         </div>
 
         {/* Step 3: Logo Style Selection */}
         <div class="space-y-3">
           <h3 class="text-sm font-black text-gray-900 uppercase tracking-wider flex items-center gap-2">
-            <span class="w-5 h-5 rounded-full bg-[#FF5A1F] text-white text-[10px] flex items-center justify-center">3</span>
-            จำลองตำแหน่งและโลโก้งานปัก (Embroidery Logo Mockup)
+            <span class="w-5 h-5 rounded-full bg-[#FF5A1F] text-white text-[10px] flex items-center justify-center font-black">3</span>
+            จำลองสัญลักษณ์โลโก้ปักด้านหน้า (Embroidery Logo Mockup)
           </h3>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="logo-options">
             <button type="button" data-logo="none" data-name="ไม่มีโลโก้" class="logo-btn px-3 py-2.5 text-xs font-bold rounded-xl border-2 border-orange-500 bg-orange-50 text-gray-900 transition-all text-center">ไม่มีโลโก้</button>
-            <button type="button" data-logo="crown" data-name="โลโก้ทองอร่าม (Royal Crown)" class="logo-btn px-3 py-2.5 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all text-center">มงกุฎทอง</button>
+            <button type="button" data-logo="crown" data-name="มงกุฎทอง (Royal Crown)" class="logo-btn px-3 py-2.5 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all text-center">มงกุฎทอง</button>
             <button type="button" data-logo="star" data-name="ดาวสปอร์ต (Classic Star)" class="logo-btn px-3 py-2.5 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all text-center">ดาวสปอร์ต</button>
-            <button type="button" data-logo="lion" data-name="โลโก้สิงโตเหยียบลูกโลก (Lion Shield)" class="logo-btn px-3 py-2.5 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all text-center">ตราสิงโต</button>
+            <button type="button" data-logo="lion" data-name="ตราสิงโต (Lion Shield)" class="logo-btn px-3 py-2.5 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all text-center">ตราสิงโต</button>
+          </div>
+        </div>
+
+        {/* Step 4: Back Printing Selection */}
+        <div class="space-y-3">
+          <h3 class="text-sm font-black text-gray-900 uppercase tracking-wider flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-[#FF5A1F] text-white text-[10px] flex items-center justify-center font-black">4</span>
+            จำลองงานพิมพ์สกรีนลายด้านหลัง (Back Printing Mockup)
+          </h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="print-options">
+            <button type="button" data-print="none" data-name="ไม่มีงานพิมพ์" class="print-btn px-3 py-2.5 text-xs font-bold rounded-xl border-2 border-orange-500 bg-orange-50 text-gray-900 transition-all text-center">ไม่มีลาย</button>
+            <button type="button" data-print="staff" data-name="พิมพ์ข้อความ STAFF" class="print-btn px-3 py-2.5 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all text-center">ลาย STAFF</button>
+            <button type="button" data-print="security" data-name="พิมพ์แถบ SECURITY" class="print-btn px-3 py-2.5 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all text-center">SECURITY</button>
+            <button type="button" data-print="logo" data-name="สกรีน POLO ATHLETIC" class="print-btn px-3 py-2.5 text-xs font-bold rounded-xl border border-gray-200 hover:border-gray-900 bg-white text-gray-700 transition-all text-center">สปอร์ตทีม</button>
           </div>
         </div>
 
@@ -186,7 +302,7 @@
             class="w-full inline-flex items-center justify-center gap-2.5 bg-[#06C755] hover:bg-[#05b34c] text-white font-black px-7 py-4.5 rounded-2xl shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20 hover:-translate-y-0.5 transition-all duration-300 text-center text-sm pulse-glow"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-            <span>เปิด LINE @thanaplus เพื่อสั่งผลิตสีนี้</span>
+            <span>เปิด LINE @thanaplus เพื่อส่งประเมินราคาชุดนี้</span>
           </a>
         </div>
 
@@ -202,7 +318,13 @@
     const colorSwatches = document.querySelectorAll('#color-swatches .color-btn');
     const trimSwatches = document.querySelectorAll('#trim-swatches .trim-btn');
     const logoOptions = document.querySelectorAll('#logo-options .logo-btn');
+    const printOptions = document.querySelectorAll('#print-options .print-btn');
     
+    const viewFrontBtn = document.getElementById('view-front-btn');
+    const viewBackBtn = document.getElementById('view-back-btn');
+    const frontViewGroup = document.getElementById('polo-front-view');
+    const backViewGroup = document.getElementById('polo-back-view');
+
     const svgFabricFills = document.querySelectorAll('.fabric-color-fill');
     
     // Trim SVG elements
@@ -210,14 +332,23 @@
     const trimSleeveR = document.getElementById('trim-sleeve-r');
     const trimCollarL = document.getElementById('trim-collar-l');
     const trimCollarR = document.getElementById('trim-collar-r');
+    const trimCollarBack = document.getElementById('trim-collar-back');
     const trimPocket = document.getElementById('trim-pocket');
     
-    // Logo elements
+    // Front Logo elements
     const logos = {
       none: null,
       crown: document.getElementById('logo-crown'),
       star: document.getElementById('logo-star'),
       lion: document.getElementById('logo-lion')
+    };
+
+    // Back Print elements
+    const backPrints = {
+      none: null,
+      staff: document.getElementById('back-print-staff'),
+      security: document.getElementById('back-print-security'),
+      logo: document.getElementById('back-print-logo')
     };
 
     // Information displays
@@ -226,6 +357,7 @@
     const infoTrimText = document.getElementById('info-trim-text');
     const infoTrimIndicator = document.getElementById('info-trim-indicator');
     const infoLogoText = document.getElementById('info-logo-text');
+    const infoPrintText = document.getElementById('info-print-text');
     const estimatedPriceText = document.getElementById('estimated-price');
     
     const copyBtn = document.getElementById('copy-custom-btn');
@@ -238,10 +370,39 @@
       trimColorHex: '#FFFFFF',
       trimColorName: 'ขลิบสีขาว (Classic White)',
       logoStyle: 'none',
-      logoName: 'ไม่มีโลโก้'
+      logoName: 'ไม่มีโลโก้',
+      printStyle: 'none',
+      printName: 'ไม่มีงานพิมพ์',
+      currentView: 'front'
     };
 
-    // 2. Event Handlers
+    // 2. View Toggle Handler
+    function switchView(view: 'front' | 'back') {
+      state.currentView = view;
+      
+      if (view === 'front') {
+        frontViewGroup?.classList.remove('hidden');
+        backViewGroup?.classList.add('hidden');
+        
+        viewFrontBtn?.classList.add('bg-white', 'text-gray-900', 'shadow-sm', 'border', 'border-gray-200/30');
+        viewFrontBtn?.classList.remove('text-gray-500');
+        viewBackBtn?.classList.remove('bg-white', 'text-gray-900', 'shadow-sm', 'border', 'border-gray-200/30');
+        viewBackBtn?.classList.add('text-gray-500');
+      } else {
+        frontViewGroup?.classList.add('hidden');
+        backViewGroup?.classList.remove('hidden');
+        
+        viewBackBtn?.classList.add('bg-white', 'text-gray-900', 'shadow-sm', 'border', 'border-gray-200/30');
+        viewBackBtn?.classList.remove('text-gray-500');
+        viewFrontBtn?.classList.remove('bg-white', 'text-gray-900', 'shadow-sm', 'border', 'border-gray-200/30');
+        viewFrontBtn?.classList.add('text-gray-500');
+      }
+    }
+
+    viewFrontBtn?.addEventListener('click', () => switchView('front'));
+    viewBackBtn?.addEventListener('click', () => switchView('back'));
+
+    // 3. Customize Options Event Handlers
     
     // Update Fabric Colors
     colorSwatches.forEach(btn => {
@@ -308,7 +469,7 @@
       });
     });
 
-    // Update Logo Style
+    // Update Front Logo Style
     logoOptions.forEach(btn => {
       btn.addEventListener('click', () => {
         logoOptions.forEach(b => {
@@ -324,7 +485,7 @@
         state.logoStyle = logoId;
         state.logoName = name;
 
-        // Hide all logos
+        // Hide all front logos
         Object.keys(logos).forEach(key => {
           const el = logos[key as keyof typeof logos];
           if (el) el.classList.add('hidden');
@@ -337,6 +498,45 @@
         // Update info panel
         if (infoLogoText) infoLogoText.innerText = name;
 
+        // Force switch to Front View to preview it
+        switchView('front');
+
+        updatePrice();
+      });
+    });
+
+    // Update Back Printing Style
+    printOptions.forEach(btn => {
+      btn.addEventListener('click', () => {
+        printOptions.forEach(b => {
+          b.classList.remove('border-2', 'border-orange-500', 'bg-orange-50', 'text-gray-900');
+          b.classList.add('border-gray-200', 'bg-white', 'text-gray-700', 'hover:border-gray-900');
+        });
+        btn.classList.add('border-2', 'border-orange-500', 'bg-orange-50', 'text-gray-900');
+        btn.classList.remove('border-gray-200', 'bg-white', 'text-gray-700', 'hover:border-gray-900');
+
+        const printId = btn.getAttribute('data-print') || 'none';
+        const name = btn.getAttribute('data-name') || '';
+
+        state.printStyle = printId;
+        state.printName = name;
+
+        // Hide all back prints
+        Object.keys(backPrints).forEach(key => {
+          const el = backPrints[key as keyof typeof backPrints];
+          if (el) el.classList.add('hidden');
+        });
+
+        // Show selected print
+        const selectedEl = backPrints[printId as keyof typeof backPrints];
+        if (selectedEl) selectedEl.classList.remove('hidden');
+
+        // Update info panel
+        if (infoPrintText) infoPrintText.innerText = name;
+
+        // Force switch to Back View to preview it
+        switchView('back');
+
         updatePrice();
       });
     });
@@ -344,7 +544,7 @@
     // Helper functions
     function updateTrimColor(color: string) {
       const isNone = state.trimColorHex === 'none';
-      const elements = [trimSleeveL, trimSleeveR, trimCollarL, trimCollarR, trimPocket];
+      const elements = [trimSleeveL, trimSleeveR, trimCollarL, trimCollarR, trimCollarBack, trimPocket];
       
       elements.forEach(el => {
         if (!el) return;
@@ -367,10 +567,16 @@
         baseMax += 15;
       }
 
-      // Logo adds a bit
+      // Front Logo adds a bit
       if (state.logoStyle !== 'none') {
         baseMin += 15;
         baseMax += 20;
+      }
+
+      // Back Print adds cost
+      if (state.printStyle !== 'none') {
+        baseMin += 15;
+        baseMax += 25;
       }
 
       if (estimatedPriceText) {
@@ -379,7 +585,7 @@
     }
 
     function generateSummaryText() {
-      return `รายละเอียดสั่งผลิตเสื้อโปโลพนักงาน:\n- สีผ้า: ${state.fabricColorName}\n- งานขลิบปก/แขน: ${state.trimColorName}\n- งานปักโลโก้: ${state.logoName}\n- จำนวนผลิตที่เสนอราคา: 100 ตัว`;
+      return `รายละเอียดสั่งผลิตเสื้อโปโลพนักงาน:\n- สีผ้า: ${state.fabricColorName}\n- งานขลิบปก/แขน: ${state.trimColorName}\n- งานปักด้านหน้า: ${state.logoName}\n- งานสกรีนด้านหลัง: ${state.printName}\n- จำนวนผลิตที่เสนอราคา: 100 ตัว`;
     }
 
     // Copy to clipboard
@@ -408,7 +614,7 @@
     // Update LINE button link with pre-filled text
     function updateLineLink() {
       if (!lineBtn) return;
-      const summary = `สวัสดีครับ สนใจสั่งผลิตเสื้อโปโลตามตัวอย่างจำลอง:\n- สีผ้า: ${state.fabricColorName}\n- งานขลิบ: ${state.trimColorName}\n- โลโก้: ${state.logoName}`;
+      const summary = `สวัสดีครับ สนใจสั่งผลิตเสื้อโปโลตามตัวอย่างจำลอง:\n- สีผ้า: ${state.fabricColorName}\n- งานขลิบ: ${state.trimColorName}\n- โลโก้หน้า: ${state.logoName}\n- พิมพ์สกรีนหลัง: ${state.printName}`;
       const lineUrl = `https://line.me/R/ti/p/@thanaplus?text=${encodeURIComponent(summary)}`;
       lineBtn.href = lineUrl;
     }
@@ -417,6 +623,7 @@
     colorSwatches.forEach(btn => btn.addEventListener('click', updateLineLink));
     trimSwatches.forEach(btn => btn.addEventListener('click', updateLineLink));
     logoOptions.forEach(btn => btn.addEventListener('click', updateLineLink));
+    printOptions.forEach(btn => btn.addEventListener('click', updateLineLink));
 
     // Initialize line link
     updateLineLink();

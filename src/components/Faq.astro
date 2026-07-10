@@ -1,5 +1,5 @@
 ---
-// คอมโพเนนต์ FAQ ที่ "มองเห็นได้บนหน้า" — zero-JS ด้วย <details>/<summary>
+// คอมโพเนนต์ FAQ ที่ "มองเห็นได้บนหน้า" — zero-JS ด้วย <details>/<summary> (Restored to original native HTML behavior)
 // เรนเดอร์จาก data ชุดเดียวกับ FAQPage JSON-LD (กัน schema drift ตามกฎ Google)
 import type { FaqItem } from '@/lib/faq';
 
@@ -34,7 +34,7 @@ const {
     <div class="divide-y divide-border border-t border-b border-border">
       {items.map((item) => (
         <details class="group py-4">
-          <summary class="flex cursor-pointer items-center justify-between gap-4 font-medium text-foreground list-none [&::-webkit-details-marker]:hidden">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 font-medium text-foreground list-none [&::-webkit-details-marker]:hidden hover:text-[#FF5A1F] transition-colors duration-200 select-none">
             <span>{item.question}</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -46,13 +46,13 @@ const {
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180"
+              class="h-5 w-5 shrink-0 text-muted-foreground group-open:text-[#FF5A1F] transition-transform duration-250 group-open:rotate-180"
               aria-hidden="true"
             >
               <path d="m6 9 6 6 6-6" />
             </svg>
           </summary>
-          <p class="mt-3 text-muted-foreground leading-relaxed">
+          <p class="mt-3.5 text-muted-foreground leading-relaxed pl-1">
             {item.answer}
           </p>
         </details>
