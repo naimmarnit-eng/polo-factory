@@ -2,6 +2,7 @@
 import PageLayout from '@/layouts/PageLayout.astro';
 import { getCollection } from 'astro:content';
 import PortfolioCard from '@/components/products/PortfolioCard.astro';
+import PricingCalculator from '@/components/home/PricingCalculator.astro';
 import { SITE } from '@/consts';
 
 const products = (await getCollection('products')).sort(
@@ -134,6 +135,8 @@ const breadcrumbJsonLd = {
         <p class="text-xl">Coming soon...</p>
       </div>
     )}
+
+    <PricingCalculator />
 
     <!-- Wholesale Inquiry Call-To-Action Banner -->
     <section class="mt-24 max-w-5xl mx-auto px-4 reveal-up">

@@ -1,0 +1,391 @@
+---
+// PricingCalculator.astro - Quick Quote Pricing Calculator component
+---
+
+<section id="calculator" class="py-20 border-t border-b border-gray-200/50 bg-gray-50/40 relative z-20 scroll-mt-24">
+  {/* Ambient glowing blobs */}
+  <div class="absolute top-[30%] left-[5%] w-[280px] h-[280px] rounded-full bg-[#FF5A1F]/5 blur-[100px] pointer-events-none z-0"></div>
+  <div class="absolute bottom-[20%] right-[5%] w-[320px] h-[320px] rounded-full bg-orange-600/5 blur-[110px] pointer-events-none z-0"></div>
+
+  <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    
+    {/* Section Header */}
+    <div class="text-center max-w-3xl mx-auto mb-16 reveal-up">
+      <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-4 block">
+        Instant Pricing
+      </span>
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-[1.15]">
+        ประเมินราคาสั่งผลิตเสื้อโปโลด่วน <br/>
+        <span class="text-[#FF5A1F]">Quick Quote Calculator</span>
+      </h2>
+      <p class="text-gray-500 text-sm sm:text-base font-semibold leading-relaxed mt-4">
+        ประเมินราคาง่ายๆ ใน 3 ขั้นตอน เลือกรูปแบบเสื้อ จำนวน และงานตกแต่ง เพื่อดูราคาประมาณการเบื้องต้นได้ทันที
+      </p>
+    </div>
+
+    {/* Calculator Grid */}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+      
+      {/* Left: Input Options (8 cols) */}
+      <div class="lg:col-span-7 flex flex-col gap-8 bg-white p-6 sm:p-8 rounded-3xl border border-gray-200/80 shadow-premium justify-between reveal-left">
+        
+        {/* Step 1: Select Shirt Type */}
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-full bg-[#FF5A1F] text-white flex items-center justify-center font-black text-sm">1</span>
+            <h3 class="text-lg font-black text-gray-900 uppercase tracking-wide">เลือกรูปแบบเสื้อ (Shirt Type)</h3>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="calc-type-options">
+            <button 
+              type="button" 
+              data-type="classic" 
+              class="calc-type-btn text-left p-5 rounded-2xl border-2 border-orange-500 bg-orange-50/50 text-gray-900 transition-all cursor-pointer shadow-sm relative overflow-hidden group"
+            >
+              <div class="font-black text-sm mb-1">Classic Polo</div>
+              <div class="text-xs text-gray-500 font-semibold mb-2">ปกเสื้อทอพิเศษ ไม่ม้วนงอ</div>
+              <div class="text-[#FF5A1F] font-black text-xs">เริ่มต้น 160.- บาท</div>
+            </button>
+            <button 
+              type="button" 
+              data-type="sporty" 
+              class="calc-type-btn text-left p-5 rounded-2xl border border-gray-200 bg-white hover:border-gray-900 text-gray-700 transition-all cursor-pointer shadow-sm group"
+            >
+              <div class="font-black text-sm mb-1">Sporty Polo</div>
+              <div class="text-xs text-gray-500 font-semibold mb-2">ดีไซน์ขลิบปก/แขนสปอร์ต</div>
+              <div class="text-gray-950 font-black text-xs group-hover:text-[#FF5A1F] transition-colors">เริ่มต้น 175.- บาท</div>
+            </button>
+            <button 
+              type="button" 
+              data-type="executive" 
+              class="calc-type-btn text-left p-5 rounded-2xl border border-gray-200 bg-white hover:border-gray-900 text-gray-700 transition-all cursor-pointer shadow-sm group"
+            >
+              <div class="font-black text-sm mb-1">Executive Pique</div>
+              <div class="text-xs text-gray-500 font-semibold mb-2">ผ้าฝ้ายสลาฟทอลายเรียบหรู</div>
+              <div class="text-gray-950 font-black text-xs group-hover:text-[#FF5A1F] transition-colors">เริ่มต้น 195.- บาท</div>
+            </button>
+          </div>
+        </div>
+
+        {/* Step 2: Select Quantity */}
+        <div class="space-y-4 pt-6 border-t border-gray-100">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-[#FF5A1F] text-white flex items-center justify-center font-black text-sm">2</span>
+              <h3 class="text-lg font-black text-gray-900 uppercase tracking-wide">จำนวนสั่งผลิต (Quantity)</h3>
+            </div>
+            <div class="bg-gray-100 px-4 py-1.5 rounded-full text-sm font-black text-[#FF5A1F]">
+              <span id="calc-qty-display">300</span> ตัว
+            </div>
+          </div>
+          <div class="space-y-3 pt-2">
+            <input 
+              type="range" 
+              id="calc-qty-slider" 
+              min="100" 
+              max="2000" 
+              step="50" 
+              value="300"
+              class="w-full accent-[#FF5A1F] h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            />
+            <div class="flex justify-between text-[10px] font-black text-gray-400 uppercase tracking-wider">
+              <span>ขั้นต่ำ 100 ตัว</span>
+              <span>500 ตัว (ลด -20.-)</span>
+              <span>1,000 ตัว+ (ลดสูงสุด -30.-)</span>
+              <span>2,000 ตัว</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Step 3: Decoration Options */}
+        <div class="space-y-4 pt-6 border-t border-gray-100">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-full bg-[#FF5A1F] text-white flex items-center justify-center font-black text-sm">3</span>
+            <h3 class="text-lg font-black text-gray-900 uppercase tracking-wide">งานตกแต่ง & ปัก/สกรีน (Decorations)</h3>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="calc-decorations">
+            <label class="flex items-center justify-between p-4 rounded-xl border border-gray-200 bg-white hover:border-gray-900 transition-all cursor-pointer shadow-sm select-none">
+              <div class="flex items-center gap-3">
+                <input 
+                  type="checkbox" 
+                  id="calc-dec-chest" 
+                  checked
+                  class="w-4 h-4 accent-[#FF5A1F] rounded"
+                />
+                <span class="text-sm font-black text-gray-700">ปักอกซ้าย</span>
+              </div>
+              <span class="text-xs text-gray-400 font-bold">+15-20.-</span>
+            </label>
+            <label class="flex items-center justify-between p-4 rounded-xl border border-gray-200 bg-white hover:border-gray-900 transition-all cursor-pointer shadow-sm select-none">
+              <div class="flex items-center gap-3">
+                <input 
+                  type="checkbox" 
+                  id="calc-dec-back" 
+                  class="w-4 h-4 accent-[#FF5A1F] rounded"
+                />
+                <span class="text-sm font-black text-gray-700">สกรีนหลัง</span>
+              </div>
+              <span class="text-xs text-gray-400 font-bold">+20-30.-</span>
+            </label>
+            <label class="flex items-center justify-between p-4 rounded-xl border border-gray-200 bg-white hover:border-gray-900 transition-all cursor-pointer shadow-sm select-none">
+              <div class="flex items-center gap-3">
+                <input 
+                  type="checkbox" 
+                  id="calc-dec-sleeve" 
+                  class="w-4 h-4 accent-[#FF5A1F] rounded"
+                />
+                <span class="text-sm font-black text-gray-700">ปัก/สกรีนแขน</span>
+              </div>
+              <span class="text-xs text-gray-400 font-bold">+10-15.-</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Right: Results Dashboard (5 cols) */}
+      <div class="lg:col-span-5 flex flex-col justify-between bg-gradient-to-br from-white/90 to-white/70 backdrop-blur-md p-8 rounded-3xl border border-white/50 shadow-premium reveal-right relative overflow-hidden min-h-[460px]">
+        {/* Abstract design elements to look premium */}
+        <div class="absolute -top-12 -right-12 w-32 h-32 bg-[#FF5A1F]/10 rounded-full blur-2xl pointer-events-none"></div>
+        
+        <div class="space-y-6 relative z-10">
+          <div>
+            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Estimated Cost Per Unit</span>
+            <div class="flex items-baseline gap-1">
+              <span class="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight" id="calc-unit-price">~155 - 195</span>
+              <span class="text-lg font-black text-gray-500">บาท / ตัว</span>
+            </div>
+            <div class="text-[10px] font-bold text-gray-400 mt-1" id="calc-discount-applied">
+              *ราคาคำนวณจากส่วนลดปริมาณผลิต (ลด -10 บาท)
+            </div>
+          </div>
+
+          <hr class="border-gray-200/60" />
+
+          <div>
+            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Total Estimate Range</span>
+            <div class="flex items-baseline gap-1">
+              <span class="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight text-[#FF5A1F]" id="calc-total-price">~46,500 - 58,500</span>
+              <span class="text-sm font-black text-gray-500">บาท</span>
+            </div>
+            <span class="text-[10px] font-bold text-gray-400 mt-1 block">
+              *ราคาอาจมีการเปลี่ยนแปลงขึ้นอยู่กับรายละเอียดแบบสกรีนปักจริง
+            </span>
+          </div>
+
+          <hr class="border-gray-200/60" />
+
+          {/* Details Summary Box */}
+          <div class="bg-gray-50/60 border border-gray-150/50 p-4 rounded-2xl text-left space-y-2">
+            <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest block">สรุปความต้องการ (Specification Summary)</span>
+            <ul class="text-xs font-bold text-gray-600 space-y-1.5" id="calc-summary-list">
+              <li>• ประเภทเสื้อ: Classic Polo</li>
+              <li>• จำนวนสั่งผลิต: 300 ตัว</li>
+              <li>• งานตกแต่ง: ปักอกซ้าย</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div class="space-y-3 mt-8 relative z-10">
+          <button 
+            type="button" 
+            id="calc-copy-btn" 
+            class="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-black text-white font-black text-xs px-5 py-3.5 rounded-xl cursor-pointer hover:-translate-y-0.5 transition-all shadow-sm"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+            <span>คัดลอกรายละเอียดเสื้อ</span>
+          </button>
+          
+          <a 
+            id="calc-line-btn" 
+            href="https://line.me/R/ti/p/@thanaplus" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="w-full inline-flex items-center justify-center gap-2.5 bg-[#06C755] hover:bg-[#05b34c] text-white font-black px-7 py-4 rounded-xl shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20 hover:-translate-y-0.5 transition-all duration-300 text-center text-sm pulse-glow"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            <span>ส่งรายละเอียดเข้า LINE เพื่อขอใบเสนอราคา</span>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+  function initCalculator() {
+    const typeButtons = document.querySelectorAll('.calc-type-btn');
+    const qtySlider = document.getElementById('calc-qty-slider') as HTMLInputElement;
+    const qtyDisplay = document.getElementById('calc-qty-display');
+    const decChest = document.getElementById('calc-dec-chest') as HTMLInputElement;
+    const decBack = document.getElementById('calc-dec-back') as HTMLInputElement;
+    const decSleeve = document.getElementById('calc-dec-sleeve') as HTMLInputElement;
+
+    const unitPriceDisplay = document.getElementById('calc-unit-price');
+    const totalPriceDisplay = document.getElementById('calc-total-price');
+    const discountDisplay = document.getElementById('calc-discount-applied');
+    const summaryList = document.getElementById('calc-summary-list');
+    const copyBtn = document.getElementById('calc-copy-btn');
+
+    let state = {
+      type: 'classic',
+      typeName: 'Classic Polo',
+      qty: 300,
+      chestDec: true,
+      backDec: false,
+      sleeveDec: false
+    };
+
+    // Base pricing config
+    const basePrices = {
+      classic: { min: 160, max: 200, label: 'Classic Polo' },
+      sporty: { min: 175, max: 215, label: 'Sporty Polo' },
+      executive: { min: 195, max: 240, label: 'Executive Pique' }
+    };
+
+    function calculatePrice() {
+      const base = basePrices[state.type as keyof typeof basePrices];
+      let min = base.min;
+      let max = base.max;
+
+      // Quantity discount logic
+      let discount = 0;
+      let discountLabel = '';
+      if (state.qty >= 250 && state.qty < 500) {
+        discount = 10;
+        discountLabel = '*ราคาคำนวณจากส่วนลดปริมาณผลิต (ลด -10 บาท/ตัว)';
+      } else if (state.qty >= 500 && state.qty < 1000) {
+        discount = 20;
+        discountLabel = '*ราคาคำนวณจากส่วนลดปริมาณผลิต (ลด -20 บาท/ตัว)';
+      } else if (state.qty >= 1000) {
+        discount = 30;
+        discountLabel = '*ราคาคำนวณจากส่วนลดปริมาณผลิตขั้นสุด (ลด -30 บาท/ตัว)';
+      } else {
+        discountLabel = '*ขั้นต่ำสั่งผลิต 100 ตัว';
+      }
+
+      min -= discount;
+      max -= discount;
+
+      // Add decorations
+      if (state.chestDec) {
+        min += 15;
+        max += 20;
+      }
+      if (state.backDec) {
+        min += 20;
+        max += 30;
+      }
+      if (state.sleeveDec) {
+        min += 10;
+        max += 15;
+      }
+
+      // Render pricing
+      if (unitPriceDisplay) {
+        unitPriceDisplay.innerText = `~${min} - ${max}`;
+      }
+      if (totalPriceDisplay) {
+        const totalMin = (min * state.qty).toLocaleString();
+        const totalMax = (max * state.qty).toLocaleString();
+        totalPriceDisplay.innerText = `~${totalMin} - ${totalMax}`;
+      }
+      if (discountDisplay) {
+        discountDisplay.innerText = discountLabel;
+      }
+
+      // Render summary spec list
+      if (summaryList) {
+        let decs = [];
+        if (state.chestDec) decs.push('ปักอกซ้าย');
+        if (state.backDec) decs.push('สกรีนหลัง');
+        if (state.sleeveDec) decs.push('ปัก/สกรีนแขน');
+        const decText = decs.length > 0 ? decs.join(', ') : 'ไม่มี';
+
+        summaryList.innerHTML = `
+          <li>• ประเภทเสื้อ: ${state.typeName}</li>
+          <li>• จำนวนสั่งผลิต: ${state.qty} ตัว</li>
+          <li>• งานตกแต่ง: ${decText}</li>
+        `;
+      }
+    }
+
+    // Event listeners for step 1: type
+    typeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        typeButtons.forEach(b => {
+          b.classList.remove('border-2', 'border-orange-500', 'bg-orange-50/50', 'text-gray-900');
+          b.classList.add('border-gray-200', 'bg-white', 'text-gray-700', 'hover:border-gray-900');
+        });
+        btn.classList.add('border-2', 'border-orange-500', 'bg-orange-50/50', 'text-gray-900');
+        btn.classList.remove('border-gray-200', 'bg-white', 'text-gray-700', 'hover:border-gray-900');
+
+        const typeId = btn.getAttribute('data-type') || 'classic';
+        state.type = typeId;
+        state.typeName = basePrices[typeId as keyof typeof basePrices].label;
+        calculatePrice();
+      });
+    });
+
+    // Event listener for step 2: qty slider
+    if (qtySlider) {
+      qtySlider.addEventListener('input', (e) => {
+        const val = parseInt((e.target as HTMLInputElement).value);
+        state.qty = val;
+        if (qtyDisplay) qtyDisplay.innerText = val.toString();
+        calculatePrice();
+      });
+    }
+
+    // Event listeners for step 3: decorations
+    [decChest, decBack, decSleeve].forEach(chk => {
+      if (chk) {
+        chk.addEventListener('change', () => {
+          state.chestDec = decChest.checked;
+          state.backDec = decBack.checked;
+          state.sleeveDec = decSleeve.checked;
+          calculatePrice();
+        });
+      }
+    });
+
+    function generateSummaryText() {
+      let decs = [];
+      if (state.chestDec) decs.push('ปักอกซ้าย');
+      if (state.backDec) decs.push('สกรีนหลัง');
+      if (state.sleeveDec) decs.push('ปัก/สกรีนแขน');
+      const decText = decs.length > 0 ? decs.join(', ') : 'ไม่มี';
+
+      return `รายละเอียดขอใบเสนอราคาสั่งผลิตเสื้อโปโล:\n- ประเภทเสื้อ: ${state.typeName}\n- จำนวนผลิต: ${state.qty} ตัว\n- งานตกแต่ง: ${decText}`;
+    }
+
+    // Copy to clipboard
+    copyBtn?.addEventListener('click', () => {
+      const summary = generateSummaryText();
+      navigator.clipboard.writeText(summary).then(() => {
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><path d="M20 6 9 17l-5-5"/></svg>
+          <span>คัดลอกเรียบร้อย!</span>
+        `;
+        copyBtn.classList.remove('bg-slate-900');
+        copyBtn.classList.add('bg-emerald-800');
+        
+        setTimeout(() => {
+          copyBtn.innerHTML = originalText;
+          copyBtn.classList.remove('bg-emerald-800');
+          copyBtn.classList.add('bg-slate-900');
+        }, 2000);
+      });
+    });
+
+    // Initial run
+    calculatePrice();
+  }
+
+  // Load handler
+  document.addEventListener('DOMContentLoaded', initCalculator);
+</script>
