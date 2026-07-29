@@ -4,7 +4,6 @@ import poloClassicImg from '@/assets/home/polo-classic.png';
 import poloSportyImg from '@/assets/home/polo-sporty.png';
 import poloPremiumImg from '@/assets/home/polo-premium.png';
 import poloDryfitImg from '@/assets/home/polo-dryfit.png';
-import poloExecutiveImg from '@/assets/home/Polo-Shirts_Collection.png';
 
 const collections = [
   {
@@ -39,44 +38,38 @@ const collections = [
     specs: ["เทคโนโลยีผ้า Dry-Fit ระบายเหงื่อไว", "ผ้าเนื้อเบา ยืดหยุ่นได้ 4 ทิศทาง", "ป้องกันการสะสมแบคทีเรียและรังสี UV"],
     href: "/products/polo-dryfit",
   },
-  {
-    title: "เสื้อโปโลแจ็คการ์ดผู้บริหาร",
-    subtitle: "Executive Pique Polos",
-    image: poloExecutiveImg,
-    alt: "รับผลิตเสื้อโปโลสลาฟเกรดหรู",
-    specs: ["ผ้าฝ้ายสลาฟคอมแบ็ด ทอหนานุ่ม", "ปกเสื้อทอลายแจ็คการ์ดสามสีขลิบปลาย", "เหมาะกับแบรนด์เสื้อผ้าและยูนิฟอร์มพรีเมียม"],
-    href: "/products/polo-executive",
-  },
 ];
 ---
 
 {/* Services & Collections Section - Overhauled to Slider Carousel Style */}
-<section id="services" class="w-full py-24 bg-gray-50 text-gray-900 border-t border-gray-150 overflow-hidden" aria-labelledby="collections-heading">
-  <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+<section id="services" class="w-full py-20 lg:py-28 bg-[#F5F5F7] text-gray-900 border-t border-black/5 overflow-hidden" aria-labelledby="collections-heading">
+  <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
     
     {/* Top Row - Title (Left) & Intro with Button (Right) */}
     <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16 text-left reveal-up">
       <div class="max-w-xl">
-        <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-4 block">
-          Our Services
+        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-500/10 text-orange-600 text-[11px] font-extrabold tracking-wider uppercase mb-4 border border-orange-500/20">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#FF5A1F] animate-pulse"></span>
+          2D Vector Design Studio
         </span>
-        <h2 id="collections-heading" class="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-[1.15] uppercase">
-          Tailored Solutions <br/>
-          For Corporate Apparel
+        <h2 id="collections-heading" class="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-[1.12] uppercase">
+          Customize Your <br/>
+          <span class="text-[#FF5A1F]">Own Polo</span>
         </h2>
       </div>
       <div class="flex flex-col items-start lg:items-end gap-5 lg:max-w-md">
-        <p class="text-gray-500 text-sm leading-relaxed font-semibold lg:text-right">
-          เราให้บริการออกแบบและรับสั่งผลิตเสื้อทีมพนักงานองค์กรแบบปรับสเปกครบชุด (Made-to-order) เพื่อตอบสนองความต้องการและงบประมาณอย่างลงตัว
+        <p class="text-gray-500 text-sm sm:text-base leading-relaxed font-semibold lg:text-right">
+          เลือกทรงเสื้อ ปรับเปลี่ยนสีผ้า สลับแขนสั้น/ยาว วางโลโก้ และพิมพ์ข้อความจำลองด้วย 2D Visualizer แบบเรียลไทม์ พร้อมส่งสเปกประเมินราคาได้ทันที
         </p>
         <a
-          href="/products/"
-          class="inline-flex items-center justify-center gap-2 bg-[#FF5A1F] hover:bg-[#E04E17] text-white font-black px-6 py-3 rounded-xl shadow-lg shadow-orange-600/15 hover:-translate-y-0.5 transition-all duration-300 text-sm animate-pulse-slow"
+          href="/products/polo-classic/"
+          class="inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#FF5A1F] to-[#FF8A00] hover:from-[#E04E17] hover:to-[#FF5A1F] text-white font-black px-8 py-3.5 rounded-full shadow-lg shadow-orange-600/20 hover:scale-[1.03] transition-all duration-300 text-sm pulse-glow"
         >
-          <span>View All Products</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          <span>✨ Customize Your Own Polo</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
       </div>
+    </div>
     </div>
 
     <!-- Collections Carousel Slider Showcase (3 visible, rotates to others) -->

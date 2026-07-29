@@ -1,0 +1,1437 @@
+---
+// ProductCustomizerStudio.astro
+// Interactive 2D Vector Apparel & Product Customizer Visualizer Studio
+---
+
+<section id="customizer-studio" class="mb-16 relative z-20">
+  <!-- Studio Dual Column Layout Container -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start max-w-7xl mx-auto">
+    
+    <!-- LEFT COLUMN: Visualizer Stage (Span 7) -->
+    <div class="lg:col-span-7 space-y-4">
+      
+      <!-- Stage Wrapper Card -->
+      <div class="bg-white rounded-3xl border border-gray-200/90 shadow-xl p-4 sm:p-6 relative overflow-hidden flex flex-col items-center">
+        
+        <!-- Top Floating Controls Bar -->
+        <div class="w-full flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-gray-150 text-xs font-bold">
+          
+          <!-- Product Catalog Selector -->
+          <div class="flex items-center gap-2">
+            <label for="catalog-select" class="text-gray-500 font-bold hidden sm:inline">ประเภทสินค้า:</label>
+            <select
+              id="catalog-select"
+              class="bg-gray-100 border border-gray-300 rounded-xl px-3 py-1.5 font-extrabold text-gray-800 text-xs cursor-pointer focus:ring-2 focus:ring-[#FF5A1F] focus:outline-none"
+            >
+              <option value="polo-classic">👔 เสื้อโปโลคลาสสิก (Polo Classic)</option>
+              <option value="premium-tshirt">👕 เสื้อยืดพรีเมียม (T-Shirt)</option>
+              <option value="sports-mesh">⚽ เสื้อกีฬาผ้าเมช (Sports Mesh)</option>
+              <option value="uniform-shirt">👔 เสื้อเชิ้ตยูนิฟอร์ม (Uniform Shirt)</option>
+              <option value="hooded-sweat">🧥 เสื้อฮู้ดดี้ (Hoodie)</option>
+              <option value="canvas-bag">👜 กระเป๋าผ้าแคนวาส (Canvas Bag)</option>
+              <option value="apron-custom">🧑‍🍳 ผ้ากันเปื้อน (Custom Apron)</option>
+              <option value="baseball-cap">🧢 หมวกแก๊ป (Baseball Cap)</option>
+            </select>
+          </div>
+
+          <!-- View Angle & Sleeve Toggles -->
+          <div class="flex items-center gap-2">
+            <!-- Front / Back Toggle -->
+            <div class="inline-flex rounded-xl bg-gray-100 p-1 border border-gray-200" id="view-toggle-group">
+              <button
+                type="button"
+                id="btn-view-front"
+                class="px-3 py-1 rounded-lg text-xs font-black transition-all bg-white text-gray-900 shadow-sm border border-gray-200/50 cursor-pointer"
+                data-view="front"
+              >
+                ด้านหน้า
+              </button>
+              <button
+                type="button"
+                id="btn-view-back"
+                class="px-3 py-1 rounded-lg text-xs font-black transition-all text-gray-500 hover:text-gray-900 cursor-pointer"
+                data-view="back"
+              >
+                ด้านหลัง
+              </button>
+            </div>
+
+            <!-- Short / Long Sleeve Toggle -->
+            <div class="inline-flex rounded-xl bg-gray-100 p-1 border border-gray-200" id="sleeve-toggle-group">
+              <button
+                type="button"
+                id="btn-sleeve-short"
+                class="px-2.5 py-1 rounded-lg text-[11px] font-black transition-all bg-white text-gray-900 shadow-sm cursor-pointer"
+                data-sleeve="short"
+              >
+                แขนสั้น
+              </button>
+              <button
+                type="button"
+                id="btn-sleeve-long"
+                class="px-2.5 py-1 rounded-lg text-[11px] font-black transition-all text-gray-500 hover:text-gray-900 cursor-pointer"
+                data-sleeve="long"
+              >
+                แขนยาว
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visualizer 2D Stage Canvas Wrapper (600x600 resolution style) -->
+        <div
+          id="faceless-stage-wrapper"
+          class="relative w-full aspect-square max-w-[540px] bg-slate-900/5 rounded-2xl border border-gray-200 overflow-hidden shadow-inner flex items-center justify-center select-none"
+        >
+          <!-- View Angle Overlay Badge Indicator -->
+          <div class="absolute top-3 left-3 z-30 pointer-events-none flex items-center gap-2">
+            <span id="badge-view-indicator" class="px-2.5 py-1 bg-black/75 backdrop-blur-md text-white text-[10px] font-black tracking-widest rounded-full uppercase shadow">
+              FRONT VIEW
+            </span>
+            <span id="badge-sleeve-indicator" class="px-2.5 py-1 bg-[#FF5A1F]/90 backdrop-blur-md text-white text-[10px] font-black tracking-widest rounded-full uppercase shadow">
+              SHORT SLEEVE
+            </span>
+          </div>
+
+          <!-- SVG Garment Vector Engine Canvas -->
+          <svg
+            id="garment-svg-canvas"
+            viewBox="0 0 600 600"
+            class="w-full h-full object-contain filter drop-shadow-md transition-all duration-300"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <!-- Ambient Body Highlights & 3D Shading Gradients -->
+              <linearGradient id="svg-body-shading" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2" />
+                <stop offset="25%" stop-color="#ffffff" stop-opacity="0.05" />
+                <stop offset="75%" stop-color="#000000" stop-opacity="0.05" />
+                <stop offset="100%" stop-color="#000000" stop-opacity="0.25" />
+              </linearGradient>
+
+              <linearGradient id="svg-sleeve-l-shade" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.25" />
+                <stop offset="100%" stop-color="#000000" stop-opacity="0.2" />
+              </linearGradient>
+
+              <linearGradient id="svg-sleeve-r-shade" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.05" />
+                <stop offset="100%" stop-color="#000000" stop-opacity="0.3" />
+              </linearGradient>
+
+              <!-- Back Tape Hatch Pattern -->
+              <pattern id="svg-backtape-pattern" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <line x1="0" y1="0" x2="0" y2="10" stroke="#FF5A1F" stroke-width="3" />
+                <line x1="5" y1="0" x2="5" y2="10" stroke="#1E293B" stroke-width="3" />
+              </pattern>
+            </defs>
+
+            <!-- Drop shadow floor ellipse -->
+            <ellipse cx="300" cy="540" rx="160" ry="18" fill="rgba(0,0,0,0.08)" />
+
+            <!-- Garment Vector Group -->
+            <g id="svg-garment-group">
+              <!-- Left Sleeve Path -->
+              <path
+                id="svg-garment-sleeve-l"
+                d="M 180,180 L 80,240 L 115,310 L 180,270 Z"
+                fill="#FF5A1F"
+                stroke="#1E293B"
+                stroke-width="4"
+                stroke-linejoin="round"
+              />
+              <path id="svg-sleeve-l-overlay" d="M 180,180 L 80,240 L 115,310 L 180,270 Z" fill="url(#svg-sleeve-l-shade)" style="mix-blend-mode: multiply;" />
+
+              <!-- Right Sleeve Path -->
+              <path
+                id="svg-garment-sleeve-r"
+                d="M 420,180 L 520,240 L 485,310 L 420,270 Z"
+                fill="#FF5A1F"
+                stroke="#1E293B"
+                stroke-width="4"
+                stroke-linejoin="round"
+              />
+              <path id="svg-sleeve-r-overlay" d="M 420,180 L 520,240 L 485,310 L 420,270 Z" fill="url(#svg-sleeve-r-shade)" style="mix-blend-mode: multiply;" />
+
+              <!-- Main Body Path -->
+              <path
+                id="svg-garment-body"
+                d="M 180,180 Q 300,195 420,180 L 440,510 L 160,510 Z"
+                fill="#FF5A1F"
+                stroke="#1E293B"
+                stroke-width="4"
+                stroke-linejoin="round"
+              />
+              <path id="svg-body-overlay" d="M 180,180 Q 300,195 420,180 L 440,510 L 160,510 Z" fill="url(#svg-body-shading)" style="mix-blend-mode: multiply;" />
+
+              <!-- Collar / Neck Base Path -->
+              <path
+                id="svg-garment-collar"
+                d="M 230,170 Q 300,220 370,170 Q 300,150 230,170 Z"
+                fill="#1E293B"
+                stroke="#1E293B"
+                stroke-width="3"
+              />
+
+              <!-- Back Neck Tape Line (#svg-garment-backtape - visible in Back view) -->
+              <path
+                id="svg-garment-backtape"
+                d="M 235,175 Q 300,190 365,175"
+                fill="none"
+                stroke="url(#svg-backtape-pattern)"
+                stroke-width="6"
+                stroke-linecap="round"
+                class="hidden"
+              />
+
+              <!-- Extra Feature Details (Placket, Buttons, Pocket, Hood, etc) -->
+              <g id="svg-garment-details">
+                <!-- Placket for Polo -->
+                <path id="svg-detail-placket" d="M 285,185 L 315,185 L 315,270 L 285,270 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="2" />
+                <circle id="svg-detail-btn1" cx="300" cy="210" r="4" fill="#1E293B" />
+                <circle id="svg-detail-btn2" cx="300" cy="245" r="4" fill="#1E293B" />
+              </g>
+
+              <!-- Crease Seam Lines for realism -->
+              <path d="M 185,220 Q 210,240 230,230" stroke="black" stroke-width="2" opacity="0.12" fill="none" />
+              <path d="M 415,220 Q 390,240 370,230" stroke="black" stroke-width="2" opacity="0.12" fill="none" />
+            </g>
+          </svg>
+
+          <!-- Printable Area Bounds Overlay Box (#printable-area-bounds) -->
+          <div
+            id="printable-area-bounds"
+            class="absolute inset-0 pointer-events-none border-2 border-dashed border-[#FF5A1F]/40 rounded-2xl m-10"
+            style="clip-path: polygon(25% 18%, 75% 18%, 75% 85%, 25% 85%);"
+          >
+            <span class="absolute top-1 right-2 text-[9px] font-black text-[#FF5A1F]/60 uppercase tracking-widest">
+              PRINT BOUNDS
+            </span>
+          </div>
+
+          <!-- Free Draggable Logo & Custom Text Overlay Container (#placed-design-container) -->
+          <div
+            id="placed-design-container"
+            class="absolute z-20 flex flex-col items-center justify-center p-2 border-2 border-dashed border-transparent hover:border-[#FF5A1F] active:border-[#FF5A1F] rounded-xl cursor-grab select-none transition-shadow group"
+            style="top: 32%; left: 50%; transform: translate(-50%, -50%); min-width: 120px; touch-action: none;"
+          >
+            <!-- Position Indicator Drag Handle Badge -->
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#FF5A1F] text-white text-[9px] font-black px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow pointer-events-none whitespace-nowrap">
+              ✋ ลากเพื่อย้ายตำแหน่ง
+            </div>
+
+            <!-- Uploaded Logo Image (#placed-logo-img) -->
+            <img
+              id="placed-logo-img"
+              src=""
+              alt="Custom Logo"
+              class="hidden max-h-24 max-w-32 object-contain pointer-events-none transition-transform duration-100"
+              style="transform: scale(1);"
+            />
+
+            <!-- Live Custom Text Overlay Span (#placed-text-span) -->
+            <span
+              id="placed-text-span"
+              class="font-black text-gray-900 text-center tracking-wide pointer-events-none mt-1 transition-all"
+              style="font-family: 'Inter', sans-serif; font-size: 18px; color: #111827;"
+            >
+              YOUR LOGO / TEXT
+            </span>
+          </div>
+
+        </div>
+
+        <!-- Text & Logo Customization Toolbar below canvas -->
+        <div class="w-full mt-4 pt-4 border-t border-gray-150 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          
+          <!-- Custom Text Controls -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label for="custom-text-input" class="text-xs font-black text-gray-700 uppercase tracking-wider">
+                ✍️ ข้อความบนเสื้อ (Custom Text):
+              </label>
+              <button type="button" id="btn-text-color-trigger" class="flex items-center gap-1 text-[11px] font-bold text-gray-600 hover:text-[#FF5A1F] cursor-pointer">
+                <span id="text-color-preview-dot" class="w-3.5 h-3.5 rounded-full border border-gray-300 shadow-sm" style="background-color: #111827;"></span>
+                <span>สีข้อความ 🎨</span>
+              </button>
+            </div>
+            <input
+              type="text"
+              id="custom-text-input"
+              value="YOUR LOGO / TEXT"
+              placeholder="พิมพ์ข้อความที่ต้องการสกรีน/ปัก..."
+              class="w-full px-3.5 py-2 text-xs font-bold rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#FF5A1F] focus:outline-none shadow-sm"
+            />
+
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <!-- Font Family Dropdown -->
+              <div>
+                <label for="font-family-select" class="text-[10px] font-bold text-gray-400 block mb-1">ฟอนต์ (Font):</label>
+                <select
+                  id="font-family-select"
+                  class="w-full px-2 py-1.5 text-xs font-bold rounded-lg border border-gray-300 bg-white focus:outline-none cursor-pointer"
+                >
+                  <option value="Inter, sans-serif">Inter (Modern)</option>
+                  <option value="Impact, sans-serif">Impact (Bold)</option>
+                  <option value="'Courier New', monospace">Courier (Typewriter)</option>
+                  <option value="Georgia, serif">Georgia (Classic)</option>
+                  <option value="'Brush Script MT', cursive">Brush Script (Handwriting)</option>
+                </select>
+              </div>
+
+              <!-- Font Size Slider (10px–28px) -->
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <label for="font-size-slider" class="text-[10px] font-bold text-gray-400">ขนาด (Size):</label>
+                  <span id="font-size-val" class="text-[10px] font-bold text-gray-700">18px</span>
+                </div>
+                <input
+                  type="range"
+                  id="font-size-slider"
+                  min="10"
+                  max="28"
+                  value="18"
+                  class="w-full accent-[#FF5A1F] cursor-pointer"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Logo Image Dropzone & Scale Controls -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-black text-gray-700 uppercase tracking-wider">
+                🖼️ อัปโหลดโลโก้ (Upload Logo):
+              </label>
+              <button type="button" id="btn-remove-logo" class="text-[11px] font-bold text-red-500 hover:underline hidden cursor-pointer">
+                ✕ ลบโลโก้
+              </button>
+            </div>
+
+            <!-- File Upload Dropzone -->
+            <label
+              for="logo-file-input"
+              class="flex flex-col items-center justify-center w-full h-18 border-2 border-dashed border-gray-300 hover:border-[#FF5A1F] rounded-xl bg-gray-50/50 hover:bg-orange-50/30 cursor-pointer transition-colors"
+            >
+              <div class="flex items-center gap-2 text-xs font-bold text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-[#FF5A1F]"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span>คลิกเพื่อเลือกไฟล์รูปโลโก้ (.PNG / .JPG)</span>
+              </div>
+              <span id="logo-file-name" class="text-[10px] font-semibold text-gray-400 mt-0.5 truncate max-w-[200px]">
+                รองรับไฟล์พื้นหลังใส PNG
+              </span>
+              <input type="file" id="logo-file-input" accept="image/*" class="hidden" />
+            </label>
+
+            <!-- Logo Scale Slider (60% to 140%) -->
+            <div id="logo-scale-wrapper" class="pt-1 opacity-50 pointer-events-none transition-opacity">
+              <div class="flex justify-between items-center mb-1">
+                <label for="logo-scale-slider" class="text-[10px] font-bold text-gray-400">ขนาดโลโก้ (Logo Scale):</label>
+                <span id="logo-scale-val" class="text-[10px] font-bold text-gray-700">100%</span>
+              </div>
+              <input
+                type="range"
+                id="logo-scale-slider"
+                min="60"
+                max="140"
+                value="100"
+                class="w-full accent-[#FF5A1F] cursor-pointer"
+              />
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN: Product Configurator Card (Span 5) -->
+    <div class="lg:col-span-5 space-y-6">
+      
+      <div class="bg-white rounded-3xl border border-gray-200/90 shadow-xl p-6 space-y-6">
+        
+        <!-- Header & Real-time Price Estimate -->
+        <div class="pb-4 border-b border-gray-150 flex items-start justify-between gap-4">
+          <div>
+            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block">
+              Product Customizer Studio
+            </span>
+            <h3 id="conf-product-title" class="text-xl font-black text-gray-900 mt-0.5">
+              เสื้อโปโลคลาสสิก (Polo Classic)
+            </h3>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-black text-[#06C755] bg-green-50 border border-green-200 px-3 py-1.5 rounded-full inline-block">
+              💬 สอบถามราคาทาง LINE
+            </span>
+          </div>
+        </div>
+
+        <!-- 1. Garment Color Swatches & Custom Picker Button -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-gray-700 uppercase tracking-wider">
+              🎨 เลือกสีผ้า (Garment Color):
+            </span>
+            <span id="conf-color-name" class="text-xs font-bold text-[#FF5A1F]">
+              Orange (#FF5A1F)
+            </span>
+          </div>
+
+          <!-- Color Swatches Grid (16 curated colors + Custom Picker button) -->
+          <div class="flex flex-wrap gap-2" id="garment-color-swatches">
+            <button type="button" data-color="#FFFFFF" data-name="White" class="swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110" style="background-color: #FFFFFF;" title="White"></button>
+            <button type="button" data-color="#111827" data-name="Black" class="swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110" style="background-color: #111827;" title="Black"></button>
+            <button type="button" data-color="#1E3A8A" data-name="Navy" class="swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110" style="background-color: #1E3A8A;" title="Navy"></button>
+            <button type="button" data-color="#DC2626" data-name="Red" class="swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110" style="background-color: #DC2626;" title="Red"></button>
+            <button type="button" data-color="#2563EB" data-name="Blue" class="swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110" style="background-color: #2563EB;" title="Blue"></button>
+            <button type="button" data-color="#059669" data-name="Emerald" class="swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110" style="background-color: #059669;" title="Emerald"></button>
+            <button type="button" data-color="#FF5A1F" data-name="Orange" class="swatch-btn w-8 h-8 rounded-full border-2 border-white ring-2 ring-[#FF5A1F] shadow-sm transition-transform hover:scale-110" style="background-color: #FF5A1F;" title="Orange"></button>
+            <button type="button" data-color="#D97706" data-name="Gold" class="swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110" style="background-color: #D97706;" title="Gold"></button>
+            <button type="button" data-color="#7C3AED" data-name="Purple" class="swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110" style="background-color: #7C3AED;" title="Purple"></button>
+            <button type="button" data-color="#EC4899" data-name="Pink" class="swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110" style="background-color: #EC4899;" title="Pink"></button>
+            <button type="button" data-color="#0284C7" data-name="Sky" class="swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110" style="background-color: #0284C7;" title="Sky"></button>
+            <button type="button" data-color="#65A30D" data-name="Lime" class="swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110" style="background-color: #65A30D;" title="Lime"></button>
+            <button type="button" data-color="#374151" data-name="Charcoal" class="swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110" style="background-color: #374151;" title="Charcoal"></button>
+            <button type="button" data-color="#9CA3AF" data-name="Silver" class="swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110" style="background-color: #9CA3AF;" title="Silver"></button>
+            <button type="button" data-color="#FACC15" data-name="Yellow" class="swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110" style="background-color: #FACC15;" title="Yellow"></button>
+            <button type="button" data-color="#FEF3C7" data-name="Cream" class="swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110" style="background-color: #FEF3C7;" title="Cream"></button>
+            
+            <!-- Custom Color Picker Icon Trigger (🎨) -->
+            <button
+              type="button"
+              id="btn-open-custom-color-modal"
+              class="w-8 h-8 rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-amber-400 text-white font-black text-xs flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer"
+              title="เลือกสีแบบกำหนดเอง (Custom Color)"
+            >
+              🎨
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Wholesale Size & Quantity Selector -->
+        <div class="space-y-3">
+          <span class="text-xs font-black text-gray-700 uppercase tracking-wider block">
+            📐 ขนาดไซซ์ & จำนวนสั่งผลิต (Wholesale Quantities):
+          </span>
+          
+          <!-- Size Selector Buttons (S / M / L / XL / 2XL / 3XL) -->
+          <div class="grid grid-cols-6 gap-1.5" id="conf-size-grid">
+            <button type="button" data-size="S" class="size-btn py-2 rounded-xl border text-xs font-black transition-all border-gray-200 text-gray-700 hover:border-gray-400 cursor-pointer">S</button>
+            <button type="button" data-size="M" class="size-btn py-2 rounded-xl border text-xs font-black transition-all border-gray-200 text-gray-700 hover:border-gray-400 cursor-pointer">M</button>
+            <button type="button" data-size="L" class="size-btn py-2 rounded-xl border text-xs font-black transition-all border-gray-900 bg-gray-950 text-white shadow cursor-pointer">L</button>
+            <button type="button" data-size="XL" class="size-btn py-2 rounded-xl border text-xs font-black transition-all border-gray-200 text-gray-700 hover:border-gray-400 cursor-pointer">XL</button>
+            <button type="button" data-size="2XL" class="size-btn py-2 rounded-xl border text-xs font-black transition-all border-gray-200 text-gray-700 hover:border-gray-400 cursor-pointer">2XL</button>
+            <button type="button" data-size="3XL" class="size-btn py-2 rounded-xl border text-xs font-black transition-all border-gray-200 text-gray-700 hover:border-gray-400 cursor-pointer">3XL</button>
+          </div>
+
+          <!-- Quantity Stepper (+ / - input, min 100) -->
+          <div class="flex items-center justify-between bg-gray-50 p-3 rounded-2xl border border-gray-200">
+            <div>
+              <span class="text-xs font-black text-gray-900 block">จำนวนขั้นต่ำ 100 ตัว</span>
+              <span class="text-[10px] font-bold text-gray-400">ยิ่งสั่งเยอะ ราคายิ่งถูกลง</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" id="btn-qty-minus" class="w-8 h-8 rounded-xl bg-white border border-gray-300 text-gray-800 font-black text-sm flex items-center justify-center hover:bg-gray-100 cursor-pointer shadow-sm active:scale-95">-</button>
+              <input type="number" id="conf-qty-input" value="100" min="100" step="10" class="w-16 text-center text-sm font-black bg-white border border-gray-300 rounded-xl py-1 focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]" />
+              <button type="button" id="btn-qty-plus" class="w-8 h-8 rounded-xl bg-white border border-gray-300 text-gray-800 font-black text-sm flex items-center justify-center hover:bg-gray-100 cursor-pointer shadow-sm active:scale-95">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Prominent Green Line Fabric Swatch Notice Box -->
+        <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-1 text-emerald-900">
+          <div class="flex items-center gap-2 text-xs font-black text-emerald-700">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>ต้องการตัวอย่างผ้าจริง & ใบเสนอราคาทางการ?</span>
+          </div>
+          <p class="text-[11px] font-bold text-emerald-800 leading-relaxed">
+            ติดต่อทีมงาน ธน พลัส 153 ผ่านทาง LINE OA <span class="font-extrabold underline">@thanaplus</span> เพื่อขอเล่มตัวอย่างเนื้อผ้า (คอตตอน/ไมโคร/จูติ) พร้อมรับส่วนลดสั่งผลิตล็อตใหญ่!
+          </p>
+        </div>
+
+        <!-- 4. Estimated Total Summary Row (Direct to LINE) -->
+        <div class="flex items-center justify-between p-3.5 bg-emerald-50/80 rounded-2xl border border-emerald-200">
+          <span class="text-xs font-black text-gray-700">ประเมินราคาตามสเปก:</span>
+          <span class="text-xs font-black text-[#06C755] flex items-center gap-1">
+            <span>สอบถามราคาทาง LINE (@thanaplus)</span>
+          </span>
+        </div>
+
+        <!-- 5. Dual Clipboard Copy Buttons -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <!-- Copy Spec Text -->
+          <button
+            type="button"
+            id="btn-copy-spec-text"
+            class="w-full inline-flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-900 font-extrabold text-xs px-4 py-3 rounded-xl border border-gray-300 transition-all cursor-pointer shadow-sm active:scale-95"
+          >
+            📋 คัดลอกข้อความสเปก
+          </button>
+          
+          <!-- Copy Shirt Image + Text -->
+          <button
+            type="button"
+            id="btn-copy-shirt-img"
+            class="w-full inline-flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white font-extrabold text-xs px-4 py-3 rounded-xl transition-all cursor-pointer shadow shadow-gray-900/20 active:scale-95"
+          >
+            🖼️ คัดลอกรูปภาพเสื้อ
+          </button>
+        </div>
+
+        <!-- 6. Direct LINE Contact CTA Button -->
+        <a
+          id="btn-line-cta"
+          href="https://line.me/R/ti/p/@thanaplus"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="w-full inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#06C755] to-[#00B900] hover:from-[#05b34c] hover:to-[#00a300] text-white font-black text-sm px-6 py-4 rounded-2xl shadow-lg shadow-green-600/20 hover:shadow-green-600/35 transition-all text-center pulse-glow"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="shrink-0"><path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.036 9.608.391.084.922.258 1.057.592.121.303.079.778.039 1.085l-.171 1.027c-.053.303-.242 1.186 1.039.647 1.281-.54 6.911-4.069 9.428-6.967 1.739-1.907 2.572-3.89 2.572-5.992z"/></svg>
+          <span>ส่งสเปกสั่งผลิตเข้า LINE OA (@thanaplus)</span>
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- MOVEABLE CUSTOM COLOR PICKER MODAL (#color-picker-modal) -->
+  <div
+    id="color-picker-modal"
+    class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-80 bg-white rounded-3xl shadow-2xl border border-gray-300 p-5 select-none animate-fadeIn"
+    style="touch-action: none;"
+  >
+    <!-- Draggable Header Bar (#color-modal-header) -->
+    <div
+      id="color-modal-header"
+      class="flex items-center justify-between pb-3 mb-3 border-b border-gray-200 cursor-move bg-gray-50 -mx-5 -mt-5 p-4 rounded-t-3xl border-b"
+    >
+      <div class="flex items-center gap-2">
+        <span class="text-base">🎨</span>
+        <h4 id="color-modal-title" class="text-xs font-black text-gray-900 uppercase tracking-wider">
+          เลือกสีแบบกำหนดเอง (Custom Color)
+        </h4>
+      </div>
+      <button
+        type="button"
+        id="close-color-modal-btn"
+        class="w-7 h-7 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-black text-xs flex items-center justify-center transition-colors cursor-pointer"
+        title="ปิดหน้าต่าง"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- Modal Content -->
+    <div class="space-y-4">
+      <!-- Target Selector indicator -->
+      <div class="text-[11px] font-bold text-gray-500 flex items-center justify-between">
+        <span>เป้าหมายที่กำลังปรับสี:</span>
+        <span id="modal-color-target-label" class="font-extrabold text-[#FF5A1F]">สีผ้าเสื้อ (Garment)</span>
+      </div>
+
+      <!-- Quick 16 Swatches -->
+      <div class="space-y-1.5">
+        <span class="text-[10px] font-bold text-gray-400 uppercase">จานสีมาตรฐาน (Swatches):</span>
+        <div class="grid grid-cols-8 gap-1.5" id="modal-swatches-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Native Color Picker + HEX Text Input -->
+      <div class="space-y-2 pt-2 border-t border-gray-150">
+        <label for="modal-hex-input" class="text-[10px] font-bold text-gray-400 uppercase block">
+          ระบุรหัสสี HEX (Custom HEX Color):
+        </label>
+        <div class="flex items-center gap-2">
+          <input
+            type="color"
+            id="modal-native-color"
+            value="#FF5A1F"
+            class="w-10 h-10 rounded-xl border border-gray-300 cursor-pointer p-0.5"
+          />
+          <input
+            type="text"
+            id="modal-hex-input"
+            value="#FF5A1F"
+            placeholder="#FFFFFF"
+            maxlength="7"
+            class="flex-1 px-3 py-2 text-xs font-black rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#FF5A1F] focus:outline-none uppercase"
+          />
+          <button
+            type="button"
+            id="btn-apply-modal-color"
+            class="bg-[#FF5A1F] hover:bg-[#e04d16] text-white text-xs font-black px-3.5 py-2 rounded-xl cursor-pointer shadow transition-colors"
+          >
+            ตกลง
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="studio-toast" class="fixed bottom-6 right-6 z-50 hidden bg-gray-900 text-white text-xs font-extrabold px-5 py-3 rounded-2xl shadow-2xl border border-gray-700 flex items-center gap-2 transition-all">
+    <span id="studio-toast-icon">✅</span>
+    <span id="studio-toast-msg">คัดลอกข้อความสำเร็จ!</span>
+  </div>
+</section>
+
+<!-- Visualizer Engine TypeScript Script -->
+<script>
+  // ----------------------------------------------------
+  // VECTOR GARMENT TEMPLATES CATALOG (Path Data Store)
+  // ----------------------------------------------------
+  type ProductType = 'polo-classic' | 'premium-tshirt' | 'sports-mesh' | 'uniform-shirt' | 'hooded-sweat' | 'canvas-bag' | 'apron-custom' | 'baseball-cap';
+  type ViewAngle = 'front' | 'back';
+  type SleeveType = 'short' | 'long';
+
+  interface ProductTemplate {
+    title: string;
+    basePrice: number;
+    hasSleeves: boolean;
+    bodyFront: string;
+    bodyBack: string;
+    sleeveLFrontShort: string;
+    sleeveRFrontShort: string;
+    sleeveLFrontLong: string;
+    sleeveRFrontLong: string;
+    sleeveLBackShort: string;
+    sleeveRBackShort: string;
+    sleeveLBackLong: string;
+    sleeveRBackLong: string;
+    collarFront: string;
+    collarBack: string;
+    detailsFront: string;
+    detailsBack: string;
+  }
+
+  const CATALOG: Record<ProductType, ProductTemplate> = {
+    'polo-classic': {
+      title: 'เสื้อโปโลคลาสสิก (Polo Classic)',
+      basePrice: 180,
+      hasSleeves: true,
+      bodyFront: 'M 180,180 Q 300,195 420,180 L 440,510 L 160,510 Z',
+      bodyBack: 'M 180,180 Q 300,170 420,180 L 440,510 L 160,510 Z',
+      sleeveLFrontShort: 'M 180,180 L 80,240 L 115,310 L 180,270 Z',
+      sleeveRFrontShort: 'M 420,180 L 520,240 L 485,310 L 420,270 Z',
+      sleeveLFrontLong: 'M 180,180 L 70,260 L 95,470 L 165,490 L 180,270 Z',
+      sleeveRFrontLong: 'M 420,180 L 530,260 L 505,470 L 435,490 L 420,270 Z',
+      sleeveLBackShort: 'M 180,180 L 80,240 L 115,310 L 180,270 Z',
+      sleeveRBackShort: 'M 420,180 L 520,240 L 485,310 L 420,270 Z',
+      sleeveLBackLong: 'M 180,180 L 70,260 L 95,470 L 165,490 L 180,270 Z',
+      sleeveRBackLong: 'M 420,180 L 530,260 L 505,470 L 435,490 L 420,270 Z',
+      collarFront: 'M 230,170 Q 300,220 370,170 Q 300,150 230,170 Z',
+      collarBack: 'M 230,170 Q 300,185 370,170 Q 300,155 230,170 Z',
+      detailsFront: `<path d="M 285,185 L 315,185 L 315,270 L 285,270 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="2" /><circle cx="300" cy="210" r="4" fill="#1E293B" /><circle cx="300" cy="245" r="4" fill="#1E293B" />`,
+      detailsBack: `<path d="M 220,195 Q 300,210 380,195" stroke="#1E293B" stroke-width="3" fill="none" opacity="0.4" />`,
+    },
+    'premium-tshirt': {
+      title: 'เสื้อยืดพรีเมียม (T-Shirt)',
+      basePrice: 130,
+      hasSleeves: true,
+      bodyFront: 'M 175,175 Q 300,190 425,175 L 445,515 L 155,515 Z',
+      bodyBack: 'M 175,175 Q 300,165 425,175 L 445,515 L 155,515 Z',
+      sleeveLFrontShort: 'M 175,175 L 75,235 L 110,305 L 175,265 Z',
+      sleeveRFrontShort: 'M 425,175 L 525,235 L 490,305 L 425,265 Z',
+      sleeveLFrontLong: 'M 175,175 L 65,255 L 90,465 L 160,485 L 175,265 Z',
+      sleeveRFrontLong: 'M 425,175 L 535,255 L 510,465 L 440,485 L 425,265 Z',
+      sleeveLBackShort: 'M 175,175 L 75,235 L 110,305 L 175,265 Z',
+      sleeveRBackShort: 'M 425,175 L 525,235 L 490,305 L 425,265 Z',
+      sleeveLBackLong: 'M 175,175 L 65,255 L 90,465 L 160,485 L 175,265 Z',
+      sleeveRBackLong: 'M 425,175 L 535,255 L 510,465 L 440,485 L 425,265 Z',
+      collarFront: 'M 235,175 Q 300,230 365,175 Q 300,205 235,175 Z',
+      collarBack: 'M 235,175 Q 300,188 365,175 Q 300,172 235,175 Z',
+      detailsFront: `<path d="M 235,185 Q 300,235 365,185" stroke="#1E293B" stroke-width="2" fill="none" opacity="0.3" />`,
+      detailsBack: ``,
+    },
+    'sports-mesh': {
+      title: 'เสื้อกีฬาผ้าเมช (Sports Mesh)',
+      basePrice: 150,
+      hasSleeves: true,
+      bodyFront: 'M 175,175 Q 300,190 425,175 L 445,515 L 155,515 Z',
+      bodyBack: 'M 175,175 Q 300,165 425,175 L 445,515 L 155,515 Z',
+      sleeveLFrontShort: 'M 175,175 L 75,235 L 110,305 L 175,265 Z',
+      sleeveRFrontShort: 'M 425,175 L 525,235 L 490,305 L 425,265 Z',
+      sleeveLFrontLong: 'M 175,175 L 65,255 L 90,465 L 160,485 L 175,265 Z',
+      sleeveRFrontLong: 'M 425,175 L 535,255 L 510,465 L 440,485 L 425,265 Z',
+      sleeveLBackShort: 'M 175,175 L 75,235 L 110,305 L 175,265 Z',
+      sleeveRBackShort: 'M 425,175 L 525,235 L 490,305 L 425,265 Z',
+      sleeveLBackLong: 'M 175,175 L 65,255 L 90,465 L 160,485 L 175,265 Z',
+      sleeveRBackLong: 'M 425,175 L 535,255 L 510,465 L 440,485 L 425,265 Z',
+      collarFront: 'M 235,175 Q 300,220 365,175 Q 300,195 235,175 Z',
+      collarBack: 'M 235,175 Q 300,188 365,175 Q 300,172 235,175 Z',
+      detailsFront: `<path d="M 195,220 L 180,515 M 405,220 L 420,515" stroke="#FFFFFF" stroke-width="4" stroke-dasharray="6,4" fill="none" /><path d="M 235,175 L 195,220 M 365,175 L 405,220" stroke="#FFFFFF" stroke-width="3" fill="none" />`,
+      detailsBack: `<path d="M 195,220 L 180,515 M 405,220 L 420,515" stroke="#FFFFFF" stroke-width="4" stroke-dasharray="6,4" fill="none" />`,
+    },
+    'uniform-shirt': {
+      title: 'เสื้อเชิ้ตยูนิฟอร์ม (Uniform Shirt)',
+      basePrice: 220,
+      hasSleeves: true,
+      bodyFront: 'M 180,170 Q 300,185 420,170 L 435,510 L 165,510 Z',
+      bodyBack: 'M 180,170 Q 300,160 420,170 L 435,510 L 165,510 Z',
+      sleeveLFrontShort: 'M 180,170 L 85,230 L 120,295 L 180,255 Z',
+      sleeveRFrontShort: 'M 420,170 L 515,230 L 480,295 L 420,255 Z',
+      sleeveLFrontLong: 'M 180,170 L 75,250 L 100,460 L 170,480 L 180,255 Z',
+      sleeveRFrontLong: 'M 420,170 L 525,250 L 500,460 L 430,480 L 420,255 Z',
+      sleeveLBackShort: 'M 180,170 L 85,230 L 120,295 L 180,255 Z',
+      sleeveRBackShort: 'M 420,170 L 515,230 L 480,295 L 420,255 Z',
+      sleeveLBackLong: 'M 180,170 L 75,250 L 100,460 L 170,480 L 180,255 Z',
+      sleeveRBackLong: 'M 420,170 L 525,250 L 500,460 L 430,480 L 420,255 Z',
+      collarFront: 'M 220,160 L 300,215 L 380,160 L 340,150 L 300,175 L 260,150 Z',
+      collarBack: 'M 220,160 Q 300,175 380,160 L 380,150 Q 300,165 220,150 Z',
+      detailsFront: `<line x1="300" y1="215" x2="300" y2="510" stroke="#1E293B" stroke-width="2" stroke-dasharray="4,4" /><rect x="200" y="240" width="45" height="55" fill="none" stroke="#1E293B" stroke-width="2" rx="4" /><circle cx="300" cy="250" r="3" fill="#1E293B" /><circle cx="300" cy="310" r="3" fill="#1E293B" /><circle cx="300" cy="370" r="3" fill="#1E293B" />`,
+      detailsBack: `<path d="M 210,210 Q 300,225 390,210" stroke="#1E293B" stroke-width="2" fill="none" opacity="0.3" />`,
+    },
+    'hooded-sweat': {
+      title: 'เสื้อฮู้ดดี้ (Hoodie)',
+      basePrice: 320,
+      hasSleeves: true,
+      bodyFront: 'M 170,190 Q 300,205 430,190 L 450,520 L 150,520 Z',
+      bodyBack: 'M 170,190 Q 300,175 430,190 L 450,520 L 150,520 Z',
+      sleeveLFrontShort: 'M 170,190 L 65,260 L 105,335 L 170,285 Z',
+      sleeveRFrontShort: 'M 430,190 L 535,260 L 495,335 L 430,285 Z',
+      sleeveLFrontLong: 'M 170,190 L 55,270 L 80,480 L 155,500 L 170,285 Z',
+      sleeveRFrontLong: 'M 430,190 L 545,270 L 520,480 L 445,500 L 430,285 Z',
+      sleeveLBackShort: 'M 170,190 L 65,260 L 105,335 L 170,285 Z',
+      sleeveRBackShort: 'M 430,190 L 535,260 L 495,335 L 430,285 Z',
+      sleeveLBackLong: 'M 170,190 L 55,270 L 80,480 L 155,500 L 170,285 Z',
+      sleeveRBackLong: 'M 430,190 L 545,270 L 520,480 L 445,500 L 430,285 Z',
+      collarFront: 'M 210,190 Q 300,100 390,190 Q 300,170 210,190 Z',
+      collarBack: 'M 210,190 Q 300,80 390,190 Q 300,140 210,190 Z',
+      detailsFront: `<path d="M 220,380 L 380,380 L 400,470 L 200,470 Z" fill="none" stroke="#1E293B" stroke-width="3" rx="8" /><path d="M 265,190 L 265,250 M 335,190 L 335,250" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />`,
+      detailsBack: ``,
+    },
+    'canvas-bag': {
+      title: 'กระเป๋าผ้าแคนวาส (Canvas Bag)',
+      basePrice: 90,
+      hasSleeves: false,
+      bodyFront: 'M 180,240 L 420,240 L 400,520 L 200,520 Z',
+      bodyBack: 'M 180,240 L 420,240 L 400,520 L 200,520 Z',
+      sleeveLFrontShort: '', sleeveRFrontShort: '', sleeveLFrontLong: '', sleeveRFrontLong: '',
+      sleeveLBackShort: '', sleeveRBackShort: '', sleeveLBackLong: '', sleeveRBackLong: '',
+      collarFront: 'M 240,240 L 240,110 L 270,110 L 270,240 Z M 330,240 L 330,110 L 360,110 L 360,240 Z',
+      collarBack: 'M 240,240 L 240,110 L 270,110 L 270,240 Z M 330,240 L 330,110 L 360,110 L 360,240 Z',
+      detailsFront: `<path d="M 180,260 L 420,260" stroke="#1E293B" stroke-width="2" opacity="0.3" />`,
+      detailsBack: `<path d="M 180,260 L 420,260" stroke="#1E293B" stroke-width="2" opacity="0.3" />`,
+    },
+    'apron-custom': {
+      title: 'ผ้ากันเปื้อน (Custom Apron)',
+      basePrice: 140,
+      hasSleeves: false,
+      bodyFront: 'M 230,160 L 370,160 L 370,260 L 420,290 L 410,530 L 190,530 L 180,290 L 230,260 Z',
+      bodyBack: 'M 230,160 L 370,160 L 370,260 L 420,290 L 410,530 L 190,530 L 180,290 L 230,260 Z',
+      sleeveLFrontShort: '', sleeveRFrontShort: '', sleeveLFrontLong: '', sleeveRFrontLong: '',
+      sleeveLBackShort: '', sleeveRBackShort: '', sleeveLBackLong: '', sleeveRBackLong: '',
+      collarFront: 'M 250,160 Q 300,60 350,160',
+      collarBack: 'M 250,160 Q 300,60 350,160',
+      detailsFront: `<rect x="240" y="360" width="120" height="110" fill="none" stroke="#1E293B" stroke-width="3" rx="6" /><line x1="300" y1="360" x2="300" y2="470" stroke="#1E293B" stroke-width="2" opacity="0.5" />`,
+      detailsBack: `<path d="M 180,290 L 100,310 M 420,290 L 500,310" stroke="#1E293B" stroke-width="4" fill="none" />`,
+    },
+    'baseball-cap': {
+      title: 'หมวกแก๊ป (Baseball Cap)',
+      basePrice: 110,
+      hasSleeves: false,
+      bodyFront: 'M 180,310 Q 300,160 420,310 Q 300,340 180,310 Z',
+      bodyBack: 'M 180,310 Q 300,160 420,310 Q 300,340 180,310 Z',
+      sleeveLFrontShort: '', sleeveRFrontShort: '', sleeveLFrontLong: '', sleeveRFrontLong: '',
+      sleeveLBackShort: '', sleeveRBackShort: '', sleeveLBackLong: '', sleeveRBackLong: '',
+      collarFront: 'M 160,310 Q 300,360 440,310 Q 300,430 160,310 Z',
+      collarBack: 'M 240,320 Q 300,280 360,320 L 350,335 Q 300,300 250,335 Z',
+      detailsFront: `<line x1="300" y1="180" x2="300" y2="330" stroke="#1E293B" stroke-width="2" opacity="0.3" /><circle cx="300" cy="180" r="8" fill="#1E293B" />`,
+      detailsBack: `<circle cx="300" cy="180" r="8" fill="#1E293B" />`,
+    },
+  };
+
+  // ----------------------------------------------------
+  // STATE MANAGEMENT
+  // ----------------------------------------------------
+  let currentProduct: ProductType = 'polo-classic';
+  let currentView: ViewAngle = 'front';
+  let currentSleeve: SleeveType = 'short';
+  let garmentColor = '#FF5A1F';
+  let garmentColorName = 'Orange';
+  let currentSize = 'L';
+  let currentQty = 100;
+  let customText = 'YOUR LOGO / TEXT';
+  let fontStyle = 'Inter, sans-serif';
+  let fontSize = 18;
+  let textColor = '#111827';
+  let hasUploadedLogo = false;
+  let logoScale = 100;
+  let activeColorTarget: 'garment' | 'text' = 'garment';
+
+  // ----------------------------------------------------
+  // DOM ELEMENT REFERENCES
+  // ----------------------------------------------------
+  const catalogSelect = document.getElementById('catalog-select') as HTMLSelectElement;
+  const btnViewFront = document.getElementById('btn-view-front') as HTMLButtonElement;
+  const btnViewBack = document.getElementById('btn-view-back') as HTMLButtonElement;
+  const btnSleeveShort = document.getElementById('btn-sleeve-short') as HTMLButtonElement;
+  const btnSleeveLong = document.getElementById('btn-sleeve-long') as HTMLButtonElement;
+  const sleeveToggleGroup = document.getElementById('sleeve-toggle-group') as HTMLElement;
+
+  const badgeViewInd = document.getElementById('badge-view-indicator') as HTMLElement;
+  const badgeSleeveInd = document.getElementById('badge-sleeve-indicator') as HTMLElement;
+
+  // SVG Elements
+  const svgBody = document.getElementById('svg-garment-body') as SVGPathElement;
+  const svgBodyOverlay = document.getElementById('svg-body-overlay') as SVGPathElement;
+  const svgSleeveL = document.getElementById('svg-garment-sleeve-l') as SVGPathElement;
+  const svgSleeveLOverlay = document.getElementById('svg-sleeve-l-overlay') as SVGPathElement;
+  const svgSleeveR = document.getElementById('svg-garment-sleeve-r') as SVGPathElement;
+  const svgSleeveROverlay = document.getElementById('svg-sleeve-r-overlay') as SVGPathElement;
+  const svgCollar = document.getElementById('svg-garment-collar') as SVGPathElement;
+  const svgBacktape = document.getElementById('svg-garment-backtape') as SVGPathElement;
+  const svgDetails = document.getElementById('svg-garment-details') as SVGGElement;
+
+  // Design Overlay Container & Elements
+  const stageWrapper = document.getElementById('faceless-stage-wrapper') as HTMLElement;
+  const designContainer = document.getElementById('placed-design-container') as HTMLElement;
+  const placedLogoImg = document.getElementById('placed-logo-img') as HTMLImageElement;
+  const placedTextSpan = document.getElementById('placed-text-span') as HTMLElement;
+
+  // Input Controls
+  const customTextInput = document.getElementById('custom-text-input') as HTMLInputElement;
+  const btnTextColorTrigger = document.getElementById('btn-text-color-trigger') as HTMLButtonElement;
+  const textColorDot = document.getElementById('text-color-preview-dot') as HTMLElement;
+  const fontFamilySelect = document.getElementById('font-family-select') as HTMLSelectElement;
+  const fontSizeSlider = document.getElementById('font-size-slider') as HTMLInputElement;
+  const fontSizeVal = document.getElementById('font-size-val') as HTMLElement;
+
+  const logoFileInput = document.getElementById('logo-file-input') as HTMLInputElement;
+  const logoFileName = document.getElementById('logo-file-name') as HTMLElement;
+  const btnRemoveLogo = document.getElementById('btn-remove-logo') as HTMLButtonElement;
+  const logoScaleWrapper = document.getElementById('logo-scale-wrapper') as HTMLElement;
+  const logoScaleSlider = document.getElementById('logo-scale-slider') as HTMLInputElement;
+  const logoScaleVal = document.getElementById('logo-scale-val') as HTMLElement;
+
+  // Configurator Card Elements
+  const confProductTitle = document.getElementById('conf-product-title') as HTMLElement;
+  const confUnitPrice = document.getElementById('conf-unit-price') as HTMLElement;
+  const confColorName = document.getElementById('conf-color-name') as HTMLElement;
+  const confQtyInput = document.getElementById('conf-qty-input') as HTMLInputElement;
+  const confTotalPrice = document.getElementById('conf-total-price') as HTMLElement;
+  const btnQtyMinus = document.getElementById('btn-qty-minus') as HTMLButtonElement;
+  const btnQtyPlus = document.getElementById('btn-qty-plus') as HTMLButtonElement;
+  const btnLineCta = document.getElementById('btn-line-cta') as HTMLAnchorElement;
+
+  // Color Swatches
+  const garmentSwatches = document.querySelectorAll('#garment-color-swatches .swatch-btn');
+  const btnOpenCustomColorModal = document.getElementById('btn-open-custom-color-modal') as HTMLButtonElement;
+
+  // Modal Elements
+  const colorModal = document.getElementById('color-picker-modal') as HTMLElement;
+  const colorModalHeader = document.getElementById('color-modal-header') as HTMLElement;
+  const colorModalTitle = document.getElementById('color-modal-title') as HTMLElement;
+  const closeColorModalBtn = document.getElementById('close-color-modal-btn') as HTMLButtonElement;
+  const modalColorTargetLabel = document.getElementById('modal-color-target-label') as HTMLElement;
+  const modalSwatchesGrid = document.getElementById('modal-swatches-grid') as HTMLElement;
+  const modalNativeColor = document.getElementById('modal-native-color') as HTMLInputElement;
+  const modalHexInput = document.getElementById('modal-hex-input') as HTMLInputElement;
+  const btnApplyModalColor = document.getElementById('btn-apply-modal-color') as HTMLButtonElement;
+
+  // Copy Buttons
+  const btnCopySpecText = document.getElementById('btn-copy-spec-text') as HTMLButtonElement;
+  const btnCopyShirtImg = document.getElementById('btn-copy-shirt-img') as HTMLButtonElement;
+  const toast = document.getElementById('studio-toast') as HTMLElement;
+  const toastMsg = document.getElementById('studio-toast-msg') as HTMLElement;
+
+  // ----------------------------------------------------
+  // INITIALIZATION & RENDER ENGINE
+  // ----------------------------------------------------
+  function initStudio() {
+    renderGarmentVector();
+    updateConfiguratorSummary();
+    setupModalSwatches();
+  }
+
+  function renderGarmentVector() {
+    const tpl = CATALOG[currentProduct];
+    if (confProductTitle) confProductTitle.textContent = tpl.title;
+
+    if (!tpl.hasSleeves) {
+      sleeveToggleGroup?.classList.add('hidden');
+      badgeSleeveInd?.classList.add('hidden');
+    } else {
+      sleeveToggleGroup?.classList.remove('hidden');
+      badgeSleeveInd?.classList.remove('hidden');
+    }
+
+    const bodyD = currentView === 'front' ? tpl.bodyFront : tpl.bodyBack;
+    const collarD = currentView === 'front' ? tpl.collarFront : tpl.collarBack;
+    const detailsHtml = currentView === 'front' ? tpl.detailsFront : tpl.detailsBack;
+
+    let sleeveLD = '';
+    let sleeveRD = '';
+
+    if (tpl.hasSleeves) {
+      if (currentView === 'front') {
+        sleeveLD = currentSleeve === 'short' ? tpl.sleeveLFrontShort : tpl.sleeveLFrontLong;
+        sleeveRD = currentSleeve === 'short' ? tpl.sleeveRFrontShort : tpl.sleeveRFrontLong;
+      } else {
+        sleeveLD = currentSleeve === 'short' ? tpl.sleeveLBackShort : tpl.sleeveLBackLong;
+        sleeveRD = currentSleeve === 'short' ? tpl.sleeveRBackShort : tpl.sleeveRBackLong;
+      }
+    }
+
+    if (svgBody) {
+      svgBody.setAttribute('d', bodyD);
+      svgBodyOverlay.setAttribute('d', bodyD);
+      svgBody.setAttribute('fill', garmentColor);
+    }
+
+    if (tpl.hasSleeves && svgSleeveL && svgSleeveR) {
+      svgSleeveL.setAttribute('d', sleeveLD);
+      svgSleeveLOverlay.setAttribute('d', sleeveLD);
+      svgSleeveL.setAttribute('fill', garmentColor);
+      svgSleeveL.classList.remove('hidden');
+
+      svgSleeveR.setAttribute('d', sleeveRD);
+      svgSleeveROverlay.setAttribute('d', sleeveRD);
+      svgSleeveR.setAttribute('fill', garmentColor);
+      svgSleeveR.classList.remove('hidden');
+    } else if (svgSleeveL && svgSleeveR) {
+      svgSleeveL.classList.add('hidden');
+      svgSleeveR.classList.add('hidden');
+    }
+
+    if (svgCollar) svgCollar.setAttribute('d', collarD);
+    if (svgDetails) svgDetails.innerHTML = detailsHtml;
+
+    if (svgBacktape) {
+      if (currentView === 'back' && tpl.hasSleeves) {
+        svgBacktape.classList.remove('hidden');
+      } else {
+        svgBacktape.classList.add('hidden');
+      }
+    }
+
+    if (badgeViewInd) badgeViewInd.textContent = `${currentView.toUpperCase()} VIEW`;
+    if (badgeSleeveInd) badgeSleeveInd.textContent = tpl.hasSleeves ? `${currentSleeve.toUpperCase()} SLEEVE` : 'NO SLEEVES';
+  }
+
+  function updateConfiguratorSummary() {
+    if (confColorName) confColorName.textContent = `${garmentColorName} (${garmentColor})`;
+
+    const specMsg = buildSpecText();
+    const lineUrl = `https://line.me/R/ti/p/@thanaplus?text=${encodeURIComponent(specMsg)}`;
+    if (btnLineCta) btnLineCta.href = lineUrl;
+  }
+
+  function buildSpecText(): string {
+    const tpl = CATALOG[currentProduct];
+    let sleeveTxt = 'ไม่ระบุ';
+    if (tpl.hasSleeves) {
+      sleeveTxt = currentSleeve === 'short' ? 'แขนสั้น (Short Sleeve)' : 'แขนยาว (Long Sleeve)';
+    }
+
+    return `📦 สเปกการสั่งผลิตสินค้า (Specification Sheet) - Thanaplus 153
+--------------------------------------------------
+• สินค้า (Product): ${tpl.title}
+• รูปแบบแขน (Sleeve): ${sleeveTxt}
+• สีผ้า (Garment Color): ${garmentColorName} (${garmentColor})
+• มุมมอง (View Angle): ${currentView === 'front' ? 'ด้านหน้า (Front)' : 'ด้านหลัง (Back)'}
+• ข้อความสกรีน/ปัก (Custom Text): "${customText || '-'}"
+• ฟอนต์ & ไซซ์ (Font): ${fontStyle.split(',')[0]} (${fontSize}px)
+• สีข้อความ (Text Color): ${textColor}
+• โลโก้ (Logo): ${hasUploadedLogo ? 'มีแนบไฟล์โลโก้' : 'ไม่มี'}
+• ไซซ์ที่เลือก (Size): ${currentSize}
+• จำนวนสั่งผลิต (Quantity): ${currentQty} ตัว
+• การขอใบเสนอราคา: สอบถามราคาและส่วนลดพิเศษทาง LINE
+--------------------------------------------------
+สอบถามและสั่งผลิตได้ที่ LINE: @thanaplus`;
+  }
+
+  // EVENT LISTENERS
+  catalogSelect?.addEventListener('change', (e) => {
+    currentProduct = (e.target as HTMLSelectElement).value as ProductType;
+    renderGarmentVector();
+    updateConfiguratorSummary();
+  });
+
+  btnViewFront?.addEventListener('click', () => {
+    currentView = 'front';
+    btnViewFront.className = 'px-3 py-1 rounded-lg text-xs font-black transition-all bg-white text-gray-900 shadow-sm border border-gray-200/50 cursor-pointer';
+    btnViewBack.className = 'px-3 py-1 rounded-lg text-xs font-black transition-all text-gray-500 hover:text-gray-900 cursor-pointer';
+    
+    if (designContainer) {
+      designContainer.style.top = '32%';
+      designContainer.style.left = '50%';
+    }
+    
+    renderGarmentVector();
+    updateConfiguratorSummary();
+  });
+
+  btnViewBack?.addEventListener('click', () => {
+    currentView = 'back';
+    btnViewBack.className = 'px-3 py-1 rounded-lg text-xs font-black transition-all bg-white text-gray-900 shadow-sm border border-gray-200/50 cursor-pointer';
+    btnViewFront.className = 'px-3 py-1 rounded-lg text-xs font-black transition-all text-gray-500 hover:text-gray-900 cursor-pointer';
+    
+    if (designContainer) {
+      designContainer.style.top = '28%';
+      designContainer.style.left = '50%';
+    }
+
+    renderGarmentVector();
+    updateConfiguratorSummary();
+  });
+
+  btnSleeveShort?.addEventListener('click', () => {
+    currentSleeve = 'short';
+    btnSleeveShort.className = 'px-2.5 py-1 rounded-lg text-[11px] font-black transition-all bg-white text-gray-900 shadow-sm cursor-pointer';
+    btnSleeveLong.className = 'px-2.5 py-1 rounded-lg text-[11px] font-black transition-all text-gray-500 hover:text-gray-900 cursor-pointer';
+    renderGarmentVector();
+    updateConfiguratorSummary();
+  });
+
+  btnSleeveLong?.addEventListener('click', () => {
+    currentSleeve = 'long';
+    btnSleeveLong.className = 'px-2.5 py-1 rounded-lg text-[11px] font-black transition-all bg-white text-gray-900 shadow-sm cursor-pointer';
+    btnSleeveShort.className = 'px-2.5 py-1 rounded-lg text-[11px] font-black transition-all text-gray-500 hover:text-gray-900 cursor-pointer';
+    renderGarmentVector();
+    updateConfiguratorSummary();
+  });
+
+  customTextInput?.addEventListener('input', (e) => {
+    customText = (e.target as HTMLInputElement).value;
+    if (placedTextSpan) placedTextSpan.textContent = customText || '';
+    updateConfiguratorSummary();
+  });
+
+  fontFamilySelect?.addEventListener('change', (e) => {
+    fontStyle = (e.target as HTMLSelectElement).value;
+    if (placedTextSpan) placedTextSpan.style.fontFamily = fontStyle;
+    updateConfiguratorSummary();
+  });
+
+  fontSizeSlider?.addEventListener('input', (e) => {
+    fontSize = parseInt((e.target as HTMLInputElement).value, 10);
+    if (fontSizeVal) fontSizeVal.textContent = `${fontSize}px`;
+    if (placedTextSpan) placedTextSpan.style.fontSize = `${fontSize}px`;
+    updateConfiguratorSummary();
+  });
+
+  logoFileInput?.addEventListener('change', (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        if (placedLogoImg) {
+          placedLogoImg.src = evt.target?.result as string;
+          placedLogoImg.classList.remove('hidden');
+        }
+        hasUploadedLogo = true;
+        if (logoFileName) logoFileName.textContent = file.name;
+        btnRemoveLogo?.classList.remove('hidden');
+        logoScaleWrapper?.classList.remove('opacity-50', 'pointer-events-none');
+        updateConfiguratorSummary();
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  btnRemoveLogo?.addEventListener('click', () => {
+    if (placedLogoImg) {
+      placedLogoImg.src = '';
+      placedLogoImg.classList.add('hidden');
+    }
+    hasUploadedLogo = false;
+    if (logoFileName) logoFileName.textContent = 'รองรับไฟล์พื้นหลังใส PNG';
+    btnRemoveLogo?.classList.add('hidden');
+    logoScaleWrapper?.classList.add('opacity-50', 'pointer-events-none');
+    if (logoFileInput) logoFileInput.value = '';
+    updateConfiguratorSummary();
+  });
+
+  logoScaleSlider?.addEventListener('input', (e) => {
+    logoScale = parseInt((e.target as HTMLInputElement).value, 10);
+    if (logoScaleVal) logoScaleVal.textContent = `${logoScale}%`;
+    if (placedLogoImg) placedLogoImg.style.transform = `scale(${logoScale / 100})`;
+  });
+
+  document.querySelectorAll('#conf-size-grid .size-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#conf-size-grid .size-btn').forEach((b) => {
+        b.className = 'size-btn py-2 rounded-xl border text-xs font-black transition-all border-gray-200 text-gray-700 hover:border-gray-400 cursor-pointer';
+      });
+      btn.className = 'size-btn py-2 rounded-xl border text-xs font-black transition-all border-gray-900 bg-gray-950 text-white shadow cursor-pointer';
+      currentSize = btn.getAttribute('data-size') || 'L';
+      updateConfiguratorSummary();
+    });
+  });
+
+  btnQtyMinus?.addEventListener('click', () => {
+    if (currentQty > 100) {
+      currentQty -= 10;
+      if (currentQty < 100) currentQty = 100;
+      if (confQtyInput) confQtyInput.value = currentQty.toString();
+      updateConfiguratorSummary();
+    }
+  });
+
+  btnQtyPlus?.addEventListener('click', () => {
+    currentQty += 10;
+    if (confQtyInput) confQtyInput.value = currentQty.toString();
+    updateConfiguratorSummary();
+  });
+
+  confQtyInput?.addEventListener('change', (e) => {
+    let val = parseInt((e.target as HTMLInputElement).value, 10);
+    if (isNaN(val) || val < 100) val = 100;
+    currentQty = val;
+    confQtyInput.value = currentQty.toString();
+    updateConfiguratorSummary();
+  });
+
+  garmentSwatches.forEach((swatch) => {
+    swatch.addEventListener('click', () => {
+      garmentSwatches.forEach((s) => {
+        s.className = 'swatch-btn w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-transform hover:scale-110';
+      });
+      swatch.className = 'swatch-btn w-8 h-8 rounded-full border-2 border-white ring-2 ring-[#FF5A1F] shadow-sm transition-transform hover:scale-110';
+      
+      garmentColor = swatch.getAttribute('data-color') || '#FF5A1F';
+      garmentColorName = swatch.getAttribute('data-name') || 'Custom';
+      
+      renderGarmentVector();
+      updateConfiguratorSummary();
+    });
+  });
+
+  // FREE DRAG & DROP POINTER EVENTS ENGINE
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let initialTopPct = 32;
+  let initialLeftPct = 50;
+
+  if (designContainer && stageWrapper) {
+    designContainer.addEventListener('pointerdown', (e: PointerEvent) => {
+      if (e.button !== 0) return;
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+
+      const styleTop = designContainer.style.top;
+      const styleLeft = designContainer.style.left;
+      initialTopPct = parseFloat(styleTop) || 32;
+      initialLeftPct = parseFloat(styleLeft) || 50;
+
+      designContainer.setPointerCapture(e.pointerId);
+      designContainer.style.cursor = 'grabbing';
+      e.preventDefault();
+    });
+
+    designContainer.addEventListener('pointermove', (e: PointerEvent) => {
+      if (!isDragging) return;
+      const rect = stageWrapper.getBoundingClientRect();
+      const deltaX = e.clientX - startX;
+      const deltaY = e.clientY - startY;
+
+      const deltaPctX = (deltaX / rect.width) * 100;
+      const deltaPctY = (deltaY / rect.height) * 100;
+
+      let newLeft = initialLeftPct + deltaPctX;
+      let newTop = initialTopPct + deltaPctY;
+
+      newLeft = Math.max(25, Math.min(75, newLeft));
+      newTop = Math.max(20, Math.min(80, newTop));
+
+      designContainer.style.left = `${newLeft}%`;
+      designContainer.style.top = `${newTop}%`;
+    });
+
+    const stopDrag = (e: PointerEvent) => {
+      if (isDragging) {
+        isDragging = false;
+        designContainer.style.cursor = 'grab';
+        try {
+          designContainer.releasePointerCapture(e.pointerId);
+        } catch (_) {}
+      }
+    };
+
+    designContainer.addEventListener('pointerup', stopDrag);
+    designContainer.addEventListener('pointercancel', stopDrag);
+  }
+
+  // MOVEABLE CUSTOM COLOR PICKER MODAL
+  const COLOR_PALETTE = [
+    { name: 'White', hex: '#FFFFFF' },
+    { name: 'Black', hex: '#111827' },
+    { name: 'Navy', hex: '#1E3A8A' },
+    { name: 'Red', hex: '#DC2626' },
+    { name: 'Blue', hex: '#2563EB' },
+    { name: 'Emerald', hex: '#059669' },
+    { name: 'Orange', hex: '#FF5A1F' },
+    { name: 'Gold', hex: '#D97706' },
+    { name: 'Purple', hex: '#7C3AED' },
+    { name: 'Pink', hex: '#EC4899' },
+    { name: 'Sky', hex: '#0284C7' },
+    { name: 'Lime', hex: '#65A30D' },
+    { name: 'Charcoal', hex: '#374151' },
+    { name: 'Silver', hex: '#9CA3AF' },
+    { name: 'Yellow', hex: '#FACC15' },
+    { name: 'Cream', hex: '#FEF3C7' },
+  ];
+
+  function setupModalSwatches() {
+    if (!modalSwatchesGrid) return;
+    modalSwatchesGrid.innerHTML = '';
+    COLOR_PALETTE.forEach((item) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'w-7 h-7 rounded-full border border-gray-300 shadow-sm hover:scale-110 transition-transform cursor-pointer';
+      btn.style.backgroundColor = item.hex;
+      btn.title = `${item.name} (${item.hex})`;
+      btn.addEventListener('click', () => {
+        if (modalNativeColor) modalNativeColor.value = item.hex;
+        if (modalHexInput) modalHexInput.value = item.hex.toUpperCase();
+        applyColorFromModal(item.hex, item.name);
+      });
+      modalSwatchesGrid.appendChild(btn);
+    });
+  }
+
+  function openColorModal(target: 'garment' | 'text') {
+    activeColorTarget = target;
+    if (modalColorTargetLabel) {
+      modalColorTargetLabel.textContent = target === 'garment' ? 'สีผ้าเสื้อ (Garment)' : 'สีข้อความ (Custom Text)';
+    }
+    
+    const currentColor = target === 'garment' ? garmentColor : textColor;
+    if (modalNativeColor) modalNativeColor.value = currentColor;
+    if (modalHexInput) modalHexInput.value = currentColor.toUpperCase();
+
+    if (colorModal) {
+      colorModal.style.transform = 'translate(-50%, -50%)';
+      colorModal.style.top = '50%';
+      colorModal.style.left = '50%';
+      colorModal.classList.remove('hidden');
+    }
+  }
+
+  function closeColorModal() {
+    colorModal?.classList.add('hidden');
+  }
+
+  btnOpenCustomColorModal?.addEventListener('click', () => openColorModal('garment'));
+  btnTextColorTrigger?.addEventListener('click', () => openColorModal('text'));
+  closeColorModalBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeColorModal();
+  });
+
+  modalNativeColor?.addEventListener('input', (e) => {
+    const val = (e.target as HTMLInputElement).value;
+    if (modalHexInput) modalHexInput.value = val.toUpperCase();
+  });
+
+  modalHexInput?.addEventListener('input', (e) => {
+    let val = (e.target as HTMLInputElement).value;
+    if (!val.startsWith('#')) val = '#' + val;
+    if (/^#[0-9A-F]{6}$/i.test(val) && modalNativeColor) {
+      modalNativeColor.value = val;
+    }
+  });
+
+  btnApplyModalColor?.addEventListener('click', () => {
+    const hex = modalNativeColor?.value || '#FF5A1F';
+    applyColorFromModal(hex, 'Custom');
+    closeColorModal();
+  });
+
+  function applyColorFromModal(hex: string, name: string) {
+    if (activeColorTarget === 'garment') {
+      garmentColor = hex;
+      garmentColorName = name;
+      renderGarmentVector();
+      updateConfiguratorSummary();
+    } else {
+      textColor = hex;
+      if (placedTextSpan) placedTextSpan.style.color = textColor;
+      if (textColorDot) textColorDot.style.backgroundColor = textColor;
+      updateConfiguratorSummary();
+    }
+  }
+
+  // Draggable Modal Header
+  let isModalDragging = false;
+  let modalStartX = 0;
+  let modalStartY = 0;
+  let modalInitialLeft = 0;
+  let modalInitialTop = 0;
+
+  if (colorModalHeader && colorModal) {
+    colorModalHeader.addEventListener('pointerdown', (e: PointerEvent) => {
+      if ((e.target as HTMLElement).closest('#close-color-modal-btn')) return;
+      
+      isModalDragging = true;
+      modalStartX = e.clientX;
+      modalStartY = e.clientY;
+
+      const rect = colorModal.getBoundingClientRect();
+      modalInitialLeft = rect.left;
+      modalInitialTop = rect.top;
+
+      colorModal.style.transform = 'none';
+      colorModal.style.left = `${modalInitialLeft}px`;
+      colorModal.style.top = `${modalInitialTop}px`;
+
+      colorModalHeader.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+
+    colorModalHeader.addEventListener('pointermove', (e: PointerEvent) => {
+      if (!isModalDragging) return;
+      const deltaX = e.clientX - modalStartX;
+      const deltaY = e.clientY - modalStartY;
+
+      colorModal.style.left = `${modalInitialLeft + deltaX}px`;
+      colorModal.style.top = `${modalInitialTop + deltaY}px`;
+    });
+
+    const stopModalDrag = (e: PointerEvent) => {
+      if (isModalDragging) {
+        isModalDragging = false;
+        try {
+          colorModalHeader.releasePointerCapture(e.pointerId);
+        } catch (_) {}
+      }
+    };
+
+    colorModalHeader.addEventListener('pointerup', stopModalDrag);
+    colorModalHeader.addEventListener('pointercancel', stopModalDrag);
+  }
+
+  // DUAL CLIPBOARD COPYING & STAGE SNAPSHOT
+  function showToast(msg: string, icon = '✅') {
+    if (!toast || !toastMsg) return;
+    toastMsg.textContent = msg;
+    const iconEl = document.getElementById('studio-toast-icon');
+    if (iconEl) iconEl.textContent = icon;
+
+    toast.classList.remove('hidden');
+    setTimeout(() => {
+      toast.classList.add('hidden');
+    }, 3200);
+  }
+
+  btnCopySpecText?.addEventListener('click', async () => {
+    const text = buildSpecText();
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast('คัดลอกข้อความสเปกเรียบร้อย!', '📋');
+    } catch (err) {
+      showToast('ไม่สามารถคัดลอกข้อความได้', '❌');
+    }
+  });
+
+  async function generateStagePngBlob(): Promise<Blob> {
+    const canvas = document.createElement('canvas');
+    canvas.width = 600;
+    canvas.height = 600;
+    const ctx = canvas.getContext('2d')!;
+
+    const svgEl = document.getElementById('garment-svg-canvas') as SVGElement;
+    const svgString = new XMLSerializer().serializeToString(svgEl);
+    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    const URL = window.URL || window.webkitURL || window;
+    const svgUrl = URL.createObjectURL(svgBlob);
+
+    const img = new Image();
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = svgUrl;
+    });
+    ctx.drawImage(img, 0, 0, 600, 600);
+    URL.revokeObjectURL(svgUrl);
+
+    if (designContainer && stageWrapper) {
+      const stageRect = stageWrapper.getBoundingClientRect();
+      const containerRect = designContainer.getBoundingClientRect();
+      
+      const scaleX = 600 / stageRect.width;
+      const scaleY = 600 / stageRect.height;
+      
+      const posX = (containerRect.left - stageRect.left) * scaleX;
+      const posY = (containerRect.top - stageRect.top) * scaleY;
+      const containerW = containerRect.width * scaleX;
+      const containerH = containerRect.height * scaleY;
+
+      if (hasUploadedLogo && placedLogoImg && placedLogoImg.src) {
+        const logoCanvasImg = new Image();
+        logoCanvasImg.crossOrigin = 'anonymous';
+        await new Promise((resolve) => {
+          logoCanvasImg.onload = resolve;
+          logoCanvasImg.onerror = resolve;
+          logoCanvasImg.src = placedLogoImg.src;
+        });
+
+        if (logoCanvasImg.complete && logoCanvasImg.naturalWidth > 0) {
+          const scaledW = (containerW * 0.7) * (logoScale / 100);
+          const scaledH = (containerH * 0.5) * (logoScale / 100);
+          ctx.drawImage(logoCanvasImg, posX + (containerW - scaledW) / 2, posY, scaledW, scaledH);
+        }
+      }
+
+      if (customText && customText.trim()) {
+        const style = window.getComputedStyle(placedTextSpan);
+        const fontSizePx = parseFloat(style.fontSize) * scaleY;
+
+        ctx.font = `bold ${fontSizePx}px ${fontStyle}`;
+        ctx.fillStyle = textColor;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        const textX = posX + containerW / 2;
+        const textY = posY + containerH * 0.75;
+        ctx.fillText(customText.trim(), textX, textY);
+      }
+    }
+
+    return new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (blob) resolve(blob);
+        else reject(new Error('Canvas conversion failed'));
+      }, 'image/png');
+    });
+  }
+
+  btnCopyShirtImg?.addEventListener('click', async () => {
+    try {
+      showToast('กำลังสร้างรูปภาพ...', '⏳');
+      const pngBlob = await generateStagePngBlob();
+      const text = buildSpecText();
+
+      if (navigator.clipboard && 'write' in navigator.clipboard && typeof ClipboardItem !== 'undefined') {
+        const clipboardItem = new ClipboardItem({
+          'image/png': pngBlob,
+          'text/plain': new Blob([text], { type: 'text/plain' })
+        });
+        await navigator.clipboard.write([clipboardItem]);
+        showToast('คัดลอกรูปภาพและสเปกเสื้อเรียบร้อย!', '🖼️');
+      } else {
+        await navigator.clipboard.writeText(text);
+        const link = document.createElement('a');
+        link.download = `custom-garment-spec.png`;
+        link.href = URL.createObjectURL(pngBlob);
+        link.click();
+        showToast('คัดลอกข้อความสเปก & ดาวน์โหลดรูปเสื้อแล้ว!', '🖼️');
+      }
+    } catch (err) {
+      const text = buildSpecText();
+      await navigator.clipboard.writeText(text);
+      showToast('คัดลอกข้อความสเปกเรียบร้อย!', '📋');
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', initStudio);
+  document.addEventListener('astro:page-load', initStudio);
+</script>

@@ -2,7 +2,6 @@
 import PageLayout from '@/layouts/PageLayout.astro';
 import { getCollection } from 'astro:content';
 import PortfolioCard from '@/components/products/PortfolioCard.astro';
-import PricingCalculator from '@/components/home/PricingCalculator.astro';
 import { SITE } from '@/consts';
 
 const products = (await getCollection('products')).sort(
@@ -70,63 +69,76 @@ const breadcrumbJsonLd = {
       </div>
     </div>
     
-    <!-- Interactive Category Navigation Filter Bar -->
-    <div class="mb-12 flex flex-col items-center justify-center gap-4 reveal-up delay-100">
-      <span class="text-xs font-black text-gray-400 uppercase tracking-widest">
-        กรองประเภทผลงานผลิต (Filter Portfolio):
-      </span>
-      <div class="flex flex-wrap items-center justify-center gap-2 max-w-3xl" id="filter-buttons">
-        <button
-          type="button"
-          data-filter="all"
-          class="filter-btn px-5 py-2.5 rounded-xl border border-gray-900 bg-gray-950 text-white text-xs font-black cursor-pointer shadow-sm transition-all"
-        >
-          ทั้งหมด (All)
-        </button>
-        {uniqueTags.map((tag) => (
-          <button
-            type="button"
-            data-filter={tag}
-            class="filter-btn px-5 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-700 hover:border-gray-900 text-xs font-black cursor-pointer transition-all"
-          >
-            {tagLabels[tag] || tag.toUpperCase()}
-          </button>
-        ))}
-      </div>
-    </div>
 
-    <!-- Product Carousel Slider Showcase (3 visible, rotates to others) -->
-    <div class="relative overflow-hidden w-full py-4 reveal-up delay-200">
-      <div id="portfolio-grid" class="flex gap-6 transition-transform duration-500 ease-in-out">
-        {
-          products.map((product) => (
-            <div class="product-slide shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]" data-tags={product.data.tags.join(' ')}>
-              <PortfolioCard 
-                id={product.id}
-                title={product.data.title}
-                description={product.data.description}
-                image={product.data.image}
-                imageAlt={product.data.imageAlt}
-                tags={product.data.tags}
-              />
-            </div>
-          ))
-        }
-      </div>
-      
-      <!-- Slider Navigation Controls -->
-      <div class="flex items-center justify-center gap-4 mt-12" id="slider-controls">
-        <button type="button" id="prev-slide" class="w-10 h-10 rounded-full border border-gray-200 bg-white hover:border-[#FF5A1F] hover:text-[#FF5A1F] text-gray-700 flex items-center justify-center cursor-pointer transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-        </button>
+
+    <!-- Customize Your Own Polo Banner & Button Section (Upgraded Light Glassmorphic Style) -->
+    <div class="my-12 reveal-up">
+      <div class="bg-gradient-to-br from-orange-50/90 via-white to-amber-50/80 rounded-3xl p-6 sm:p-10 border border-orange-200/80 shadow-2xl max-w-5xl mx-auto relative overflow-hidden">
         
-        <div class="flex items-center gap-2" id="slider-dots">
-          {/* Dots will be generated dynamically */}
+        <!-- Ambient Decorative Gradient Glows -->
+        <div class="absolute -top-24 -right-24 w-72 h-72 bg-gradient-to-br from-[#FF5A1F]/20 to-amber-400/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-gradient-to-tr from-orange-400/15 to-orange-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10 text-left">
+          
+          <!-- Left Column: Feature Highlights Cards Grid -->
+          <div class="lg:col-span-5 grid grid-cols-2 gap-3 order-2 lg:order-1">
+            <div class="bg-white/80 backdrop-blur-md p-3.5 rounded-2xl border border-orange-100 shadow-sm flex flex-col gap-1.5 hover:shadow-md transition-shadow">
+              <span class="text-xl">🎨</span>
+              <h4 class="font-extrabold text-xs text-gray-900">เลือกสีผ้า & Custom Color</h4>
+              <p class="text-[11px] text-gray-500 font-semibold leading-tight">16 จานสีมาตรฐาน + Color Picker</p>
+            </div>
+            
+            <div class="bg-white/80 backdrop-blur-md p-3.5 rounded-2xl border border-orange-100 shadow-sm flex flex-col gap-1.5 hover:shadow-md transition-shadow">
+              <span class="text-xl">👔</span>
+              <h4 class="font-extrabold text-xs text-gray-900">8 รูปแบบสินค้า</h4>
+              <p class="text-[11px] text-gray-500 font-semibold leading-tight">เสื้อโปโล, ยืด, เชิ้ต, ฮู้ด, หมวก ฯลฯ</p>
+            </div>
+
+            <div class="bg-white/80 backdrop-blur-md p-3.5 rounded-2xl border border-orange-100 shadow-sm flex flex-col gap-1.5 hover:shadow-md transition-shadow">
+              <span class="text-xl">✋</span>
+              <h4 class="font-extrabold text-xs text-gray-900">ลากวางโลโก้ & ข้อความ</h4>
+              <p class="text-[11px] text-gray-500 font-semibold leading-tight">ลากย้าย ปรับขนาด เรียลไทม์ 2D</p>
+            </div>
+
+            <div class="bg-white/80 backdrop-blur-md p-3.5 rounded-2xl border border-orange-100 shadow-sm flex flex-col gap-1.5 hover:shadow-md transition-shadow">
+              <span class="text-xl">📋</span>
+              <h4 class="font-extrabold text-xs text-gray-900">ส่งสเปกตรงเข้า LINE OA</h4>
+              <p class="text-[11px] text-gray-500 font-semibold leading-tight">คัดลอกรูปภาพและสเปกส่งประเมินฟรี</p>
+            </div>
+          </div>
+
+          <!-- Right Column: Banner Header & Action CTA -->
+          <div class="lg:col-span-7 space-y-5 order-1 lg:order-2">
+            <div class="space-y-2">
+              <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FF5A1F]/10 border border-[#FF5A1F]/30 text-xs font-black text-[#FF5A1F] uppercase tracking-widest">
+                <span class="w-2 h-2 rounded-full bg-[#FF5A1F] animate-pulse"></span>
+                <span>2D Vector Design Studio</span>
+              </span>
+              <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 tracking-tight leading-tight">
+                ออกแบบเสื้อโปโลในสไตล์คุณ <br />
+                <span class="text-[#FF5A1F] font-black">Customize Your Own Polo</span>
+              </h2>
+            </div>
+            
+            <p class="text-gray-600 text-xs sm:text-sm font-semibold leading-relaxed">
+              ทดลองเลือกสีผ้า เปลี่ยนแบบปกเสื้อ สลับแขนสั้น/ยาว วางโลโก้ และพิมพ์ข้อความจำลองบนเสื้อโปโลแบบ 2D Visualizer ได้เรียลไทม์ พร้อมคัดลอกรูปเสื้อส่งประเมินราคาได้ทันที!
+            </p>
+
+            <div class="pt-2">
+              <a
+                href="/products/polo-classic/"
+                class="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#FF5A1F] to-[#FF8A00] hover:from-[#E04E17] hover:to-[#FF5A1F] text-white font-black text-sm sm:text-base px-8 py-4 rounded-2xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all transform hover:-translate-y-0.5 active:translate-y-0 pulse-glow w-full sm:w-auto"
+              >
+                <span class="text-xl">✨</span>
+                <span>Customize Your Own Polo</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+          </div>
+
         </div>
 
-        <button type="button" id="next-slide" class="w-10 h-10 rounded-full border border-gray-200 bg-white hover:border-[#FF5A1F] hover:text-[#FF5A1F] text-gray-700 flex items-center justify-center cursor-pointer transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        </button>
       </div>
     </div>
     
@@ -135,8 +147,6 @@ const breadcrumbJsonLd = {
         <p class="text-xl">Coming soon...</p>
       </div>
     )}
-
-    <PricingCalculator />
 
     <!-- Wholesale Inquiry Call-To-Action Banner -->
     <section class="mt-24 max-w-5xl mx-auto px-4 reveal-up">

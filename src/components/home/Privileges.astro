@@ -39,37 +39,38 @@ const items = [
 ];
 ---
 
-{/* Privileges Section - Overhauled to Grid Spec Cards */}
-<section class="mt-24 lg:mt-32 relative z-20 py-24 border-t border-b border-gray-150/60 bg-gray-50/20">
-  <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+{/* Privileges Section - Apple Bento Grid Style */}
+<section class="my-20 lg:my-28 relative z-20 py-20 bg-[#F5F5F7]">
+  <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
     
-    {/* Section Header - Two Columns */}
+    {/* Section Header */}
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-16 text-left items-start reveal-up">
       <div class="lg:col-span-7">
-        <span class="text-xs font-black tracking-widest text-[#FF5A1F] uppercase mb-4 block">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 text-orange-600 text-[11px] font-bold tracking-wider uppercase mb-4">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#FF5A1F]"></span>
           Factory Privileges
         </span>
-        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-[1.15] text-gray-900 uppercase">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.12] text-gray-900 uppercase">
           สิทธิพิเศษและบริการเสริมฟรี <br/>
-          <span class="text-[#FF5A1F]">สำหรับคำสั่งสั่งผลิตยูนิฟอร์ม</span>
+          <span class="text-[#FF5A1F]">สำหรับคำสั่งผลิตยูนิฟอร์ม</span>
         </h2>
       </div>
       <div class="lg:col-span-5 lg:pt-8">
-        <p class="text-gray-500 text-sm md:text-base font-semibold leading-relaxed">
+        <p class="text-gray-500 text-sm sm:text-base font-normal leading-relaxed">
           เรายินดีอำนวยความสะดวกในกระบวนการทำงานให้กับฝ่ายจัดซื้อและผู้ริเริ่มสร้างแบรนด์ผ้า ด้วยสิทธิประโยชน์พิเศษที่รวมอยู่ในราคาสั่งผลิตตั้งแต่ต้น
         </p>
       </div>
     </div>
 
-    {/* Grid of 6 Cards (2x3 on Desktop) */}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 pt-6 reveal-up delay-200">
+    {/* Grid of 6 Bento Cards */}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 pt-2 reveal-up delay-200">
       {items.map((item, index) => {
         return (
-          <div class="relative p-8 flex flex-col justify-between items-start min-h-[250px] hover-lift group border rounded-none bg-white text-gray-900 border-gray-200/80 hover:bg-slate-900 hover:text-white hover:border-slate-900 hover:shadow-xl">
+          <div class="relative p-8 flex flex-col justify-between items-start min-h-[250px] group rounded-[28px] bg-white text-gray-900 border border-black/5 shadow-xl shadow-black/5 hover:scale-[1.02] hover:shadow-2xl transition-all duration-500">
             
-            {/* Top Row: Icon inside dashed box (Left) and Diagonal Arrow button (Right) */}
+            {/* Top Row: Icon container (Left) and Arrow pill (Right) */}
             <div class="flex items-center justify-between w-full mb-8">
-              <div class="border-2 border-dashed p-2.5 flex items-center justify-center flex-shrink-0 border-gray-300 text-gray-600 group-hover:border-slate-700 group-hover:text-white">
+              <div class="w-12 h-12 rounded-2xl p-2.5 flex items-center justify-center flex-shrink-0 bg-orange-500/10 text-[#FF5A1F]">
                 {item.iconName === 'drafting' && (
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
                 )}
@@ -90,18 +91,18 @@ const items = [
                 )}
               </div>
               
-              {/* Top Right arrow icon button matching theme color */}
-              <div class="w-9 h-9 flex items-center justify-center transition-all duration-300 bg-gray-150 text-gray-700 group-hover:bg-[#FF5A1F] group-hover:text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              {/* Top Right arrow icon pill */}
+              <div class="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 bg-gray-100 text-gray-700 group-hover:bg-[#FF5A1F] group-hover:text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
               </div>
             </div>
 
             {/* Bottom Row: Text content */}
             <div class="w-full text-left mt-auto">
-              <h3 class="text-lg font-black tracking-tight mb-2 uppercase text-gray-900 group-hover:text-white">
+              <h3 class="text-lg font-black tracking-tight mb-2 uppercase text-gray-900">
                 {item.title}
               </h3>
-              <p class="text-xs leading-relaxed font-semibold text-gray-500 group-hover:text-slate-400">
+              <p class="text-xs leading-relaxed font-normal text-gray-500">
                 {item.desc}
               </p>
             </div>

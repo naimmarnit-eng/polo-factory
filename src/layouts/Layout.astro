@@ -143,7 +143,7 @@ const { title, description, image, type, noindex, jsonLd } = Astro.props;
           const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
           const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
           const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-          progressBar.style.width = scrolled + '%';
+          if (progressBar) progressBar.style.width = scrolled + '%';
         }
 
         window.addEventListener('scroll', updateProgress, { passive: true });
