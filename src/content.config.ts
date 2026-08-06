@@ -31,25 +31,5 @@ const products = defineCollection({
     }),
 });
 
-// คอลเลกชันบทความ/บล็อก — สำหรับ SEO/คอนเทนต์
-const blog = defineCollection({
-  // ไม่นับ CLAUDE.md (คู่มือเขียนบทความ) เป็นบทความบล็อก
-  loader: glob({ pattern: ['**/*.{md,mdx}', '!**/CLAUDE.md'], base: './src/content/blog' }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      description: z.string(),
-      cover: image().optional(),
-      coverAlt: z.string().optional(),
-      author: z.string().default('ทีมงาน'),
-      category: z.string().default('Uncategorized'),
-      tags: z.array(z.string()).default([]),
-      draft: z.boolean().default(false),
-      publishedAt: z.coerce.date(),
-      updatedAt: z.coerce.date().optional(),
-      // คำถามที่พบบ่อย (ออปชัน) — ป้อนใน frontmatter แล้วได้ทั้ง FAQPage JSON-LD + accordion บนหน้า
-      faq: z.array(z.object({ question: z.string(), answer: z.string() })).optional(),
-    }),
-});
+export const collections = { products };
 
-export const collections = { products, blog };

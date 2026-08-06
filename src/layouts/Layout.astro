@@ -74,13 +74,7 @@ const { title, description, image, type, noindex, jsonLd } = Astro.props;
       })(window, document, 'clarity', 'script', 'x5q5tvdd8n');
     </script>
 
-    {/* RSS feed discovery */}
-    <link
-      rel="alternate"
-      type="application/rss+xml"
-      title={SITE.name}
-      href={new URL('rss.xml', Astro.site)}
-    />
+
 
     <SEO
       title={title}

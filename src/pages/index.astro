@@ -5,7 +5,6 @@ import ScreenServices from '@/components/home/ScreenServices.astro';
 import Privileges from '@/components/home/Privileges.astro';
 import WhyChooseUs from '@/components/home/WhyChooseUs.astro';
 import Trending from '@/components/home/Trending.astro';
-import BlogFeed from '@/components/home/BlogFeed.astro';
 import Faq from '@/components/Faq.astro';
 import { buildFaqJsonLd, type FaqItem } from '@/lib/faq';
 
@@ -128,7 +127,6 @@ const faqJsonLd = buildFaqJsonLd(faqItems);
   <ScreenServices />
   <Privileges />
   <WhyChooseUs />
-  <BlogFeed />
   <Faq
     items={faqItems}
     title="คำถามที่พบบ่อย"
